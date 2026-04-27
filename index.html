@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pit House Admin</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <title>Pit House Admin — لوحة التحكم</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cairo:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
       --accent:#FF3D00; --accent-gold:#FFB300;
-      --bg:#0A0A0A; --bg-card:#111111; --bg-secondary:#161616;
-      --border:rgba(255,255,255,0.07);
+      --bg:#0A0A0A; --bg-card:#111111; --bg-secondary:#161616; --bg-hover:#1c1c1c;
+      --border:rgba(255,255,255,0.07); --border-hover:rgba(255,61,0,0.3);
       --text-primary:#F0F0F0; --text-secondary:#A8A8A8; --text-muted:#5A5A5A;
       --font-display:'Bebas Neue',sans-serif;
-      --font-ui:'DM Sans',sans-serif;
+      --font-ar:'Cairo',sans-serif;
       --font-mono:'JetBrains Mono',monospace;
       --radius-sm:6px; --radius-md:10px; --radius-lg:16px;
       --transition:0.2s ease;
-      --success:#00C853; --danger:#FF1744;
+      --success:#00C853; --danger:#FF1744; --info:#2196F3;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:var(--font-ui);background:var(--bg);color:var(--text-primary);min-height:100vh}
+    body{font-family:var(--font-ar);background:var(--bg);color:var(--text-primary);min-height:100vh;direction:rtl}
     .page{display:none;min-height:100vh}
     .page.active{display:block}
     #page-login{display:none;align-items:center;justify-content:center;position:relative;overflow:hidden}
@@ -31,301 +31,579 @@
     .auth-logo{font-family:var(--font-display);font-size:2.8rem;letter-spacing:.1em;text-align:center;margin-bottom:.2rem;line-height:1}
     .auth-logo span{color:var(--accent)}
     .auth-badge{text-align:center;margin-bottom:2rem;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.2em;color:var(--text-muted);text-transform:uppercase}
+    /* ── FORM ── */
     .form-group{margin-bottom:1.25rem}
-    .form-label{display:block;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.5rem}
-    .form-control{width:100%;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-ui);font-size:.95rem;padding:.75rem 1rem;outline:none;transition:border-color var(--transition)}
+    .form-label{display:block;font-size:.78rem;font-weight:700;letter-spacing:.1em;color:var(--text-muted);margin-bottom:.5rem}
+    .form-control{width:100%;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-ar);font-size:.92rem;padding:.7rem 1rem;outline:none;transition:border-color var(--transition)}
     .form-control:focus{border-color:var(--accent)}
     .form-control::placeholder{color:var(--text-muted)}
     textarea.form-control{resize:vertical}
+    select.form-control{cursor:pointer}
     .form-group.has-error .form-control{border-color:var(--danger)}
     .form-error{display:none;font-size:.75rem;color:var(--danger);margin-top:.35rem}
     .form-group.has-error .form-error{display:block}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.7rem 1.4rem;border:none;border-radius:var(--radius-sm);font-family:var(--font-ui);font-size:.88rem;font-weight:700;letter-spacing:.04em;cursor:pointer;transition:all var(--transition);white-space:nowrap}
+    .form-hint{font-size:.73rem;color:var(--text-muted);margin-top:.3rem}
+    /* ── BUTTONS ── */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.65rem 1.35rem;border:none;border-radius:var(--radius-sm);font-family:var(--font-ar);font-size:.88rem;font-weight:700;cursor:pointer;transition:all var(--transition);white-space:nowrap}
     .btn-primary{background:var(--accent);color:#fff}
     .btn-primary:hover{background:#ff5722;transform:translateY(-1px)}
     .btn-secondary{background:var(--bg-secondary);color:var(--text-primary);border:1px solid var(--border)}
     .btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
     .btn-danger{background:rgba(255,23,68,.12);color:var(--danger);border:1px solid rgba(255,23,68,.2)}
     .btn-danger:hover{background:var(--danger);color:#fff}
-    .btn-sm{padding:.45rem .9rem;font-size:.8rem}
-    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .btn-success{background:rgba(0,200,83,.12);color:var(--success);border:1px solid rgba(0,200,83,.2)}
+    .btn-success:hover{background:var(--success);color:#000}
+    .btn-sm{padding:.38rem .8rem;font-size:.78rem}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
     .btn-full{width:100%}
-    .navbar{position:sticky;top:0;z-index:100;background:rgba(10,10,10,.92);border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
-    .nav-inner{max-width:1200px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;gap:2rem;height:60px}
-    .nav-logo{font-family:var(--font-display);font-size:1.5rem;letter-spacing:.1em;color:var(--text-primary);text-decoration:none;display:flex;align-items:center;gap:.5rem;cursor:pointer}
+    /* ── NAVBAR ── */
+    .navbar{position:sticky;top:0;z-index:100;background:rgba(10,10,10,.95);border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
+    .nav-inner{max-width:1300px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;gap:1.5rem;height:60px}
+    .nav-logo{font-family:var(--font-display);font-size:1.5rem;letter-spacing:.1em;color:var(--text-primary);display:flex;align-items:center;gap:.4rem;cursor:pointer;flex-shrink:0}
     .nav-logo span{color:var(--accent)}
-    .nav-logo small{font-size:.6rem;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:.15em}
-    .nav-links{list-style:none;display:flex;gap:.25rem;margin-left:1rem;flex:1}
-    .nav-links a{color:var(--text-muted);text-decoration:none;font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.5rem .9rem;border-radius:var(--radius-sm);transition:all var(--transition);cursor:pointer}
+    .nav-logo small{font-size:.55rem;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:.15em}
+    .nav-links{list-style:none;display:flex;gap:.2rem;flex:1;overflow-x:auto}
+    .nav-links a{color:var(--text-muted);text-decoration:none;font-size:.78rem;font-weight:700;letter-spacing:.06em;padding:.45rem .85rem;border-radius:var(--radius-sm);transition:all var(--transition);cursor:pointer;white-space:nowrap}
     .nav-links a:hover,.nav-links a.active{color:var(--text-primary);background:var(--bg-secondary)}
     .nav-links a.active{color:var(--accent)}
-    .page-container{max-width:1200px;margin:0 auto;padding:2.5rem 1.5rem}
-    .page-header{margin-bottom:2.5rem}
-    .page-header h1{font-family:var(--font-display);font-size:3rem;letter-spacing:.08em;line-height:.9}
-    .label{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.3rem}
-    .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.25rem}
-    .stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.75rem 1.5rem;text-align:center;transition:all var(--transition)}
+    /* ── LAYOUT ── */
+    .page-container{max-width:1300px;margin:0 auto;padding:2rem 1.5rem}
+    .page-header{margin-bottom:2rem;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+    .page-header-title .label{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.25rem}
+    .page-header-title h1{font-family:var(--font-display);font-size:2.8rem;letter-spacing:.08em;line-height:.9}
+    .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;gap:1rem;flex-wrap:wrap}
+    .section-title{font-family:var(--font-display);font-size:1.4rem;letter-spacing:.08em;color:var(--text-secondary)}
+    /* ── STATS ── */
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:1rem}
+    .stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.5rem 1.25rem;text-align:center;transition:all var(--transition)}
     .stat-card:hover{border-color:var(--accent);transform:translateY(-2px)}
-    .stat-icon{font-size:2rem;margin-bottom:.75rem}
-    .stat-value{font-family:var(--font-display);font-size:2.5rem;color:var(--accent);letter-spacing:.05em;line-height:1;margin-bottom:.4rem}
-    .stat-label{font-family:var(--font-mono);font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
-    .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
-    .admin-section-title{font-family:var(--font-display);font-size:1.4rem;letter-spacing:.08em;color:var(--text-secondary)}
-    .orders-table-wrapper{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-md)}
-    .orders-table{width:100%;border-collapse:collapse;font-size:.88rem}
-    .orders-table th{background:var(--bg-secondary);color:var(--text-muted);font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:.85rem 1rem;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
-    .orders-table td{padding:.85rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text-secondary);vertical-align:middle}
-    .orders-table tr:last-child td{border-bottom:none}
-    .orders-table tr:hover td{background:rgba(255,255,255,.015)}
-    .order-id-cell{font-family:var(--font-mono);font-size:.75rem;color:var(--accent-gold)}
-    .order-customer-cell{color:var(--text-primary);font-weight:600}
-    .order-price-cell{font-family:var(--font-display);font-size:1.1rem;color:var(--accent)}
-    .status-badge{display:inline-block;padding:.3rem .7rem;border-radius:99px;font-size:.72rem;font-weight:700;font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase}
-    .status-pending{background:rgba(255,179,0,.12);color:var(--accent-gold);border:1px solid rgba(255,179,0,.2)}
-    .status-confirmed{background:rgba(0,200,83,.1);color:var(--success);border:1px solid rgba(0,200,83,.2)}
-    .status-shipped{background:rgba(33,150,243,.1);color:#42A5F5;border:1px solid rgba(33,150,243,.2)}
-    .status-delivered{background:rgba(255,61,0,.1);color:var(--accent);border:1px solid rgba(255,61,0,.2)}
-    .status-select{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:.4rem .75rem;font-family:var(--font-mono);font-size:.78rem;font-weight:600;cursor:pointer;outline:none;transition:border-color var(--transition)}
+    .stat-icon{font-size:1.8rem;margin-bottom:.6rem}
+    .stat-value{font-family:var(--font-display);font-size:2.2rem;color:var(--accent);letter-spacing:.05em;line-height:1;margin-bottom:.3rem}
+    .stat-label{font-family:var(--font-mono);font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+    /* ── TABLE ── */
+    .table-wrapper{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-md)}
+    .data-table{width:100%;border-collapse:collapse;font-size:.85rem}
+    .data-table th{background:var(--bg-secondary);color:var(--text-muted);font-size:.67rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:.8rem 1rem;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+    .data-table td{padding:.8rem 1rem;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text-secondary);vertical-align:middle}
+    .data-table tr:last-child td{border-bottom:none}
+    .data-table tr:hover td{background:rgba(255,255,255,.015)}
+    .td-mono{font-family:var(--font-mono);font-size:.75rem;color:var(--accent-gold)}
+    .td-name{color:var(--text-primary);font-weight:700}
+    .td-price{font-family:var(--font-display);font-size:1.1rem;color:var(--accent)}
+    /* ── STATUS ── */
+    .status-badge{display:inline-block;padding:.28rem .65rem;border-radius:99px;font-size:.7rem;font-weight:700;font-family:var(--font-mono);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+    .s-pending{background:rgba(255,179,0,.12);color:var(--accent-gold);border:1px solid rgba(255,179,0,.2)}
+    .s-confirmed{background:rgba(0,200,83,.1);color:var(--success);border:1px solid rgba(0,200,83,.2)}
+    .s-shipped{background:rgba(33,150,243,.1);color:#42A5F5;border:1px solid rgba(33,150,243,.2)}
+    .s-delivered{background:rgba(255,61,0,.1);color:var(--accent);border:1px solid rgba(255,61,0,.2)}
+    .status-select{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:.35rem .7rem;font-family:var(--font-ar);font-size:.78rem;font-weight:600;cursor:pointer;outline:none;transition:border-color var(--transition)}
     .status-select:focus{border-color:var(--accent)}
-    .product-row{display:grid;grid-template-columns:60px 1fr auto auto auto;gap:1rem;align-items:center;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem;margin-bottom:.6rem;transition:border-color var(--transition)}
-    .product-row:hover{border-color:rgba(255,61,0,.2)}
-    .product-row-img{width:60px;height:60px;border-radius:var(--radius-sm);object-fit:cover;background:var(--bg-secondary)}
-    .product-row-name{font-weight:700;color:var(--text-primary)}
-    .product-row-price{font-family:var(--font-display);font-size:1.2rem;color:var(--accent)}
-    .product-row-desc{font-size:.8rem;color:var(--text-muted);margin-top:.2rem}
-    .admin-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:9998;padding:1rem;backdrop-filter:blur(8px)}
-    .admin-modal{background:var(--bg-card);border:1px solid var(--border);border-top:3px solid var(--accent);border-radius:var(--radius-lg);padding:2rem;width:100%;max-width:480px;animation:modalIn .3s cubic-bezier(.34,1.56,.64,1)}
-    @keyframes modalIn{from{opacity:0;transform:scale(.88) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
-    .admin-modal h2{font-family:var(--font-display);font-size:1.6rem;letter-spacing:.08em;margin-bottom:1.5rem}
+    /* ── PRODUCTS LIST ── */
+    .product-row{display:grid;grid-template-columns:70px 1fr auto auto auto auto;gap:.9rem;align-items:center;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:.9rem 1.1rem;margin-bottom:.6rem;transition:all var(--transition)}
+    .product-row:hover{border-color:rgba(255,61,0,.25);transform:translateX(-3px)}
+    .product-row-thumb{width:70px;height:55px;border-radius:var(--radius-sm);object-fit:cover;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0}
+    .product-row-thumb img{width:100%;height:100%;object-fit:cover;border-radius:var(--radius-sm)}
+    .product-row-info{}
+    .product-row-name{font-weight:800;color:var(--text-primary);margin-bottom:.2rem}
+    .product-row-meta{font-size:.75rem;color:var(--text-muted);display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.25rem}
+    .product-row-price{font-family:var(--font-display);font-size:1.25rem;color:var(--accent);white-space:nowrap}
+    .product-warranty-badge{font-size:.68rem;padding:.2rem .55rem;border-radius:99px;font-family:var(--font-mono);font-weight:700;white-space:nowrap}
+    .warranty-yes{background:rgba(0,200,83,.1);color:var(--success);border:1px solid rgba(0,200,83,.2)}
+    .warranty-no{background:rgba(90,90,90,.15);color:var(--text-muted);border:1px solid var(--border)}
+    /* ── PRODUCT MODAL ── */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.87);display:flex;align-items:center;justify-content:center;z-index:9998;padding:1rem;backdrop-filter:blur(8px)}
+    .modal-box{background:var(--bg-card);border:1px solid var(--border);border-top:3px solid var(--accent);border-radius:var(--radius-lg);padding:2rem;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;animation:modalIn .3s cubic-bezier(.34,1.56,.64,1)}
+    @keyframes modalIn{from{opacity:0;transform:scale(.9) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .modal-box h2{font-family:var(--font-display);font-size:1.6rem;letter-spacing:.08em;margin-bottom:1.5rem}
     .modal-actions{display:flex;gap:.75rem;margin-top:1.5rem}
     .modal-actions .btn{flex:1}
-    #toast-container{position:fixed;top:1.25rem;right:1.25rem;z-index:99999;display:flex;flex-direction:column;gap:.6rem}
-    .toast{display:flex;align-items:center;gap:.75rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:.9rem 1.25rem;min-width:260px;max-width:380px;font-size:.88rem;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,.5);animation:toastIn .3s ease}
-    @keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
-    .toast.success{border-left:3px solid var(--success)}
-    .toast.error{border-left:3px solid var(--danger)}
-    .toast.info{border-left:3px solid var(--accent-gold)}
-    #global-spinner{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99997;gap:1rem;backdrop-filter:blur(4px)}
-    .spinner-ring{width:44px;height:44px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .spinner-label{font-family:var(--font-mono);font-size:.8rem;color:var(--text-muted);letter-spacing:.1em}
-    .empty-state{text-align:center;padding:5rem 2rem;color:var(--text-muted)}
-    .empty-state-icon{font-size:3rem;margin-bottom:1rem}
-    .empty-state h3{font-family:var(--font-display);font-size:1.8rem;margin-bottom:.5rem;color:var(--text-secondary)}
-    .empty-state p{font-size:.9rem}
-    @media(max-width:768px){.product-row{grid-template-columns:50px 1fr}.product-row>.btn{display:none}.nav-links{display:none}.page-header h1{font-size:2rem}}
-    .promo-row{display:grid;grid-template-columns:auto 1fr auto auto auto auto;gap:1rem;align-items:center;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem 1.25rem;margin-bottom:.6rem;transition:border-color var(--transition)}
+    /* media grid inside modal */
+    .media-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:.6rem;margin-top:.6rem}
+    .media-item{position:relative;aspect-ratio:1;border-radius:var(--radius-sm);overflow:hidden;background:var(--bg-secondary);border:1px solid var(--border);cursor:pointer;transition:border-color var(--transition)}
+    .media-item:hover{border-color:var(--danger)}
+    .media-item img{width:100%;height:100%;object-fit:cover}
+    .media-item .del-media{position:absolute;top:3px;left:3px;background:rgba(255,23,68,.85);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:.7rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s}
+    .media-item:hover .del-media{opacity:1}
+    .media-item-video{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;font-size:1.5rem;color:var(--text-muted)}
+    .media-item-video span{font-size:.6rem;color:var(--text-muted);font-family:var(--font-mono)}
+    .add-media-btn{aspect-ratio:1;border-radius:var(--radius-sm);border:1px dashed var(--border);background:transparent;color:var(--text-muted);font-size:1.4rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;transition:all var(--transition)}
+    .add-media-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .add-media-btn span{font-size:.65rem;font-family:var(--font-ar)}
+    /* ── CUSTOMERS ── */
+    .customer-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;transition:border-color var(--transition);cursor:pointer}
+    .customer-card:hover{border-color:rgba(255,61,0,.3)}
+    .customer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+    .customer-name{font-weight:800;font-size:1rem;color:var(--text-primary);margin-bottom:.3rem}
+    .customer-meta{font-size:.8rem;color:var(--text-muted);display:flex;flex-direction:column;gap:.2rem}
+    .customer-stats{display:flex;gap:1rem;margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border)}
+    .cstat{text-align:center;flex:1}
+    .cstat-val{font-family:var(--font-display);font-size:1.2rem;color:var(--accent)}
+    .cstat-lbl{font-size:.65rem;color:var(--text-muted);font-family:var(--font-mono)}
+    /* customer drawer */
+    .drawer-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9990;backdrop-filter:blur(4px)}
+    .drawer{position:fixed;top:0;left:0;height:100%;width:420px;max-width:95vw;background:var(--bg-card);border-right:1px solid var(--border);z-index:9991;transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;padding:1.5rem}
+    .drawer.open{transform:translateX(0)}
+    .drawer-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+    .drawer-title{font-family:var(--font-display);font-size:1.4rem;letter-spacing:.06em}
+    .drawer-close{background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-muted);width:32px;height:32px;border-radius:var(--radius-sm);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all var(--transition)}
+    .drawer-close:hover{border-color:var(--danger);color:var(--danger)}
+    /* ── SHIPPING ── */
+    .shipping-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem}
+    .gov-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:.9rem 1rem;display:flex;align-items:center;gap:.75rem;transition:border-color var(--transition)}
+    .gov-card:hover{border-color:var(--border-hover)}
+    .gov-name{font-weight:700;font-size:.88rem;flex:1}
+    .gov-input-wrap{display:flex;align-items:center;gap:.35rem}
+    .gov-input{width:85px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-mono);font-size:.85rem;padding:.42rem .6rem;outline:none;text-align:center;transition:border-color var(--transition)}
+    .gov-input:focus{border-color:var(--accent)}
+    /* ── PROMO ── */
+    .promo-row{display:grid;grid-template-columns:auto 1fr auto auto auto auto;gap:.9rem;align-items:center;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.9rem 1.15rem;margin-bottom:.6rem;transition:border-color var(--transition)}
     .promo-row:hover{border-color:rgba(255,61,0,.2)}
-    .promo-code-badge{font-family:var(--font-mono);font-size:1rem;font-weight:700;color:var(--accent-gold);letter-spacing:.1em;background:rgba(255,179,0,.08);padding:.3rem .75rem;border-radius:var(--radius-sm);border:1px solid rgba(255,179,0,.15);white-space:nowrap}
-    .promo-type-tag{font-family:var(--font-mono);font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .6rem;border-radius:99px;white-space:nowrap}
-    .promo-type-discount{background:rgba(255,61,0,.1);color:var(--accent);border:1px solid rgba(255,61,0,.2)}
-    .promo-type-freeship{background:rgba(0,200,83,.1);color:var(--success);border:1px solid rgba(0,200,83,.2)}
-    .promo-type-both{background:rgba(33,150,243,.1);color:#42A5F5;border:1px solid rgba(33,150,243,.2)}
-    .promo-msg{font-size:.8rem;color:var(--text-muted);margin-top:.3rem;font-style:italic}
-    .promo-expiry{font-family:var(--font-mono);font-size:.72rem;color:var(--text-muted);white-space:nowrap}
+    .promo-code{font-family:var(--font-mono);font-size:1rem;font-weight:700;color:var(--accent-gold);letter-spacing:.1em;background:rgba(255,179,0,.08);padding:.28rem .7rem;border-radius:var(--radius-sm);border:1px solid rgba(255,179,0,.15)}
+    .promo-type-tag{font-family:var(--font-mono);font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.22rem .55rem;border-radius:99px}
+    .promo-discount{background:rgba(255,61,0,.1);color:var(--accent);border:1px solid rgba(255,61,0,.2)}
+    .promo-freeship{background:rgba(0,200,83,.1);color:var(--success);border:1px solid rgba(0,200,83,.2)}
+    .promo-both{background:rgba(33,150,243,.1);color:#42A5F5;border:1px solid rgba(33,150,243,.2)}
+    .promo-msg{font-size:.78rem;color:var(--text-muted);margin-top:.25rem;font-style:italic}
+    .promo-expiry{font-family:var(--font-mono);font-size:.7rem;color:var(--text-muted);white-space:nowrap}
     .promo-expired{color:var(--danger)!important}
-    .promo-inactive{opacity:.45}
+    .promo-inactive{opacity:.4}
+    /* target tags in promo */
+    .target-tag{display:inline-block;font-size:.65rem;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:99px;padding:.15rem .5rem;margin:.15rem .1rem;font-family:var(--font-mono);color:var(--text-muted)}
+    /* checkbox group */
+    .check-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.4rem;max-height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem;background:var(--bg-secondary)}
+    .check-item{display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.8rem;color:var(--text-secondary)}
+    .check-item input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer}
+    /* ── TOAST ── */
+    #toast-container{position:fixed;top:1.25rem;left:1.25rem;z-index:99999;display:flex;flex-direction:column;gap:.6rem}
+    .toast{display:flex;align-items:center;gap:.75rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:.85rem 1.2rem;min-width:250px;max-width:360px;font-size:.86rem;font-weight:600;box-shadow:0 8px 32px rgba(0,0,0,.5);animation:toastIn .3s ease}
+    @keyframes toastIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+    .toast.success{border-right:3px solid var(--success)}
+    .toast.error{border-right:3px solid var(--danger)}
+    .toast.info{border-right:3px solid var(--accent-gold)}
+    /* ── SPINNER ── */
+    #global-spinner{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99997;gap:1rem;backdrop-filter:blur(4px)}
+    .spinner-ring{width:42px;height:42px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .spinner-label{font-family:var(--font-mono);font-size:.78rem;color:var(--text-muted);letter-spacing:.1em}
+    /* ── EMPTY ── */
+    .empty-state{text-align:center;padding:4rem 2rem;color:var(--text-muted)}
+    .empty-icon{font-size:2.8rem;margin-bottom:.75rem}
+    .empty-state h3{font-family:var(--font-display);font-size:1.6rem;margin-bottom:.4rem;color:var(--text-secondary)}
+    .empty-state p{font-size:.88rem}
+    /* ── TABS ── */
+    .tab-bar{display:flex;gap:.3rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+    .tab{padding:.6rem 1.1rem;font-family:var(--font-ar);font-size:.82rem;font-weight:700;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all var(--transition);margin-bottom:-1px}
+    .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+    /* ── SEARCH ── */
+    .search-bar{display:flex;gap:.6rem;margin-bottom:1.25rem}
+    .search-input{flex:1;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-ar);font-size:.9rem;padding:.65rem 1rem;outline:none;transition:border-color var(--transition)}
+    .search-input:focus{border-color:var(--accent)}
+    .search-input::placeholder{color:var(--text-muted)}
+    /* ── ORDER DETAIL DRAWER ── */
+    .order-detail-section{margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
+    .order-detail-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+    .od-label{font-family:var(--font-mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.5rem}
+    .od-val{font-size:.9rem;color:var(--text-primary);font-weight:600}
+    .od-items{display:flex;flex-direction:column;gap:.4rem}
+    .od-item{display:flex;justify-content:space-between;font-size:.85rem;padding:.4rem .6rem;background:var(--bg-secondary);border-radius:var(--radius-sm)}
+    /* ── RESPONSIVE ── */
+    @media(max-width:768px){
+      .product-row{grid-template-columns:50px 1fr auto}
+      .product-row>*:nth-child(n+4){display:none}
+      .nav-links{display:none}
+      .promo-row{grid-template-columns:auto 1fr auto auto}
+      .promo-row>*:nth-child(n+5){display:none}
+    }
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media(max-width:600px){.two-col{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- ══ LOGIN ══ -->
 <div id="page-login" class="page">
   <div class="login-bg"></div><div class="login-grid"></div>
   <div class="auth-card">
     <div class="auth-logo">PIT <span>HOUSE</span></div>
-    <div class="auth-badge">Admin Panel Access</div>
+    <div class="auth-badge">Admin Control Panel</div>
     <div class="form-group" id="fg-email">
-      <label class="form-label">Admin Email</label>
+      <label class="form-label">البريد الإلكتروني</label>
       <input type="email" class="form-control" id="admin-email" placeholder="admin@pithouse.com"/>
-      <span class="form-error">Enter a valid email</span>
+      <span class="form-error">أدخل إيميل صحيح</span>
     </div>
     <div class="form-group" id="fg-pass">
-      <label class="form-label">Password</label>
+      <label class="form-label">كلمة المرور</label>
       <input type="password" class="form-control" id="admin-pass" placeholder="Password"/>
-      <span class="form-error">Enter your password</span>
+      <span class="form-error">أدخل كلمة المرور</span>
     </div>
-    <button class="btn btn-primary btn-full" id="login-btn">Access Dashboard →</button>
+    <button class="btn btn-primary btn-full" id="login-btn">دخول →</button>
     <div id="login-error" style="margin-top:1rem;font-size:.82rem;color:var(--danger);text-align:center;display:none"></div>
   </div>
 </div>
 
-<!-- DASHBOARD -->
+<!-- ══ MAIN DASHBOARD ══ -->
 <div id="page-dashboard" class="page">
   <nav class="navbar"><div class="nav-inner">
     <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
     <ul class="nav-links">
-      <li><a id="nav-dashboard" onclick="navigate('dashboard')" class="active">Dashboard</a></li>
-      <li><a id="nav-orders" onclick="navigate('orders')">Orders</a></li>
-      <li><a id="nav-products" onclick="navigate('products')">Products</a></li>
-      <li><a id="nav-promos" onclick="navigate('promos')">Promo Codes</a></li>
+      <li><a id="nav-dashboard" onclick="navigate('dashboard')" class="active">الرئيسية</a></li>
+      <li><a id="nav-orders" onclick="navigate('orders')">الطلبات</a></li>
+      <li><a id="nav-products" onclick="navigate('products')">المنتجات</a></li>
+      <li><a id="nav-customers" onclick="navigate('customers')">العملاء</a></li>
+      <li><a id="nav-promos" onclick="navigate('promos')">أكواد الخصم</a></li>
+      <li><a id="nav-shipping" onclick="navigate('shipping')">الشحن</a></li>
     </ul>
-    <button class="btn btn-secondary btn-sm" onclick="doLogout()">Logout</button>
+    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
   </div></nav>
   <main class="page-container">
-    <div class="page-header"><span class="label">Overview</span><h1>DASHBOARD</h1></div>
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-value" id="stat-total">—</div><div class="stat-label">Total Orders</div></div>
-      <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-value" id="stat-pending">—</div><div class="stat-label">Pending Orders</div></div>
-      <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-value" id="stat-revenue">—</div><div class="stat-label">Total Revenue</div></div>
-      <div class="stat-card"><div class="stat-icon">🛍️</div><div class="stat-value" id="stat-products">—</div><div class="stat-label">Products Listed</div></div>
+    <div class="page-header">
+      <div class="page-header-title"><span class="label">نظرة عامة</span><h1>DASHBOARD</h1></div>
     </div>
-    <div style="margin-top:3rem">
-      <div class="section-header">
-        <h2 class="admin-section-title">RECENT ORDERS</h2>
-        <button class="btn btn-secondary btn-sm" onclick="navigate('orders')">View All →</button>
-      </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-value" id="stat-total">—</div><div class="stat-label">إجمالي الطلبات</div></div>
+      <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-value" id="stat-pending">—</div><div class="stat-label">قيد الانتظار</div></div>
+      <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-value" id="stat-revenue">—</div><div class="stat-label">إجمالي الإيرادات</div></div>
+      <div class="stat-card"><div class="stat-icon">🛍️</div><div class="stat-value" id="stat-products">—</div><div class="stat-label">المنتجات</div></div>
+      <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="stat-customers">—</div><div class="stat-label">العملاء</div></div>
+    </div>
+    <div style="margin-top:2.5rem">
+      <div class="section-header"><h2 class="section-title">آخر الطلبات</h2><button class="btn btn-secondary btn-sm" onclick="navigate('orders')">عرض الكل ←</button></div>
       <div id="recent-orders"></div>
     </div>
   </main>
 </div>
 
-<!-- ORDERS -->
+<!-- ══ ORDERS ══ -->
 <div id="page-orders" class="page">
   <nav class="navbar"><div class="nav-inner">
     <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
     <ul class="nav-links">
-      <li><a onclick="navigate('dashboard')">Dashboard</a></li>
-      <li><a class="active">Orders</a></li>
-      <li><a onclick="navigate('products')">Products</a></li>
-      <li><a onclick="navigate('promos')">Promo Codes</a></li>
+      <li><a onclick="navigate('dashboard')">الرئيسية</a></li>
+      <li><a class="active">الطلبات</a></li>
+      <li><a onclick="navigate('products')">المنتجات</a></li>
+      <li><a onclick="navigate('customers')">العملاء</a></li>
+      <li><a onclick="navigate('promos')">أكواد الخصم</a></li>
+      <li><a onclick="navigate('shipping')">الشحن</a></li>
     </ul>
-    <button class="btn btn-secondary btn-sm" onclick="doLogout()">Logout</button>
+    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
   </div></nav>
   <main class="page-container">
-    <div class="page-header"><span class="label">Manage</span><h1>ALL ORDERS</h1></div>
+    <div class="page-header">
+      <div class="page-header-title"><span class="label">إدارة</span><h1>الطلبات</h1></div>
+      <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap">
+        <select id="order-status-filter" class="status-select" onchange="filterOrders()">
+          <option value="">كل الطلبات</option>
+          <option value="pending">⏳ قيد الانتظار</option>
+          <option value="confirmed">✅ مؤكد</option>
+          <option value="shipped">🚚 تم الشحن</option>
+          <option value="delivered">📦 تم التسليم</option>
+        </select>
+      </div>
+    </div>
+    <div class="search-bar">
+      <input class="search-input" id="order-search" placeholder="ابحث باسم العميل أو رقم الطلب..." oninput="filterOrders()"/>
+    </div>
     <div id="orders-container"><div class="empty-state"><div class="spinner-ring" style="margin:0 auto"></div></div></div>
   </main>
 </div>
 
-<!-- PRODUCTS -->
+<!-- ══ PRODUCTS ══ -->
 <div id="page-products" class="page">
   <nav class="navbar"><div class="nav-inner">
     <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
     <ul class="nav-links">
-      <li><a onclick="navigate('dashboard')">Dashboard</a></li>
-      <li><a onclick="navigate('orders')">Orders</a></li>
-      <li><a class="active">Products</a></li>
-      <li><a onclick="navigate('promos')">Promo Codes</a></li>
+      <li><a onclick="navigate('dashboard')">الرئيسية</a></li>
+      <li><a onclick="navigate('orders')">الطلبات</a></li>
+      <li><a class="active">المنتجات</a></li>
+      <li><a onclick="navigate('customers')">العملاء</a></li>
+      <li><a onclick="navigate('promos')">أكواد الخصم</a></li>
+      <li><a onclick="navigate('shipping')">الشحن</a></li>
     </ul>
-    <button class="btn btn-secondary btn-sm" onclick="doLogout()">Logout</button>
+    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
   </div></nav>
   <main class="page-container">
-    <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
-      <div><span class="label">Manage</span><h1>PRODUCTS</h1></div>
-      <button class="btn btn-primary" onclick="openAddModal()">+ Add Product</button>
+    <div class="page-header">
+      <div class="page-header-title"><span class="label">إدارة</span><h1>المنتجات</h1></div>
+      <button class="btn btn-primary" onclick="openProductModal()">+ إضافة منتج</button>
+    </div>
+    <div class="search-bar">
+      <input class="search-input" id="product-search" placeholder="ابحث في المنتجات..." oninput="filterProducts()"/>
     </div>
     <div id="products-list"></div>
   </main>
 </div>
 
-<!-- PRODUCT MODAL -->
-<div class="admin-modal-backdrop" id="product-modal" style="display:none" onclick="if(event.target===this)closeModal()">
-  <div class="admin-modal">
-    <h2 id="modal-title">ADD PRODUCT</h2>
-    <div class="form-group" id="fg-pname">
-      <label class="form-label">Product Name *</label>
-      <input type="text" class="form-control" id="p-name" placeholder="e.g. Carbon Fiber Spoiler"/>
-      <span class="form-error">Name is required</span>
+<!-- ══ CUSTOMERS ══ -->
+<div id="page-customers" class="page">
+  <nav class="navbar"><div class="nav-inner">
+    <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
+    <ul class="nav-links">
+      <li><a onclick="navigate('dashboard')">الرئيسية</a></li>
+      <li><a onclick="navigate('orders')">الطلبات</a></li>
+      <li><a onclick="navigate('products')">المنتجات</a></li>
+      <li><a class="active">العملاء</a></li>
+      <li><a onclick="navigate('promos')">أكواد الخصم</a></li>
+      <li><a onclick="navigate('shipping')">الشحن</a></li>
+    </ul>
+    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
+  </div></nav>
+  <main class="page-container">
+    <div class="page-header">
+      <div class="page-header-title"><span class="label">قاعدة بيانات</span><h1>العملاء</h1></div>
     </div>
-    <div class="form-group" id="fg-pprice">
-      <label class="form-label">Price (EGP) *</label>
-      <input type="number" class="form-control" id="p-price" placeholder="1500" min="0" step="1"/>
-      <span class="form-error">Enter a valid price</span>
+    <div class="search-bar">
+      <input class="search-input" id="customer-search" placeholder="ابحث بالاسم أو رقم التليفون..." oninput="filterCustomers()"/>
     </div>
-    <div class="form-group">
-      <label class="form-label">Image URL</label>
-      <input type="url" class="form-control" id="p-image" placeholder="https://..."/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Description</label>
-      <textarea class="form-control" id="p-desc" rows="3" placeholder="Product description..."></textarea>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" id="modal-save-btn" onclick="saveProduct()">Save Product</button>
-    </div>
-  </div>
+    <div id="customers-grid" class="customer-grid"></div>
+  </main>
 </div>
 
-<!-- PROMOS PAGE -->
+<!-- ══ PROMOS ══ -->
 <div id="page-promos" class="page">
   <nav class="navbar"><div class="nav-inner">
     <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
     <ul class="nav-links">
-      <li><a onclick="navigate('dashboard')">Dashboard</a></li>
-      <li><a onclick="navigate('orders')">Orders</a></li>
-      <li><a onclick="navigate('products')">Products</a></li>
-      <li><a class="active">Promo Codes</a></li>
+      <li><a onclick="navigate('dashboard')">الرئيسية</a></li>
+      <li><a onclick="navigate('orders')">الطلبات</a></li>
+      <li><a onclick="navigate('products')">المنتجات</a></li>
+      <li><a onclick="navigate('customers')">العملاء</a></li>
+      <li><a class="active">أكواد الخصم</a></li>
+      <li><a onclick="navigate('shipping')">الشحن</a></li>
     </ul>
-    <button class="btn btn-secondary btn-sm" onclick="doLogout()">Logout</button>
+    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
   </div></nav>
   <main class="page-container">
-    <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
-      <div><span class="label">Manage</span><h1>PROMO CODES</h1></div>
-      <button class="btn btn-primary" onclick="openPromoModal()">+ Add Promo Code</button>
+    <div class="page-header">
+      <div class="page-header-title"><span class="label">إدارة</span><h1>أكواد الخصم</h1></div>
+      <button class="btn btn-primary" onclick="openPromoModal()">+ إضافة كود خصم</button>
     </div>
     <div id="promos-list"></div>
   </main>
 </div>
 
-<!-- PROMO MODAL -->
-<div class="admin-modal-backdrop" id="promo-modal" style="display:none" onclick="if(event.target===this)closePromoModal()">
-  <div class="admin-modal" style="max-width:520px">
-    <h2 id="promo-modal-title">ADD PROMO CODE</h2>
-    <div class="form-group" id="fg-pcode">
-      <label class="form-label">Promo Code *</label>
-      <input type="text" class="form-control" id="pm-code" placeholder="e.g. SUMMER20" style="text-transform:uppercase"/>
-      <span class="form-error">Code is required</span>
+<!-- ══ SHIPPING ══ -->
+<div id="page-shipping" class="page">
+  <nav class="navbar"><div class="nav-inner">
+    <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
+    <ul class="nav-links">
+      <li><a onclick="navigate('dashboard')">الرئيسية</a></li>
+      <li><a onclick="navigate('orders')">الطلبات</a></li>
+      <li><a onclick="navigate('products')">المنتجات</a></li>
+      <li><a onclick="navigate('customers')">العملاء</a></li>
+      <li><a onclick="navigate('promos')">أكواد الخصم</a></li>
+      <li><a class="active">الشحن</a></li>
+    </ul>
+    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
+  </div></nav>
+  <main class="page-container">
+    <div class="page-header">
+      <div class="page-header-title"><span class="label">تسعيرة</span><h1>أسعار الشحن</h1></div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="setAllShipping()">ضبط موحد للكل</button>
+        <button class="btn btn-primary" onclick="saveShipping()">💾 حفظ التغييرات</button>
+      </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">Type *</label>
-      <select class="form-control" id="pm-type" onchange="togglePromoType()">
-        <option value="discount">خصم نسبة %</option>
-        <option value="freeship">توصيل مجاني</option>
-        <option value="both">الاتنين (خصم + توصيل مجاني)</option>
-      </select>
+    <div id="shipping-save-msg" style="margin-bottom:1rem;font-size:.85rem"></div>
+    <div class="shipping-grid" id="shipping-grid"></div>
+  </main>
+</div>
+
+<!-- ══ PRODUCT MODAL ══ -->
+<div class="modal-backdrop" id="product-modal" style="display:none" onclick="if(event.target===this)closeProductModal()">
+  <div class="modal-box" style="max-width:640px">
+    <h2 id="product-modal-title">إضافة منتج</h2>
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchTab('tab-basic','product-modal')">معلومات أساسية</div>
+      <div class="tab" onclick="switchTab('tab-media','product-modal')">الصور والفيديوهات</div>
+      <div class="tab" onclick="switchTab('tab-settings','product-modal')">الإعدادات</div>
     </div>
-    <div id="fg-discount-wrap" class="form-group" id="fg-pdiscount">
-      <label class="form-label">نسبة الخصم % *</label>
-      <input type="number" class="form-control" id="pm-discount" placeholder="e.g. 20" min="1" max="100"/>
-      <span class="form-error">أدخل نسبة صحيحة</span>
+    <!-- TAB: Basic -->
+    <div id="tab-basic" class="tab-panel active">
+      <div class="two-col">
+        <div class="form-group" id="fg-pname">
+          <label class="form-label">اسم المنتج *</label>
+          <input type="text" class="form-control" id="p-name" placeholder="مثال: سبويلر كربون"/>
+          <span class="form-error">الاسم مطلوب</span>
+        </div>
+        <div class="form-group" id="fg-pprice">
+          <label class="form-label">السعر (جنيه) *</label>
+          <input type="number" class="form-control" id="p-price" placeholder="1500" min="0" step="1"/>
+          <span class="form-error">أدخل سعراً صحيحاً</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">الفئة</label>
+        <input type="text" class="form-control" id="p-category" placeholder="مثال: إكسسوارات خارجية"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">الوصف</label>
+        <textarea class="form-control" id="p-desc" rows="3" placeholder="وصف المنتج..."></textarea>
+      </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">رسالة للعميل *</label>
-      <textarea class="form-control" id="pm-message" rows="2" placeholder="مثال: تم تطبيق خصم 20%! استمتع بعرضك الخاص 🎉"></textarea>
+    <!-- TAB: Media -->
+    <div id="tab-media" class="tab-panel">
+      <div class="form-group">
+        <label class="form-label">صورة رئيسية (URL)</label>
+        <input type="url" class="form-control" id="p-image" placeholder="https://..."/>
+        <div class="form-hint">الصورة الرئيسية التي تظهر في الكاتالوج</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">صور إضافية</label>
+        <div class="media-list" id="extra-images-list"></div>
+        <div style="display:flex;gap:.5rem;margin-top:.6rem">
+          <input type="url" class="form-control" id="new-image-url" placeholder="أضف رابط صورة إضافية"/>
+          <button class="btn btn-secondary btn-sm" onclick="addExtraImage()" style="white-space:nowrap">+ إضافة</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">فيديوهات (Google Drive Embed)</label>
+        <div class="form-hint" style="margin-bottom:.6rem">الصق رابط المشاركة من Google Drive — سيتحول تلقائياً لرابط embed</div>
+        <div class="media-list" id="videos-list"></div>
+        <div style="display:flex;gap:.5rem;margin-top:.6rem">
+          <input type="text" class="form-control" id="new-video-url" placeholder="https://drive.google.com/file/d/.../view"/>
+          <button class="btn btn-secondary btn-sm" onclick="addVideo()" style="white-space:nowrap">+ إضافة</button>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">تاريخ الانتهاء (اختياري)</label>
-      <input type="date" class="form-control" id="pm-expiry"/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">الحالة</label>
-      <select class="form-control" id="pm-active">
-        <option value="true">✅ مفعّل</option>
-        <option value="false">❌ معطّل</option>
-      </select>
+    <!-- TAB: Settings -->
+    <div id="tab-settings" class="tab-panel">
+      <div class="form-group">
+        <label class="form-label">الضمان</label>
+        <select class="form-control" id="p-warranty">
+          <option value="false">❌ لا يوجد ضمان</option>
+          <option value="true">✅ يوجد ضمان</option>
+        </select>
+      </div>
+      <div class="form-group" id="p-warranty-period-wrap">
+        <label class="form-label">مدة الضمان</label>
+        <input type="text" class="form-control" id="p-warranty-period" placeholder="مثال: سنة، 6 أشهر..."/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">الحالة</label>
+        <select class="form-control" id="p-active">
+          <option value="true">✅ ظاهر في المتجر</option>
+          <option value="false">🚫 مخفي</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">الكمية المتاحة</label>
+        <input type="number" class="form-control" id="p-stock" placeholder="اتركها فارغة إذا لا محدودية" min="0"/>
+      </div>
     </div>
     <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closePromoModal()">Cancel</button>
-      <button class="btn btn-primary" id="promo-save-btn" onclick="savePromo()">Save Code</button>
+      <button class="btn btn-secondary" onclick="closeProductModal()">إلغاء</button>
+      <button class="btn btn-primary" id="product-save-btn" onclick="saveProduct()">💾 حفظ المنتج</button>
     </div>
   </div>
+</div>
+
+<!-- ══ PROMO MODAL ══ -->
+<div class="modal-backdrop" id="promo-modal" style="display:none" onclick="if(event.target===this)closePromoModal()">
+  <div class="modal-box" style="max-width:580px">
+    <h2 id="promo-modal-title">إضافة كود خصم</h2>
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchTab('ptab-basic','promo-modal')">إعدادات الكود</div>
+      <div class="tab" onclick="switchTab('ptab-targets','promo-modal')">المنتجات والمناطق</div>
+    </div>
+    <!-- TAB: Basic -->
+    <div id="ptab-basic" class="tab-panel active">
+      <div class="two-col">
+        <div class="form-group" id="fg-pcode">
+          <label class="form-label">الكود *</label>
+          <input type="text" class="form-control" id="pm-code" placeholder="SUMMER20" style="text-transform:uppercase"/>
+          <span class="form-error">الكود مطلوب</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">النوع *</label>
+          <select class="form-control" id="pm-type" onchange="togglePromoType()">
+            <option value="discount">خصم نسبة %</option>
+            <option value="freeship">توصيل مجاني</option>
+            <option value="both">الاتنين (خصم + توصيل)</option>
+          </select>
+        </div>
+      </div>
+      <div id="fg-discount-wrap" class="form-group">
+        <label class="form-label">نسبة الخصم % *</label>
+        <input type="number" class="form-control" id="pm-discount" placeholder="20" min="1" max="100"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">رسالة للعميل *</label>
+        <textarea class="form-control" id="pm-message" rows="2" placeholder="تم تطبيق خصم 20%! 🎉"></textarea>
+      </div>
+      <div class="two-col">
+        <div class="form-group">
+          <label class="form-label">تاريخ الانتهاء (اختياري)</label>
+          <input type="date" class="form-control" id="pm-expiry"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">الحالة</label>
+          <select class="form-control" id="pm-active">
+            <option value="true">✅ مفعّل</option>
+            <option value="false">❌ معطّل</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">الحد الأقصى للاستخدام (اختياري)</label>
+        <input type="number" class="form-control" id="pm-maxuse" placeholder="مثال: 50 مرة استخدام — اتركها فارغة لغير محدود" min="1"/>
+      </div>
+    </div>
+    <!-- TAB: Targets -->
+    <div id="ptab-targets" class="tab-panel">
+      <div class="form-group">
+        <label class="form-label" style="margin-bottom:.6rem">المنتجات المستهدفة</label>
+        <div class="form-hint" style="margin-bottom:.6rem">اختر المنتجات التي يشتغل عليها الكود — اتركها فارغة ليعمل على الكل</div>
+        <div class="check-grid" id="pm-products-list"></div>
+      </div>
+      <div class="form-group" style="margin-top:1.25rem">
+        <label class="form-label" style="margin-bottom:.6rem">المحافظات المستهدفة</label>
+        <div class="form-hint" style="margin-bottom:.6rem">اختر المحافظات التي يشتغل فيها الكود — اتركها فارغة ليعمل في كل مكان</div>
+        <div class="check-grid" id="pm-govs-list"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closePromoModal()">إلغاء</button>
+      <button class="btn btn-primary" id="promo-save-btn" onclick="savePromo()">💾 حفظ الكود</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CUSTOMER DRAWER ══ -->
+<div class="drawer-backdrop" id="customer-drawer-backdrop" style="display:none" onclick="closeCustomerDrawer()"></div>
+<div class="drawer" id="customer-drawer">
+  <div class="drawer-header">
+    <div class="drawer-title" id="drawer-customer-name">—</div>
+    <button class="drawer-close" onclick="closeCustomerDrawer()">✕</button>
+  </div>
+  <div id="drawer-customer-content"></div>
+</div>
+
+<!-- ══ ORDER DETAIL DRAWER ══ -->
+<div class="drawer-backdrop" id="order-drawer-backdrop" style="display:none" onclick="closeOrderDrawer()"></div>
+<div class="drawer" id="order-drawer">
+  <div class="drawer-header">
+    <div class="drawer-title">تفاصيل الطلب</div>
+    <button class="drawer-close" onclick="closeOrderDrawer()">✕</button>
+  </div>
+  <div id="drawer-order-content"></div>
 </div>
 
 <div id="toast-container"></div>
 <div id="global-spinner" style="display:none">
   <div class="spinner-ring"></div>
-  <div class="spinner-label" id="spinner-label">Loading...</div>
+  <div class="spinner-label" id="spinner-label">جاري التحميل...</div>
 </div>
 
+<!-- ══ FIREBASE ══ -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script>
-// ── Firebase Config ──────────────────────────────────────
+// ══ FIREBASE CONFIG ══
 const firebaseConfig = {
-  apiKey:"AIzaSyD25krWnSJnFLT51o4OYXkBzxSb-b0sZMU",
+  apiKey:"AIzaSyD25krWnSJnFLT51o4OOXkBzxSb-b0sZMU",
   authDomain:"pit-house.firebaseapp.com",
   databaseURL:"https://pit-house-default-rtdb.firebaseio.com",
   projectId:"pit-house",
@@ -337,42 +615,75 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db   = firebase.database();
-
-// ⚠️ غيّر ده لإيميل الأدمن بتاعك في Firebase Auth
 const ADMIN_EMAIL = "admin@pithouse.com";
 
-// ── Utils ────────────────────────────────────────────────
-function showSpinner(msg='Loading...'){document.getElementById('spinner-label').textContent=msg;document.getElementById('global-spinner').style.display='flex'}
-function hideSpinner(){document.getElementById('global-spinner').style.display='none'}
-function showToast(msg,type='info'){const icons={success:'✅',error:'❌',info:'ℹ️'};const el=document.createElement('div');el.className=`toast ${type}`;el.innerHTML=`<span>${icons[type]||'•'}</span><span>${esc(msg)}</span>`;document.getElementById('toast-container').appendChild(el);setTimeout(()=>el.remove(),4000)}
-function formatPrice(n){if(n===undefined||n===null||isNaN(n))return'0 EGP';return Number(n).toLocaleString()+' EGP'}
-function formatDate(ts){if(!ts)return'—';return new Date(ts).toLocaleDateString('ar-EG')}
-function statusBadge(s){const map={pending:['⏳','Pending'],confirmed:['✅','Confirmed'],shipped:['🚚','Shipped'],delivered:['📦','Delivered']};const[icon,label]=map[s]||['•',s||'—'];return`<span class="status-badge status-${s}">${icon} ${label}</span>`}
-function esc(s){const d=document.createElement('div');d.appendChild(document.createTextNode(s||''));return d.innerHTML}
-function objToArray(obj){if(!obj)return[];return Object.entries(obj).map(([id,val])=>({id,...val}))}
+// ══ 27 GOVERNORATES ══
+const EGYPT_GOVS = [
+  {key:'cairo',name:'القاهرة'},{key:'giza',name:'الجيزة'},{key:'alex',name:'الإسكندرية'},
+  {key:'dakahlia',name:'الدقهلية'},{key:'sharqia',name:'الشرقية'},{key:'beheira',name:'البحيرة'},
+  {key:'gharbiya',name:'الغربية'},{key:'kafr_el_sheikh',name:'كفر الشيخ'},{key:'monufia',name:'المنوفية'},
+  {key:'qalyubia',name:'القليوبية'},{key:'damietta',name:'دمياط'},{key:'port_said',name:'بورسعيد'},
+  {key:'ismailia',name:'الإسماعيلية'},{key:'suez',name:'السويس'},{key:'north_sinai',name:'شمال سيناء'},
+  {key:'south_sinai',name:'جنوب سيناء'},{key:'red_sea',name:'البحر الأحمر'},{key:'matrouh',name:'مطروح'},
+  {key:'new_valley',name:'الوادي الجديد'},{key:'fayoum',name:'الفيوم'},{key:'beni_suef',name:'بني سويف'},
+  {key:'minya',name:'المنيا'},{key:'asyut',name:'أسيوط'},{key:'sohag',name:'سوهاج'},
+  {key:'qena',name:'قنا'},{key:'luxor',name:'الأقصر'},{key:'aswan',name:'أسوان'}
+];
 
-// ── Navigation ───────────────────────────────────────────
-let ordersListener = null;
-function navigate(page){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  if(ordersListener && page!=='orders'){
-    db.ref('orders').off('value', ordersListener);
-    ordersListener=null;
-  }
-  document.getElementById(`page-${page}`).classList.add('active');
-  if(page==='dashboard') loadDashboard();
-  if(page==='orders')    loadOrders();
-  if(page==='products')  loadProducts();
-  if(page==='promos')    loadPromos();
+// ══ UTILS ══
+const esc = s => {const d=document.createElement('div');d.appendChild(document.createTextNode(s||''));return d.innerHTML};
+const objToArr = obj => obj ? Object.entries(obj).map(([id,v])=>({id,...v})) : [];
+const formatPrice = n => isNaN(n)||n==null ? '—' : Number(n).toLocaleString()+' EGP';
+const formatDate = ts => ts ? new Date(ts).toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric'}) : '—';
+const statusBadge = s => {
+  const m={pending:['s-pending','⏳ قيد الانتظار'],confirmed:['s-confirmed','✅ مؤكد'],shipped:['s-shipped','🚚 تم الشحن'],delivered:['s-delivered','📦 تم التسليم']};
+  const[cls,lbl]=m[s]||['s-pending',s||'—'];
+  return`<span class="status-badge ${cls}">${lbl}</span>`;
+};
+function showSpinner(msg='جاري التحميل...'){document.getElementById('spinner-label').textContent=msg;document.getElementById('global-spinner').style.display='flex'}
+function hideSpinner(){document.getElementById('global-spinner').style.display='none'}
+function showToast(msg,type='info'){
+  const icons={success:'✅',error:'❌',info:'ℹ️'};
+  const el=document.createElement('div');el.className=`toast ${type}`;
+  el.innerHTML=`<span>${icons[type]||'•'}</span><span>${esc(msg)}</span>`;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(()=>el.remove(),4000);
+}
+function switchTab(tabId, modalId){
+  const modal=document.getElementById(modalId)||document;
+  modal.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  modal.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  const tabs=modal.querySelectorAll('.tab');
+  const panels=modal.querySelectorAll('.tab-panel');
+  const idx=[...panels].findIndex(p=>p.id===tabId);
+  if(tabs[idx]) tabs[idx].classList.add('active');
 }
 
-// ── Auth ─────────────────────────────────────────────────
+// ══ NAVIGATION ══
+let ordersListener=null;
+function navigate(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  if(ordersListener && page!=='orders'){db.ref('orders').off('value',ordersListener);ordersListener=null;}
+  document.getElementById(`page-${page}`).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+  const navEl=document.getElementById(`nav-${page}`);
+  if(navEl) navEl.classList.add('active');
+  window.scrollTo(0,0);
+  if(page==='dashboard') loadDashboard();
+  if(page==='orders')    loadOrders();
+  if(page==='products')  loadProductsPage();
+  if(page==='customers') loadCustomers();
+  if(page==='promos')    loadPromos();
+  if(page==='shipping')  loadShipping();
+}
+
+// ══ AUTH ══
 auth.onAuthStateChanged(user=>{
   if(user && user.email===ADMIN_EMAIL){navigate('dashboard')}
   else{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-login').classList.add('active')}
 });
-
-document.getElementById('login-btn').addEventListener('click',async()=>{
+document.getElementById('login-btn').addEventListener('click', async()=>{
   const email=document.getElementById('admin-email').value.trim();
   const pass=document.getElementById('admin-pass').value;
   const errEl=document.getElementById('login-error');
@@ -381,275 +692,493 @@ document.getElementById('login-btn').addEventListener('click',async()=>{
   if(!email){document.getElementById('fg-email').classList.add('has-error');valid=false}else document.getElementById('fg-email').classList.remove('has-error');
   if(!pass){document.getElementById('fg-pass').classList.add('has-error');valid=false}else document.getElementById('fg-pass').classList.remove('has-error');
   if(!valid)return;
-  showSpinner('Authenticating...');
+  showSpinner('جاري التحقق...');
   try{
     const cred=await auth.signInWithEmailAndPassword(email,pass);
-    if(cred.user.email!==ADMIN_EMAIL){await auth.signOut();hideSpinner();errEl.textContent='Access denied — Admin only.';errEl.style.display='block';return}
+    if(cred.user.email!==ADMIN_EMAIL){await auth.signOut();hideSpinner();errEl.textContent='وصول مرفوض — أدمن فقط';errEl.style.display='block';return;}
   }catch(err){hideSpinner();errEl.textContent=err.message;errEl.style.display='block'}
 });
-
 async function doLogout(){await auth.signOut()}
 
-// ── Dashboard ────────────────────────────────────────────
+// ══ DASHBOARD ══
 async function loadDashboard(){
-  showSpinner('Loading dashboard...');
+  showSpinner();
   try{
-    const [ordersSnap, productsSnap] = await Promise.all([
-      db.ref('orders').get(),
-      db.ref('products').get()
-    ]);
-    const orders = objToArray(ordersSnap.val());
-    const products = objToArray(productsSnap.val());
-    const pending = orders.filter(o=>o.status==='pending').length;
-    const revenue = orders.reduce((sum,o)=>sum+(o.totalPrice||0),0);
+    const[ordSnap,prodSnap]=await Promise.all([db.ref('orders').get(),db.ref('products').get()]);
+    const orders=objToArr(ordSnap.val());
+    const products=objToArr(prodSnap.val());
+    const pending=orders.filter(o=>o.status==='pending').length;
+    const revenue=orders.reduce((s,o)=>s+(o.totalPrice||0),0);
+    const customers=[...new Set(orders.map(o=>o.phone).filter(Boolean))];
     document.getElementById('stat-total').textContent=orders.length;
     document.getElementById('stat-pending').textContent=pending;
     document.getElementById('stat-revenue').textContent=formatPrice(revenue);
     document.getElementById('stat-products').textContent=products.length;
-    const recent = orders.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).slice(0,5);
-    const container=document.getElementById('recent-orders');
-    if(!recent.length){container.innerHTML=`<div class="empty-state"><div class="empty-state-icon">📦</div><h3>No Orders Yet</h3></div>`;return}
-    container.innerHTML=`<div class="orders-table-wrapper"><table class="orders-table"><thead><tr><th>Order ID</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th></tr></thead><tbody>${recent.map(o=>`<tr><td class="order-id-cell">${esc(o.id)}</td><td class="order-customer-cell">${esc(o.customerName||'—')}</td><td class="order-price-cell">${formatPrice(o.totalPrice)}</td><td>${statusBadge(o.status)}</td><td style="font-size:.78rem;white-space:nowrap">${formatDate(o.createdAt)}</td></tr>`).join('')}</tbody></table></div>`;
-  }catch(err){console.error(err);showToast('Failed to load dashboard','error')}finally{hideSpinner()}
-}
-
-// ── Orders ───────────────────────────────────────────────
-function loadOrders(){
-  if(ordersListener)return;
-  ordersListener = db.ref('orders').on('value', snapshot=>{
-    const orders = objToArray(snapshot.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-    renderOrders(orders);
-  }, err=>{console.error(err);showToast('Failed to load orders','error')});
-}
-
-function renderOrders(orders){
-  const container=document.getElementById('orders-container');
-  if(!orders.length){container.innerHTML=`<div class="empty-state"><div class="empty-state-icon">📦</div><h3>No Orders Yet</h3><p>Orders appear here in real-time.</p></div>`;return}
-  container.innerHTML=`<div class="orders-table-wrapper"><table class="orders-table"><thead><tr><th>Order ID</th><th>Customer</th><th>Phone</th><th>Address</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>${orders.map(o=>`<tr><td class="order-id-cell">${esc(o.id)}</td><td class="order-customer-cell">${esc(o.customerName||'—')}</td><td style="white-space:nowrap">${esc(o.phone||'—')}</td><td style="font-size:.8rem;max-width:160px;color:var(--text-muted)">${esc(o.address||'—')}</td><td style="font-size:.8rem;max-width:180px">${(o.items||[]).map(i=>`<div>${esc(i.name)} × ${i.qty}</div>`).join('')}</td><td class="order-price-cell">${formatPrice(o.totalPrice)}</td><td><select class="status-select" data-id="${o.id}" onchange="updateStatus(this)"><option value="pending" ${o.status==='pending'?'selected':''}>⏳ Pending</option><option value="confirmed" ${o.status==='confirmed'?'selected':''}>✅ Confirmed</option><option value="shipped" ${o.status==='shipped'?'selected':''}>🚚 Shipped</option><option value="delivered" ${o.status==='delivered'?'selected':''}>📦 Delivered</option></select></td><td style="white-space:nowrap;font-size:.78rem">${formatDate(o.createdAt)}</td><td><button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.id}')">Delete</button></td></tr>`).join('')}</tbody></table></div>`;
-}
-
-async function updateStatus(sel){
-  try{
-    await db.ref('orders/'+sel.dataset.id).update({status:sel.value});
-    showToast(`Status → "${sel.value}"`,'success');
-  }catch(err){console.error(err);showToast('Failed to update status','error')}
-}
-
-async function deleteOrder(id){
-  if(!confirm(`Delete order ${id}?`))return;
-  try{await db.ref('orders/'+id).remove();showToast('Order deleted','info')}
-  catch(err){console.error(err);showToast('Failed to delete order','error')}
-}
-
-// ── Products ─────────────────────────────────────────────
-let editingId=null;
-
-async function loadProducts(){
-  showSpinner('Loading products...');
-  try{
-    const snap = await db.ref('products').get();
-    const products = objToArray(snap.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-    renderProducts(products);
-  }catch(err){console.error(err);showToast('Failed to load products','error')}
+    document.getElementById('stat-customers').textContent=customers.length;
+    const recent=orders.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).slice(0,6);
+    const rc=document.getElementById('recent-orders');
+    if(!recent.length){rc.innerHTML=`<div class="empty-state"><div class="empty-icon">📦</div><h3>لا توجد طلبات بعد</h3></div>`;return;}
+    rc.innerHTML=`<div class="table-wrapper"><table class="data-table"><thead><tr><th>رقم الطلب</th><th>العميل</th><th>الإجمالي</th><th>الحالة</th><th>التاريخ</th></tr></thead><tbody>${recent.map(o=>`<tr style="cursor:pointer" onclick='openOrderDrawer(${JSON.stringify(o)})'><td class="td-mono">${esc(o.id)}</td><td class="td-name">${esc(o.customerName||'—')}</td><td class="td-price">${formatPrice(o.totalPrice)}</td><td>${statusBadge(o.status)}</td><td style="font-size:.78rem">${formatDate(o.createdAt)}</td></tr>`).join('')}</tbody></table></div>`;
+  }catch(err){console.error(err);showToast('خطأ في تحميل الداشبورد','error')}
   finally{hideSpinner()}
 }
 
-function renderProducts(products){
+// ══ ORDERS ══
+let _allOrders=[];
+function loadOrders(){
+  if(ordersListener)return;
+  ordersListener=db.ref('orders').on('value',snap=>{
+    _allOrders=objToArr(snap.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    filterOrders();
+  },err=>{console.error(err);showToast('خطأ في تحميل الطلبات','error')});
+}
+function filterOrders(){
+  const q=(document.getElementById('order-search')?.value||'').toLowerCase().trim();
+  const sf=document.getElementById('order-status-filter')?.value||'';
+  let filtered=_allOrders;
+  if(q) filtered=filtered.filter(o=>(o.customerName||'').toLowerCase().includes(q)||(o.id||'').toLowerCase().includes(q)||(o.phone||'').includes(q));
+  if(sf) filtered=filtered.filter(o=>o.status===sf);
+  renderOrders(filtered);
+}
+function renderOrders(orders){
+  const c=document.getElementById('orders-container');
+  if(!orders.length){c.innerHTML=`<div class="empty-state"><div class="empty-icon">📦</div><h3>لا توجد طلبات</h3></div>`;return;}
+  c.innerHTML=`<div class="table-wrapper"><table class="data-table"><thead><tr><th>رقم الطلب</th><th>العميل</th><th>التليفون</th><th>المنطقة</th><th>المنتجات</th><th>الإجمالي</th><th>الكود</th><th>الحالة</th><th>التاريخ</th><th>إجراءات</th></tr></thead><tbody>${orders.map(o=>`<tr><td class="td-mono" style="cursor:pointer" onclick='openOrderDrawer(${JSON.stringify(o)})'>${esc(o.id)}</td><td class="td-name">${esc(o.customerName||'—')}</td><td style="white-space:nowrap;font-family:var(--font-mono);font-size:.8rem">${esc(o.phone||'—')}</td><td style="font-size:.78rem;max-width:140px;color:var(--text-muted)">${esc(o.address||o.city||'—')}</td><td style="font-size:.78rem;max-width:160px">${(o.items||[]).map(i=>`<div>${esc(i.name)} × ${i.qty}</div>`).join('')}</td><td class="td-price">${formatPrice(o.totalPrice)}</td><td style="font-family:var(--font-mono);font-size:.75rem;color:var(--accent-gold)">${o.promoCode?esc(o.promoCode):'—'}</td><td><select class="status-select" data-id="${o.id}" onchange="updateOrderStatus(this)"><option value="pending" ${o.status==='pending'?'selected':''}>⏳ قيد الانتظار</option><option value="confirmed" ${o.status==='confirmed'?'selected':''}>✅ مؤكد</option><option value="shipped" ${o.status==='shipped'?'selected':''}>🚚 تم الشحن</option><option value="delivered" ${o.status==='delivered'?'selected':''}>📦 تم التسليم</option></select></td><td style="white-space:nowrap;font-size:.75rem">${formatDate(o.createdAt)}</td><td><button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.id}')">حذف</button></td></tr>`).join('')}</tbody></table></div>`;
+}
+async function updateOrderStatus(sel){
+  try{await db.ref('orders/'+sel.dataset.id).update({status:sel.value});showToast('تم تحديث الحالة ✓','success')}
+  catch(err){showToast('فشل التحديث','error')}
+}
+async function deleteOrder(id){
+  if(!confirm('هل تريد حذف هذا الطلب؟'))return;
+  try{await db.ref('orders/'+id).remove();showToast('تم حذف الطلب','info')}
+  catch(err){showToast('فشل الحذف','error')}
+}
+function openOrderDrawer(order){
+  const c=document.getElementById('drawer-order-content');
+  c.innerHTML=`
+    <div class="order-detail-section">
+      <div class="od-label">رقم الطلب</div>
+      <div class="od-val" style="font-family:var(--font-mono);color:var(--accent-gold)">${esc(order.id)}</div>
+    </div>
+    <div class="order-detail-section">
+      <div class="od-label">بيانات العميل</div>
+      <div class="od-val">${esc(order.customerName||'—')}</div>
+      <div style="font-size:.85rem;color:var(--text-muted);margin-top:.3rem">${esc(order.phone||'—')}</div>
+      <div style="font-size:.82rem;color:var(--text-muted);margin-top:.2rem">${esc(order.address||order.city||'—')}</div>
+    </div>
+    <div class="order-detail-section">
+      <div class="od-label">المنتجات</div>
+      <div class="od-items">${(order.items||[]).map(i=>`<div class="od-item"><span>${esc(i.name)}</span><span style="font-family:var(--font-mono)">${i.qty} × ${formatPrice(i.price)}</span></div>`).join('')}</div>
+    </div>
+    <div class="order-detail-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span class="od-label" style="margin:0">الشحن</span>
+        <span style="font-family:var(--font-mono);font-size:.9rem">${formatPrice(order.shippingCost||0)}</span>
+      </div>
+      ${order.promoCode?`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem"><span class="od-label" style="margin:0">كود الخصم</span><span class="promo-code" style="font-size:.8rem">${esc(order.promoCode)}</span></div>`:''}
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:.6rem;border-top:1px solid var(--border)">
+        <span style="font-weight:800;font-size:.95rem">الإجمالي</span>
+        <span style="font-family:var(--font-display);font-size:1.5rem;color:var(--accent)">${formatPrice(order.totalPrice)}</span>
+      </div>
+    </div>
+    <div class="order-detail-section">
+      <div class="od-label">الحالة</div>
+      <select class="status-select" data-id="${order.id}" onchange="updateOrderStatus(this)" style="width:100%;margin-top:.3rem">
+        <option value="pending" ${order.status==='pending'?'selected':''}>⏳ قيد الانتظار</option>
+        <option value="confirmed" ${order.status==='confirmed'?'selected':''}>✅ مؤكد</option>
+        <option value="shipped" ${order.status==='shipped'?'selected':''}>🚚 تم الشحن</option>
+        <option value="delivered" ${order.status==='delivered'?'selected':''}>📦 تم التسليم</option>
+      </select>
+    </div>
+    <div style="margin-top:1rem">
+      <button class="btn btn-danger btn-full" onclick="deleteOrder('${order.id}');closeOrderDrawer()">🗑 حذف الطلب</button>
+    </div>`;
+  document.getElementById('order-drawer-backdrop').style.display='block';
+  document.getElementById('order-drawer').classList.add('open');
+}
+function closeOrderDrawer(){
+  document.getElementById('order-drawer-backdrop').style.display='none';
+  document.getElementById('order-drawer').classList.remove('open');
+}
+
+// ══ PRODUCTS ══
+let _allProducts=[], editingProductId=null;
+let _extraImages=[], _videos=[];
+
+async function loadProductsPage(){
+  showSpinner('جاري تحميل المنتجات...');
+  try{
+    const snap=await db.ref('products').get();
+    _allProducts=objToArr(snap.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    renderProductsList(_allProducts);
+  }catch(err){console.error(err);showToast('خطأ في تحميل المنتجات','error')}
+  finally{hideSpinner()}
+}
+function filterProducts(){
+  const q=(document.getElementById('product-search')?.value||'').toLowerCase().trim();
+  renderProductsList(q ? _allProducts.filter(p=>(p.name||'').toLowerCase().includes(q)||(p.category||'').toLowerCase().includes(q)) : _allProducts);
+}
+function renderProductsList(products){
   const list=document.getElementById('products-list');
-  if(!products.length){list.innerHTML=`<div class="empty-state"><div class="empty-state-icon">🔧</div><h3>No Products Yet</h3><p>Click "+ Add Product" to create your first listing.</p></div>`;return}
-  list.innerHTML=products.map(p=>`<div class="product-row">${p.imageUrl?`<img src="${p.imageUrl}" class="product-row-img" alt="${esc(p.name)}" onerror="this.style.display='none'">`:`<div class="product-row-img" style="display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:var(--bg-secondary)">🔧</div>`}<div><div class="product-row-name">${esc(p.name)}</div><div class="product-row-desc">${esc(p.description||'No description')}</div></div><div class="product-row-price">${formatPrice(p.price)}</div><button class="btn btn-secondary btn-sm" onclick='openEditModal(${JSON.stringify(p.id)},${JSON.stringify({name:p.name,price:p.price,imageUrl:p.imageUrl||"",description:p.description||""})})'>Edit</button><button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">Delete</button></div>`).join('');
+  if(!products.length){list.innerHTML=`<div class="empty-state"><div class="empty-icon">🔧</div><h3>لا توجد منتجات</h3><p>اضغط "+ إضافة منتج" لإضافة أول منتج</p></div>`;return;}
+  list.innerHTML=products.map(p=>{
+    const thumb=p.imageUrl?`<img src="${esc(p.imageUrl)}" onerror="this.style.display='none'">`:'🔧';
+    const warr=p.warranty==='true'||p.warranty===true;
+    const extra=(p.extraImages||[]).length+(p.videos||[]).length;
+    return `<div class="product-row">
+      <div class="product-row-thumb">${thumb}</div>
+      <div class="product-row-info">
+        <div class="product-row-name">${esc(p.name)}</div>
+        <div class="product-row-meta">
+          ${p.category?`<span>📂 ${esc(p.category)}</span>`:''}
+          ${extra?`<span>🖼 ${extra} وسائط</span>`:''}
+          ${p.stock!=null&&p.stock!==''?`<span>📦 ${p.stock} قطعة</span>`:''}
+        </div>
+      </div>
+      <span class="product-warranty-badge ${warr?'warranty-yes':'warranty-no'}">${warr?'✅ ضمان':'❌ لا ضمان'}</span>
+      <div class="product-row-price">${formatPrice(p.price)}</div>
+      <button class="btn btn-secondary btn-sm" onclick='openEditProductModal(${JSON.stringify(p.id)}, ${JSON.stringify(p)})'>تعديل</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">حذف</button>
+    </div>`;
+  }).join('');
 }
-
-function openAddModal(){editingId=null;document.getElementById('modal-title').textContent='ADD PRODUCT';clearModal();document.getElementById('product-modal').style.display='flex'}
-function openEditModal(id,p){editingId=id;document.getElementById('modal-title').textContent='EDIT PRODUCT';document.getElementById('p-name').value=p.name||'';document.getElementById('p-price').value=p.price||'';document.getElementById('p-image').value=p.imageUrl||'';document.getElementById('p-desc').value=p.description||'';document.getElementById('product-modal').style.display='flex'}
-function closeModal(){document.getElementById('product-modal').style.display='none';clearModal();editingId=null}
-function clearModal(){['p-name','p-price','p-image','p-desc'].forEach(id=>document.getElementById(id).value='');['fg-pname','fg-pprice'].forEach(id=>document.getElementById(id).classList.remove('has-error'))}
-
+function openProductModal(){
+  editingProductId=null;_extraImages=[];_videos=[];
+  document.getElementById('product-modal-title').textContent='إضافة منتج جديد';
+  ['p-name','p-price','p-category','p-desc','p-image','p-warranty-period','p-stock'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('p-warranty').value='false';
+  document.getElementById('p-active').value='true';
+  document.getElementById('new-image-url').value='';
+  document.getElementById('new-video-url').value='';
+  renderMediaLists();
+  switchTab('tab-basic','product-modal');
+  document.getElementById('product-modal').style.display='flex';
+}
+function openEditProductModal(id, p){
+  editingProductId=id;
+  _extraImages=p.extraImages||[];
+  _videos=p.videos||[];
+  document.getElementById('product-modal-title').textContent='تعديل المنتج';
+  document.getElementById('p-name').value=p.name||'';
+  document.getElementById('p-price').value=p.price||'';
+  document.getElementById('p-category').value=p.category||'';
+  document.getElementById('p-desc').value=p.description||'';
+  document.getElementById('p-image').value=p.imageUrl||'';
+  document.getElementById('p-warranty').value=String(p.warranty==='true'||p.warranty===true);
+  document.getElementById('p-warranty-period').value=p.warrantyPeriod||'';
+  document.getElementById('p-active').value=String(p.active!==false&&p.active!=='false');
+  document.getElementById('p-stock').value=p.stock!=null?p.stock:'';
+  renderMediaLists();
+  switchTab('tab-basic','product-modal');
+  document.getElementById('product-modal').style.display='flex';
+}
+function closeProductModal(){document.getElementById('product-modal').style.display='none';editingProductId=null}
+function renderMediaLists(){
+  // extra images
+  const imgList=document.getElementById('extra-images-list');
+  imgList.innerHTML=_extraImages.map((url,i)=>`<div class="media-item"><img src="${esc(url)}" onerror="this.src=''"><button class="del-media" onclick="removeExtraImage(${i})">✕</button></div>`).join('');
+  imgList.innerHTML+=`<button class="add-media-btn" onclick="document.getElementById('new-image-url').focus()"><span>+</span><span>صورة</span></button>`;
+  // videos
+  const vidList=document.getElementById('videos-list');
+  vidList.innerHTML=_videos.map((url,i)=>`<div class="media-item media-item-video"><span>▶</span><span>فيديو ${i+1}</span><button class="del-media" onclick="removeVideo(${i})">✕</button></div>`).join('');
+  vidList.innerHTML+=`<button class="add-media-btn" onclick="document.getElementById('new-video-url').focus()"><span>+</span><span>فيديو</span></button>`;
+}
+function addExtraImage(){
+  const url=document.getElementById('new-image-url').value.trim();
+  if(!url){showToast('أدخل رابط الصورة أولاً','error');return;}
+  _extraImages.push(url);document.getElementById('new-image-url').value='';renderMediaLists();
+}
+function removeExtraImage(i){_extraImages.splice(i,1);renderMediaLists()}
+function addVideo(){
+  let url=document.getElementById('new-video-url').value.trim();
+  if(!url){showToast('أدخل رابط الفيديو أولاً','error');return;}
+  // convert Drive share link to embed
+  const m=url.match(/\/file\/d\/([^/]+)/);
+  if(m) url=`https://drive.google.com/file/d/${m[1]}/preview`;
+  _videos.push(url);document.getElementById('new-video-url').value='';renderMediaLists();
+}
+function removeVideo(i){_videos.splice(i,1);renderMediaLists()}
 async function saveProduct(){
-  const name  = document.getElementById('p-name').value.trim();
-  const price = parseFloat(document.getElementById('p-price').value);
-  const image = document.getElementById('p-image').value.trim();
-  const desc  = document.getElementById('p-desc').value.trim();
-
-  let valid = true;
-  if(!name){document.getElementById('fg-pname').classList.add('has-error');valid=false}
-  else document.getElementById('fg-pname').classList.remove('has-error');
-  if(isNaN(price)||price<0){document.getElementById('fg-pprice').classList.add('has-error');valid=false}
-  else document.getElementById('fg-pprice').classList.remove('has-error');
-  if(!valid) return;
-
-  const btn = document.getElementById('modal-save-btn');
-  btn.disabled = true;
-  btn.textContent = 'Saving...';
-
-  const data = { name, price, imageUrl: image, description: desc };
-
-  try {
-    if(editingId){
-      await db.ref('products/'+editingId).update(data);
-      showToast('Product updated ✓','success');
-    } else {
-      data.createdAt = Date.now();
-      await db.ref('products').push(data);
-      showToast('Product added ✓','success');
-    }
-    closeModal();
-    await loadProducts();
-  } catch(err) {
-    console.error('Save error:', err);
-    showToast('Error: ' + err.message, 'error');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Save Product';
-  }
+  const name=document.getElementById('p-name').value.trim();
+  const price=parseFloat(document.getElementById('p-price').value);
+  const category=document.getElementById('p-category').value.trim();
+  const desc=document.getElementById('p-desc').value.trim();
+  const image=document.getElementById('p-image').value.trim();
+  const warranty=document.getElementById('p-warranty').value==='true';
+  const warrantyPeriod=document.getElementById('p-warranty-period').value.trim();
+  const active=document.getElementById('p-active').value==='true';
+  const stockRaw=document.getElementById('p-stock').value.trim();
+  const stock=stockRaw===''?null:Number(stockRaw);
+  let valid=true;
+  if(!name){document.getElementById('fg-pname').classList.add('has-error');valid=false}else document.getElementById('fg-pname').classList.remove('has-error');
+  if(isNaN(price)||price<0){document.getElementById('fg-pprice').classList.add('has-error');valid=false}else document.getElementById('fg-pprice').classList.remove('has-error');
+  if(!valid)return;
+  const btn=document.getElementById('product-save-btn');btn.disabled=true;btn.textContent='جاري الحفظ...';
+  const data={name,price,category,description:desc,imageUrl:image,extraImages:_extraImages,videos:_videos,warranty,warrantyPeriod,active,updatedAt:Date.now()};
+  if(stock!==null) data.stock=stock;
+  try{
+    if(editingProductId){await db.ref('products/'+editingProductId).update(data);showToast('تم تحديث المنتج ✓','success')}
+    else{data.createdAt=Date.now();await db.ref('products').push(data);showToast('تم إضافة المنتج ✓','success')}
+    closeProductModal();await loadProductsPage();
+  }catch(err){console.error(err);showToast('خطأ: '+err.message,'error')}
+  finally{btn.disabled=false;btn.textContent='💾 حفظ المنتج'}
 }
-
 async function deleteProduct(id){
-  if(!confirm('Delete this product?'))return;
-  try{await db.ref('products/'+id).remove();showToast('Product deleted','info');await loadProducts()}
-  catch(err){console.error(err);showToast('Failed to delete product','error')}
+  if(!confirm('هل تريد حذف هذا المنتج؟'))return;
+  try{await db.ref('products/'+id).remove();showToast('تم حذف المنتج','info');await loadProductsPage()}
+  catch(err){showToast('فشل الحذف','error')}
 }
 
-// ── Promo Codes ──────────────────────────────────────────
-let editingPromoId = null;
+// ══ CUSTOMERS ══
+let _allCustomers=[];
+async function loadCustomers(){
+  showSpinner('جاري تحميل العملاء...');
+  try{
+    const snap=await db.ref('orders').get();
+    const orders=objToArr(snap.val());
+    // group by phone
+    const map={};
+    orders.forEach(o=>{
+      const key=o.phone||o.customerName||'unknown';
+      if(!map[key]) map[key]={name:o.customerName||'—',phone:o.phone||'—',orders:[],totalSpent:0,lastOrder:0};
+      map[key].orders.push(o);
+      map[key].totalSpent+=o.totalPrice||0;
+      if((o.createdAt||0)>map[key].lastOrder) map[key].lastOrder=o.createdAt||0;
+    });
+    _allCustomers=Object.values(map).sort((a,b)=>b.lastOrder-a.lastOrder);
+    renderCustomers(_allCustomers);
+  }catch(err){console.error(err);showToast('خطأ في تحميل العملاء','error')}
+  finally{hideSpinner()}
+}
+function filterCustomers(){
+  const q=(document.getElementById('customer-search')?.value||'').toLowerCase().trim();
+  renderCustomers(q?_allCustomers.filter(c=>c.name.toLowerCase().includes(q)||c.phone.includes(q)):_allCustomers);
+}
+function renderCustomers(customers){
+  const grid=document.getElementById('customers-grid');
+  if(!customers.length){grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">👥</div><h3>لا يوجد عملاء</h3></div>`;return;}
+  grid.innerHTML=customers.map(c=>`
+    <div class="customer-card" onclick='openCustomerDrawer(${JSON.stringify(c)})'>
+      <div class="customer-name">${esc(c.name)}</div>
+      <div class="customer-meta">
+        <span>📱 ${esc(c.phone)}</span>
+        <span>🕐 آخر طلب: ${formatDate(c.lastOrder)}</span>
+      </div>
+      <div class="customer-stats">
+        <div class="cstat"><div class="cstat-val">${c.orders.length}</div><div class="cstat-lbl">طلبات</div></div>
+        <div class="cstat"><div class="cstat-val" style="font-size:.95rem">${formatPrice(c.totalSpent)}</div><div class="cstat-lbl">إجمالي الإنفاق</div></div>
+      </div>
+    </div>`).join('');
+}
+function openCustomerDrawer(customer){
+  document.getElementById('drawer-customer-name').textContent=customer.name;
+  const orders=customer.orders.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  document.getElementById('drawer-customer-content').innerHTML=`
+    <div class="order-detail-section">
+      <div class="od-label">بيانات الاتصال</div>
+      <div class="od-val">📱 ${esc(customer.phone)}</div>
+    </div>
+    <div class="order-detail-section">
+      <div style="display:flex;gap:1rem;margin-bottom:.75rem">
+        <div class="cstat"><div class="cstat-val">${orders.length}</div><div class="cstat-lbl">طلبات</div></div>
+        <div class="cstat"><div class="cstat-val" style="font-size:.95rem;color:var(--accent)">${formatPrice(customer.totalSpent)}</div><div class="cstat-lbl">إجمالي</div></div>
+      </div>
+    </div>
+    <div class="order-detail-section">
+      <div class="od-label" style="margin-bottom:.75rem">سجل الطلبات</div>
+      ${orders.map(o=>`<div style="background:var(--bg-secondary);border-radius:var(--radius-sm);padding:.75rem;margin-bottom:.5rem;cursor:pointer" onclick='openOrderDrawer(${JSON.stringify(o)})'>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.35rem">
+          <span class="td-mono" style="font-size:.72rem">${esc(o.id)}</span>
+          ${statusBadge(o.status)}
+        </div>
+        <div style="font-size:.8rem;color:var(--text-muted)">${(o.items||[]).map(i=>esc(i.name)).join('، ')}</div>
+        <div style="display:flex;justify-content:space-between;margin-top:.4rem">
+          <span style="font-size:.75rem;color:var(--text-muted)">${formatDate(o.createdAt)}</span>
+          <span style="font-family:var(--font-display);color:var(--accent)">${formatPrice(o.totalPrice)}</span>
+        </div>
+      </div>`).join('')}
+    </div>`;
+  document.getElementById('customer-drawer-backdrop').style.display='block';
+  document.getElementById('customer-drawer').classList.add('open');
+}
+function closeCustomerDrawer(){
+  document.getElementById('customer-drawer-backdrop').style.display='none';
+  document.getElementById('customer-drawer').classList.remove('open');
+}
 
+// ══ PROMO CODES ══
+let editingPromoId=null;
 function togglePromoType(){
-  const t = document.getElementById('pm-type').value;
-  document.getElementById('fg-discount-wrap').style.display = (t==='freeship') ? 'none' : 'block';
+  const t=document.getElementById('pm-type').value;
+  document.getElementById('fg-discount-wrap').style.display=(t==='freeship')?'none':'block';
 }
-
 function openPromoModal(){
   editingPromoId=null;
-  document.getElementById('promo-modal-title').textContent='ADD PROMO CODE';
-  document.getElementById('pm-code').value='';
+  document.getElementById('promo-modal-title').textContent='إضافة كود خصم';
+  ['pm-code','pm-discount','pm-message','pm-expiry','pm-maxuse'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('pm-type').value='discount';
-  document.getElementById('pm-discount').value='';
-  document.getElementById('pm-message').value='';
-  document.getElementById('pm-expiry').value='';
   document.getElementById('pm-active').value='true';
   document.getElementById('fg-pcode').classList.remove('has-error');
   togglePromoType();
+  populatePromoTargets(null);
+  switchTab('ptab-basic','promo-modal');
   document.getElementById('promo-modal').style.display='flex';
 }
-
-function openEditPromoModal(id, p){
+function openEditPromoModal(id,p){
   editingPromoId=id;
-  document.getElementById('promo-modal-title').textContent='EDIT PROMO CODE';
+  document.getElementById('promo-modal-title').textContent='تعديل كود الخصم';
   document.getElementById('pm-code').value=p.code||'';
   document.getElementById('pm-type').value=p.type||'discount';
   document.getElementById('pm-discount').value=p.discount||'';
   document.getElementById('pm-message').value=p.message||'';
   document.getElementById('pm-expiry').value=p.expiry||'';
   document.getElementById('pm-active').value=String(p.active!==false);
+  document.getElementById('pm-maxuse').value=p.maxUse||'';
   document.getElementById('fg-pcode').classList.remove('has-error');
   togglePromoType();
+  populatePromoTargets(p);
+  switchTab('ptab-basic','promo-modal');
   document.getElementById('promo-modal').style.display='flex';
 }
-
-function closePromoModal(){
-  document.getElementById('promo-modal').style.display='none';
-  editingPromoId=null;
+function closePromoModal(){document.getElementById('promo-modal').style.display='none';editingPromoId=null}
+function populatePromoTargets(promo){
+  // Products
+  const plist=document.getElementById('pm-products-list');
+  const selectedProds=promo?.targetProducts||[];
+  plist.innerHTML=_allProducts.map(p=>`<label class="check-item"><input type="checkbox" value="${p.id}" ${selectedProds.includes(p.id)?'checked':''}> ${esc(p.name)}</label>`).join('');
+  // Govs
+  const glist=document.getElementById('pm-govs-list');
+  const selectedGovs=promo?.targetGovs||[];
+  glist.innerHTML=EGYPT_GOVS.map(g=>`<label class="check-item"><input type="checkbox" value="${g.key}" ${selectedGovs.includes(g.key)?'checked':''}> ${g.name}</label>`).join('');
 }
-
 async function savePromo(){
-  const code    = document.getElementById('pm-code').value.trim().toUpperCase();
-  const type    = document.getElementById('pm-type').value;
-  const discount= parseFloat(document.getElementById('pm-discount').value);
-  const message = document.getElementById('pm-message').value.trim();
-  const expiry  = document.getElementById('pm-expiry').value;
-  const active  = document.getElementById('pm-active').value === 'true';
-
-  let valid = true;
-  if(!code){document.getElementById('fg-pcode').classList.add('has-error');valid=false}
-  else document.getElementById('fg-pcode').classList.remove('has-error');
-  if(type!=='freeship' && (isNaN(discount)||discount<1||discount>100)){
-    showToast('أدخل نسبة خصم صحيحة (1-100)','error');valid=false;
-  }
+  const code=document.getElementById('pm-code').value.trim().toUpperCase();
+  const type=document.getElementById('pm-type').value;
+  const discount=parseFloat(document.getElementById('pm-discount').value);
+  const message=document.getElementById('pm-message').value.trim();
+  const expiry=document.getElementById('pm-expiry').value;
+  const active=document.getElementById('pm-active').value==='true';
+  const maxUseRaw=document.getElementById('pm-maxuse').value.trim();
+  const maxUse=maxUseRaw?Number(maxUseRaw):null;
+  // targets
+  const targetProducts=[...document.querySelectorAll('#pm-products-list input:checked')].map(i=>i.value);
+  const targetGovs=[...document.querySelectorAll('#pm-govs-list input:checked')].map(i=>i.value);
+  let valid=true;
+  if(!code){document.getElementById('fg-pcode').classList.add('has-error');valid=false}else document.getElementById('fg-pcode').classList.remove('has-error');
+  if(type!=='freeship'&&(isNaN(discount)||discount<1||discount>100)){showToast('أدخل نسبة خصم صحيحة (1-100)','error');valid=false;}
   if(!message){showToast('الرسالة مطلوبة','error');valid=false;}
-  if(!valid) return;
-
-  const btn = document.getElementById('promo-save-btn');
-  btn.disabled=true; btn.textContent='Saving...';
-
-  const data = { code, type, message, active, updatedAt: Date.now() };
-  if(type!=='freeship') data.discount = discount;
-  if(expiry) data.expiry = expiry;
-
+  if(!valid)return;
+  const btn=document.getElementById('promo-save-btn');btn.disabled=true;btn.textContent='جاري الحفظ...';
+  const data={code,type,message,active,targetProducts,targetGovs,updatedAt:Date.now()};
+  if(type!=='freeship') data.discount=discount;
+  if(expiry) data.expiry=expiry;
+  if(maxUse) data.maxUse=maxUse;
   try{
-    if(editingPromoId){
-      await db.ref('promoCodes/'+editingPromoId).update(data);
-      showToast('Promo code updated ✓','success');
-    } else {
-      // check duplicate code
-      const snap = await db.ref('promoCodes').orderByChild('code').equalTo(code).get();
-      if(snap.exists()){showToast('الكود ده موجود بالفعل!','error');btn.disabled=false;btn.textContent='Save Code';return;}
-      data.createdAt = Date.now();
-      await db.ref('promoCodes').push(data);
-      showToast('Promo code added ✓','success');
+    if(editingPromoId){await db.ref('promoCodes/'+editingPromoId).update(data);showToast('تم تحديث الكود ✓','success')}
+    else{
+      const snap=await db.ref('promoCodes').orderByChild('code').equalTo(code).get();
+      if(snap.exists()){showToast('الكود ده موجود بالفعل!','error');btn.disabled=false;btn.textContent='💾 حفظ الكود';return;}
+      data.createdAt=Date.now();await db.ref('promoCodes').push(data);showToast('تم إضافة الكود ✓','success');
     }
-    closePromoModal();
-    await loadPromos();
-  } catch(err){
-    console.error(err);showToast('Error: '+err.message,'error');
-  } finally {
-    btn.disabled=false; btn.textContent='Save Code';
-  }
+    closePromoModal();await loadPromos();
+  }catch(err){console.error(err);showToast('خطأ: '+err.message,'error')}
+  finally{btn.disabled=false;btn.textContent='💾 حفظ الكود'}
 }
-
-async function togglePromoActive(id, current){
-  try{
-    await db.ref('promoCodes/'+id).update({active:!current});
-    showToast(!current ? 'Code activated ✓' : 'Code deactivated','info');
-    await loadPromos();
-  }catch(err){showToast('Failed to update','error')}
+async function togglePromoActive(id,current){
+  try{await db.ref('promoCodes/'+id).update({active:!current});showToast(!current?'تم تفعيل الكود ✓':'تم تعطيل الكود','info');await loadPromos()}
+  catch{showToast('فشل التحديث','error')}
 }
-
 async function deletePromo(id){
-  if(!confirm('Delete this promo code?'))return;
-  try{await db.ref('promoCodes/'+id).remove();showToast('Promo deleted','info');await loadPromos()}
-  catch(err){showToast('Failed to delete','error')}
+  if(!confirm('هل تريد حذف هذا الكود؟'))return;
+  try{await db.ref('promoCodes/'+id).remove();showToast('تم حذف الكود','info');await loadPromos()}
+  catch{showToast('فشل الحذف','error')}
 }
-
 async function loadPromos(){
-  showSpinner('Loading promo codes...');
+  showSpinner('جاري التحميل...');
   try{
-    const snap = await db.ref('promoCodes').get();
-    const promos = objToArray(snap.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-    renderPromos(promos);
-  }catch(err){console.error(err);showToast('Failed to load promos','error')}
+    await loadProductsData(); // make sure products loaded for targeting UI
+    const snap=await db.ref('promoCodes').get();
+    renderPromos(objToArr(snap.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)));
+  }catch(err){console.error(err);showToast('خطأ في تحميل الأكواد','error')}
   finally{hideSpinner()}
 }
-
+async function loadProductsData(){
+  if(_allProducts.length) return;
+  const snap=await db.ref('products').get();
+  _allProducts=objToArr(snap.val());
+}
 function renderPromos(promos){
-  const list = document.getElementById('promos-list');
-  if(!promos.length){
-    list.innerHTML=`<div class="empty-state"><div class="empty-state-icon">🎟️</div><h3>No Promo Codes Yet</h3><p>Click "+ Add Promo Code" to create your first code.</p></div>`;
-    return;
-  }
-  const typeLabel = {discount:'خصم %', freeship:'توصيل مجاني', both:'خصم + توصيل'};
-  const typeCls   = {discount:'promo-type-discount', freeship:'promo-type-freeship', both:'promo-type-both'};
-  const now = new Date().toISOString().slice(0,10);
-
-  list.innerHTML = promos.map(p=>{
-    const expired = p.expiry && p.expiry < now;
-    const inactive = p.active===false;
-    const rowCls = inactive ? 'promo-row promo-inactive' : 'promo-row';
-    const expiryHtml = p.expiry
-      ? `<span class="promo-expiry ${expired?'promo-expired':''}">${expired?'❌ Expired':'⏰ '+p.expiry}</span>`
-      : `<span class="promo-expiry">∞ No expiry</span>`;
-    const discountInfo = p.type!=='freeship' && p.discount ? ` — ${p.discount}%` : '';
-    return `<div class="${rowCls}">
-      <span class="promo-code-badge">${esc(p.code)}</span>
+  const list=document.getElementById('promos-list');
+  if(!promos.length){list.innerHTML=`<div class="empty-state"><div class="empty-icon">🎟️</div><h3>لا توجد أكواد خصم</h3><p>اضغط "+ إضافة كود خصم" لإنشاء أول كود</p></div>`;return;}
+  const typeLabel={discount:'خصم %',freeship:'توصيل مجاني',both:'خصم + توصيل'};
+  const typeCls={discount:'promo-discount',freeship:'promo-freeship',both:'promo-both'};
+  const now=new Date().toISOString().slice(0,10);
+  list.innerHTML=promos.map(p=>{
+    const expired=p.expiry&&p.expiry<now;
+    const inactive=p.active===false;
+    const discInfo=p.type!=='freeship'&&p.discount?` — ${p.discount}%`:'';
+    const expiryHtml=p.expiry?`<span class="promo-expiry ${expired?'promo-expired':''}">${expired?'❌ منتهي':'⏰ '+p.expiry}</span>`:`<span class="promo-expiry">∞ بلا تاريخ</span>`;
+    // targets display
+    const prodTags=(p.targetProducts||[]).length?`<div style="margin-top:.35rem">${p.targetProducts.map(id=>{const pr=_allProducts.find(x=>x.id===id);return`<span class="target-tag">${pr?esc(pr.name):id}</span>`}).join('')}</div>`:'';
+    const govTags=(p.targetGovs||[]).length?`<div style="margin-top:.25rem">${p.targetGovs.map(k=>{const g=EGYPT_GOVS.find(x=>x.key===k);return`<span class="target-tag">📍${g?g.name:k}</span>`}).join('')}</div>`:'';
+    return`<div class="${inactive?'promo-row promo-inactive':'promo-row'}">
+      <span class="promo-code">${esc(p.code)}</span>
       <div>
-        <span class="promo-type-tag ${typeCls[p.type]||'promo-type-discount'}">${typeLabel[p.type]||p.type}${discountInfo}</span>
+        <span class="promo-type-tag ${typeCls[p.type]||'promo-discount'}">${typeLabel[p.type]||p.type}${discInfo}</span>
         <div class="promo-msg">"${esc(p.message)}"</div>
+        ${p.maxUse?`<div style="font-size:.7rem;color:var(--text-muted);margin-top:.2rem">🔢 حد الاستخدام: ${p.maxUse}</div>`:''}
+        ${prodTags}${govTags}
       </div>
       ${expiryHtml}
-      <span class="status-badge ${p.active!==false?'status-confirmed':'status-pending'}">${p.active!==false?'✅ Active':'⏸ Off'}</span>
-      <button class="btn btn-secondary btn-sm" onclick='openEditPromoModal(${JSON.stringify(p.id)},${JSON.stringify({code:p.code,type:p.type,discount:p.discount||"",message:p.message,expiry:p.expiry||"",active:p.active!==false})})'>Edit</button>
-      <button class="btn btn-danger btn-sm" onclick="deletePromo('${p.id}')">Delete</button>
+      <span class="status-badge ${p.active!==false?'s-confirmed':'s-pending'}">${p.active!==false?'✅ مفعّل':'⏸ معطّل'}</span>
+      <button class="btn btn-secondary btn-sm" onclick='openEditPromoModal(${JSON.stringify(p.id)},${JSON.stringify({code:p.code,type:p.type,discount:p.discount||"",message:p.message,expiry:p.expiry||"",active:p.active!==false,maxUse:p.maxUse||"",targetProducts:p.targetProducts||[],targetGovs:p.targetGovs||[]})})'>تعديل</button>
+      <button class="btn btn-danger btn-sm" onclick="deletePromo('${p.id}')">حذف</button>
     </div>`;
   }).join('');
+}
+
+// ══ SHIPPING ══
+let _shippingRates={};
+async function loadShipping(){
+  showSpinner('جاري تحميل أسعار الشحن...');
+  try{
+    const snap=await db.ref('shippingRates').get();
+    _shippingRates=snap.val()||{};
+    renderShippingGrid();
+  }catch(err){console.error(err);showToast('خطأ في تحميل الشحن','error')}
+  finally{hideSpinner()}
+}
+function renderShippingGrid(){
+  document.getElementById('shipping-grid').innerHTML=EGYPT_GOVS.map(g=>{
+    const rate=_shippingRates[g.key]!=null?_shippingRates[g.key]:'';
+    return`<div class="gov-card">
+      <div class="gov-name">${g.name}</div>
+      <div class="gov-input-wrap">
+        <input type="number" class="gov-input" id="sr-${g.key}" value="${rate}" min="0" step="1" placeholder="0" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
+        <span style="font-size:.7rem;color:var(--text-muted)">ج.م</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function saveShipping(){
+  const newRates={};
+  EGYPT_GOVS.forEach(g=>{const inp=document.getElementById('sr-'+g.key);if(inp){const v=inp.value.trim();newRates[g.key]=v===''?0:Number(v);}});
+  const msg=document.getElementById('shipping-save-msg');
+  msg.textContent='جاري الحفظ...';msg.style.color='var(--text-muted)';
+  try{
+    await db.ref('shippingRates').set(newRates);_shippingRates=newRates;
+    msg.textContent='✅ تم حفظ جميع أسعار الشحن!';msg.style.color='var(--success)';
+    showToast('تم حفظ الشحن ✓','success');
+  }catch(err){msg.textContent='❌ خطأ: '+err.message;msg.style.color='var(--danger)';showToast('خطأ في الحفظ','error')}
+}
+function setAllShipping(){
+  const val=prompt('أدخل سعر الشحن الموحد لجميع المحافظات (بالجنيه):');
+  if(val===null)return;
+  const num=Number(val);
+  if(isNaN(num)||num<0){showToast('سعر غير صحيح','error');return;}
+  EGYPT_GOVS.forEach(g=>{const inp=document.getElementById('sr-'+g.key);if(inp)inp.value=num;});
+  showToast(`تم ضبط الكل على ${num} ج.م — اضغط حفظ للتأكيد`,'info');
 }
 </script>
 </body>
