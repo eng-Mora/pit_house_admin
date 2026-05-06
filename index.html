@@ -236,6 +236,34 @@
     .od-val{font-size:.9rem;color:var(--text-primary);font-weight:600}
     .od-items{display:flex;flex-direction:column;gap:.4rem}
     .od-item{display:flex;justify-content:space-between;font-size:.85rem;padding:.4rem .6rem;background:var(--bg-secondary);border-radius:var(--radius-sm)}
+
+    /* ── SIDEBAR LAYOUT ── */
+    .app-layout{display:flex;min-height:100vh}
+    .sidebar{width:220px;flex-shrink:0;background:var(--bg-card);border-left:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;right:0;height:100vh;z-index:200;overflow-y:auto;overflow-x:hidden}
+    .sidebar-logo{padding:1.25rem 1rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0}
+    .sidebar-logo-text{font-family:var(--font-display);font-size:1.4rem;letter-spacing:.1em;cursor:pointer;display:block;color:var(--text-primary)}
+    .sidebar-logo-text span{color:var(--accent)}
+    .sidebar-logo small{display:block;font-family:var(--font-mono);font-size:.55rem;letter-spacing:.2em;color:var(--text-muted);margin-top:.1rem}
+    .sidebar-nav{flex:1;padding:.6rem 0}
+    .sidebar-nav a{display:flex;align-items:center;gap:.65rem;padding:.6rem 1.1rem;font-size:.82rem;font-weight:700;color:var(--text-muted);cursor:pointer;border-right:3px solid transparent;transition:all var(--transition);text-decoration:none;white-space:nowrap}
+    .sidebar-nav a:hover{color:var(--text-primary);background:var(--bg-hover)}
+    .sidebar-nav a.active{color:var(--accent);border-right-color:var(--accent);background:rgba(255,61,0,.06)}
+    .sidebar-nav .nav-icon{font-size:1rem;flex-shrink:0;width:20px;text-align:center}
+    .sidebar-section-label{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted);padding:.75rem 1.1rem .3rem;opacity:.7}
+    .sidebar-footer{padding:.85rem 1rem;border-top:1px solid var(--border);flex-shrink:0}
+    .sidebar-footer .btn{width:100%;justify-content:center;font-size:.78rem}
+    .page-content{flex:1;margin-right:220px;min-width:0}
+    .page-content .page-container{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+    @media(max-width:900px){
+      .sidebar{width:60px}
+      .sidebar-logo-text{font-size:.95rem;letter-spacing:.05em}
+      .sidebar-logo small,.sidebar-section-label,.sidebar-nav a span{display:none}
+      .sidebar-nav a{padding:.65rem 0;justify-content:center;border-right:none;border-bottom:3px solid transparent}
+      .sidebar-nav a.active{border-bottom-color:var(--accent)}
+      .page-content{margin-right:60px}
+      .sidebar-footer .btn span{display:none}
+      .sidebar-footer .btn{padding:.5rem}
+    }
     /* ── RESPONSIVE ── */
     @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.3)}}
     @keyframes scan-flash{0%{box-shadow:0 0 0 0 rgba(0,200,83,.6)}70%{box-shadow:0 0 0 10px rgba(0,200,83,0)}100%{box-shadow:0 0 0 0 rgba(0,200,83,0)}}
@@ -282,23 +310,31 @@
 
 <!-- ══ MAIN DASHBOARD ══ -->
 <div id="page-dashboard" class="page">
-  <nav class="navbar"><div class="nav-inner">
-    <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
-    <ul class="nav-links">
-      <li><a id="nav-dashboard" onclick="navigate('dashboard')" class="active">الرئيسية</a></li>
-      <li><a id="nav-orders" onclick="navigate('orders')">الطلبات</a></li>
-      <li><a id="nav-holding" onclick="navigate('holding')" style="position:relative">🔒 معلقة <span id="holding-badge" style="display:none;position:absolute;top:-4px;right:-6px;background:var(--danger);color:#fff;border-radius:99px;font-size:.6rem;padding:.1rem .4rem;font-family:var(--font-mono);min-width:16px;text-align:center"></span></a></li>
-      <li><a id="nav-invoices" onclick="navigate('invoices')">🧾 الفواتير</a></li>
-      <li><a id="nav-products" onclick="navigate('products')">المنتجات</a></li>
-      <li><a id="nav-customers" onclick="navigate('customers')">العملاء</a></li>
-      <li><a id="nav-promos" onclick="navigate('promos')">أكواد الخصم</a></li>
-      <li><a id="nav-shipping" onclick="navigate('shipping')">الشحن</a></li>
-      <li><a id="nav-reviews" onclick="navigate('reviews')">التقييمات</a></li>
-      <li><a id="nav-sound" onclick="navigate('sound')">🔊 الصوت</a></li>
-      <li><a id="nav-ads" onclick="navigate('ads')">📢 الإعلانات</a></li>
-    </ul>
-    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
-  </div></nav>
+  <div class="app-layout">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
   <main class="page-container">
     <div class="page-header">
       <div class="page-header-title"><span class="label">نظرة عامة</span><h1>DASHBOARD</h1></div>
@@ -317,25 +353,37 @@
       <div id="recent-orders"></div>
     </div>
   </main>
+  </div>
+</div>
 </div>
 
 <!-- ══ ORDERS ══ -->
 <div id="page-orders" class="page">
-  <nav class="navbar"><div class="nav-inner">
-    <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
-    <ul class="nav-links">
-      <li><a onclick="navigate('dashboard')">الرئيسية</a></li>
-      <li><a class="active">الطلبات</a></li>
-      <li><a onclick="navigate('holding')" style="position:relative">🔒 معلقة <span class="holding-badge-nav" style="display:none;position:absolute;top:-4px;right:-6px;background:var(--danger);color:#fff;border-radius:99px;font-size:.6rem;padding:.1rem .4rem;font-family:var(--font-mono);min-width:16px;text-align:center"></span></a></li>
-      <li><a onclick="navigate('products')">المنتجات</a></li>
-      <li><a onclick="navigate('customers')">العملاء</a></li>
-      <li><a onclick="navigate('promos')">أكواد الخصم</a></li>
-      <li><a onclick="navigate('shipping')">الشحن</a></li>
-      <li><a onclick="navigate('reviews')">التقييمات</a></li>
-      <li><a onclick="navigate('sound')">🔊 الصوت</a></li>
-    </ul>
-    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
-  </div></nav>
+  <div class="app-layout">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
   <main class="page-container">
     <div class="page-header">
       <div class="page-header-title"><span class="label">إدارة</span><h1>الطلبات</h1></div>
@@ -356,25 +404,37 @@
     </div>
     <div id="orders-container"><div class="empty-state"><div class="spinner-ring" style="margin:0 auto"></div></div></div>
   </main>
+  </div>
+</div>
 </div>
 
 <!-- ══ HOLDING PAGE ══ -->
 <div id="page-holding" class="page">
-  <nav class="navbar"><div class="nav-inner">
-    <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
-    <ul class="nav-links">
-      <li><a onclick="navigate('dashboard')">الرئيسية</a></li>
-      <li><a onclick="navigate('orders')">الطلبات</a></li>
-      <li><a class="active" style="color:var(--accent)">🔒 معلقة</a></li>
-      <li><a onclick="navigate('products')">المنتجات</a></li>
-      <li><a onclick="navigate('customers')">العملاء</a></li>
-      <li><a onclick="navigate('promos')">أكواد الخصم</a></li>
-      <li><a onclick="navigate('shipping')">الشحن</a></li>
-      <li><a onclick="navigate('reviews')">التقييمات</a></li>
-      <li><a onclick="navigate('sound')">🔊 الصوت</a></li>
-    </ul>
-    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
-  </div></nav>
+  <div class="app-layout">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
   <main class="page-container">
     <div class="page-header">
       <div class="page-header-title">
@@ -399,25 +459,37 @@
     </div>
     <div id="holding-container"></div>
   </main>
+  </div>
+</div>
 </div>
 
 <!-- ══ INVOICES ══ -->
 <div id="page-invoices" class="page">
-  <nav class="navbar"><div class="nav-inner">
-    <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
-    <ul class="nav-links">
-      <li><a onclick="navigate('dashboard')">الرئيسية</a></li>
-      <li><a onclick="navigate('orders')">الطلبات</a></li>
-      <li><a onclick="navigate('holding')">🔒 معلقة</a></li>
-      <li><a class="active">🧾 الفواتير</a></li>
-      <li><a onclick="navigate('products')">المنتجات</a></li>
-      <li><a onclick="navigate('customers')">العملاء</a></li>
-      <li><a onclick="navigate('promos')">أكواد الخصم</a></li>
-      <li><a onclick="navigate('shipping')">الشحن</a></li>
-      <li><a onclick="navigate('sound')">🔊 الصوت</a></li>
-    </ul>
-    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
-  </div></nav>
+  <div class="app-layout">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
   <main class="page-container">
     <div class="page-header">
       <div class="page-header-title"><span class="label">المالية</span><h1>🧾 الفواتير</h1></div>
@@ -460,6 +532,8 @@
     </div>
     <div id="invoices-list"></div>
   </main>
+  </div>
+</div>
 </div>
 
 <!-- INVOICE MODAL -->
@@ -553,20 +627,31 @@
 
 <!-- ══ PRODUCTS ══ -->
 <div id="page-products" class="page">
-  <nav class="navbar"><div class="nav-inner">
-    <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
-    <ul class="nav-links">
-      <li><a onclick="navigate('dashboard')">الرئيسية</a></li>
-      <li><a onclick="navigate('orders')">الطلبات</a></li>
-      <li><a class="active">المنتجات</a></li>
-      <li><a onclick="navigate('customers')">العملاء</a></li>
-      <li><a onclick="navigate('promos')">أكواد الخصم</a></li>
-      <li><a onclick="navigate('shipping')">الشحن</a></li>
-      <li><a onclick="navigate('reviews')">التقييمات</a></li>
-      <li><a onclick="navigate('sound')">🔊 الصوت</a></li>
-    </ul>
-    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
-  </div></nav>
+  <div class="app-layout">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
   <main class="page-container">
     <div class="page-header">
       <div class="page-header-title"><span class="label">إدارة</span><h1>المنتجات</h1></div>
@@ -595,76 +680,159 @@
     </div>
     <div id="products-list"></div>
   </main>
+  </div>
+</div>
 </div>
 
 <!-- ══ CUSTOMERS ══ -->
 <div id="page-customers" class="page">
-  <nav class="navbar"><div class="nav-inner">
-    <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
-    <ul class="nav-links">
-      <li><a onclick="navigate('dashboard')">الرئيسية</a></li>
-      <li><a onclick="navigate('orders')">الطلبات</a></li>
-      <li><a onclick="navigate('products')">المنتجات</a></li>
-      <li><a class="active">العملاء</a></li>
-      <li><a onclick="navigate('promos')">أكواد الخصم</a></li>
-      <li><a onclick="navigate('shipping')">الشحن</a></li>
-      <li><a onclick="navigate('reviews')">التقييمات</a></li>
-      <li><a onclick="navigate('sound')">🔊 الصوت</a></li>
-    </ul>
-    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
-  </div></nav>
+  <div class="app-layout">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
   <main class="page-container">
     <div class="page-header">
       <div class="page-header-title"><span class="label">قاعدة بيانات</span><h1>العملاء</h1></div>
     </div>
-    <div class="search-bar">
-      <input class="search-input" id="customer-search" placeholder="ابحث بالاسم أو رقم التليفون..." oninput="filterCustomers()"/>
+
+    <!-- Stats bar -->
+    <div class="stats-grid" style="margin-bottom:1.5rem" id="customers-stats-bar">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-value" id="cstat-all">—</div>
+        <div class="stat-label">إجمالي العملاء</div>
+      </div>
+      <div class="stat-card" style="border-color:rgba(0,200,83,.3)">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value" id="cstat-registered" style="color:var(--success)">—</div>
+        <div class="stat-label">حسابات مسجّلة</div>
+      </div>
+      <div class="stat-card" style="border-color:rgba(255,179,0,.3)">
+        <div class="stat-icon">🛒</div>
+        <div class="stat-value" id="cstat-orders-only" style="color:var(--accent-gold)">—</div>
+        <div class="stat-label">زبائن بدون حساب</div>
+      </div>
+      <div class="stat-card" style="border-color:rgba(33,150,243,.3)">
+        <div class="stat-icon">👤</div>
+        <div class="stat-value" id="cstat-no-orders" style="color:#42A5F5">—</div>
+        <div class="stat-label">مسجلين بدون طلبات</div>
+      </div>
     </div>
+
+    <!-- Filter Tabs + Search -->
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.25rem">
+      <div class="tab-bar" style="margin-bottom:0;border-bottom:none;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.25rem">
+        <div class="tab active" id="ctab-all"     onclick="setCustomerTab('all')"       style="border-radius:var(--radius-sm)">الكل</div>
+        <div class="tab"        id="ctab-registered" onclick="setCustomerTab('registered')" style="border-radius:var(--radius-sm)">✅ مسجّلين</div>
+        <div class="tab"        id="ctab-guest"   onclick="setCustomerTab('guest')"     style="border-radius:var(--radius-sm)">🛒 زبائن فقط</div>
+        <div class="tab"        id="ctab-noorder" onclick="setCustomerTab('noorder')"   style="border-radius:var(--radius-sm)">👤 بدون طلبات</div>
+      </div>
+      <input class="search-input" id="customer-search" placeholder="ابحث بالاسم أو رقم التليفون أو الإيميل..." oninput="filterCustomers()" style="flex:1;min-width:220px;max-width:380px"/>
+    </div>
+
     <div id="customers-grid" class="customer-grid"></div>
   </main>
+  </div>
+</div>
 </div>
 
 <!-- ══ PROMOS ══ -->
 <div id="page-promos" class="page">
-  <nav class="navbar"><div class="nav-inner">
-    <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
-    <ul class="nav-links">
-      <li><a onclick="navigate('dashboard')">الرئيسية</a></li>
-      <li><a onclick="navigate('orders')">الطلبات</a></li>
-      <li><a onclick="navigate('products')">المنتجات</a></li>
-      <li><a onclick="navigate('customers')">العملاء</a></li>
-      <li><a class="active">أكواد الخصم</a></li>
-      <li><a onclick="navigate('shipping')">الشحن</a></li>
-      <li><a onclick="navigate('reviews')">التقييمات</a></li>
-      <li><a onclick="navigate('sound')">🔊 الصوت</a></li>
-    </ul>
-    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
-  </div></nav>
+  <div class="app-layout">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
   <main class="page-container">
     <div class="page-header">
       <div class="page-header-title"><span class="label">إدارة</span><h1>أكواد الخصم</h1></div>
       <button class="btn btn-primary" onclick="openPromoModal()">+ إضافة كود خصم</button>
     </div>
+    <!-- Stats -->
+    <div class="stats-grid" style="margin-bottom:1.5rem" id="promo-stats-row">
+      <div class="stat-card"><div class="stat-icon">🎟️</div><div class="stat-value" id="pstat-total">—</div><div class="stat-label">إجمالي الأكواد</div></div>
+      <div class="stat-card" style="border-color:rgba(0,200,83,.25)"><div class="stat-icon">✅</div><div class="stat-value" id="pstat-active" style="color:var(--success)">—</div><div class="stat-label">مفعّل</div></div>
+      <div class="stat-card" style="border-color:rgba(255,23,68,.2)"><div class="stat-icon">❌</div><div class="stat-value" id="pstat-expired" style="color:var(--danger)">—</div><div class="stat-label">منتهي / معطّل</div></div>
+      <div class="stat-card" style="border-color:rgba(255,179,0,.25)"><div class="stat-icon">🔢</div><div class="stat-value" id="pstat-uses" style="color:var(--accent-gold)">—</div><div class="stat-label">إجمالي الاستخدامات</div></div>
+    </div>
+    <!-- Search -->
+    <div style="margin-bottom:1.25rem">
+      <input type="text" class="form-control" id="promo-search" placeholder="ابحث بالكود أو الرسالة..." oninput="filterPromos()" style="max-width:380px"/>
+    </div>
     <div id="promos-list"></div>
   </main>
+  </div>
+</div>
 </div>
 
 <!-- ══ SHIPPING ══ -->
 <div id="page-shipping" class="page">
-  <nav class="navbar"><div class="nav-inner">
-    <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
-    <ul class="nav-links">
-      <li><a onclick="navigate('dashboard')">الرئيسية</a></li>
-      <li><a onclick="navigate('orders')">الطلبات</a></li>
-      <li><a onclick="navigate('products')">المنتجات</a></li>
-      <li><a onclick="navigate('customers')">العملاء</a></li>
-      <li><a onclick="navigate('promos')">أكواد الخصم</a></li>
-      <li><a class="active">الشحن</a></li>
-      <li><a onclick="navigate('reviews')">التقييمات</a></li>
-      <li><a onclick="navigate('sound')">🔊 الصوت</a></li>
-    </ul>
-    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
-  </div></nav>
+  <div class="app-layout">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
   <main class="page-container">
     <div class="page-header">
       <div class="page-header-title"><span class="label">تسعيرة</span><h1>أسعار الشحن</h1></div>
@@ -676,24 +844,37 @@
     <div id="shipping-save-msg" style="margin-bottom:1rem;font-size:.85rem"></div>
     <div class="shipping-grid" id="shipping-grid"></div>
   </main>
+  </div>
+</div>
 </div>
 
 <!-- ══ REVIEWS ══ -->
 <div id="page-reviews" class="page">
-  <nav class="navbar"><div class="nav-inner">
-    <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
-    <ul class="nav-links">
-      <li><a onclick="navigate('dashboard')">الرئيسية</a></li>
-      <li><a onclick="navigate('orders')">الطلبات</a></li>
-      <li><a onclick="navigate('products')">المنتجات</a></li>
-      <li><a onclick="navigate('customers')">العملاء</a></li>
-      <li><a onclick="navigate('promos')">أكواد الخصم</a></li>
-      <li><a onclick="navigate('shipping')">الشحن</a></li>
-      <li><a class="active">التقييمات</a></li>
-      <li><a onclick="navigate('sound')">🔊 الصوت</a></li>
-    </ul>
-    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
-  </div></nav>
+  <div class="app-layout">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
   <main class="page-container">
     <div class="page-header">
       <div class="page-header-title"><span class="label">إدارة</span><h1>تقييمات المنتجات</h1></div>
@@ -723,6 +904,8 @@
     </div>
     <div id="reviews-list"></div>
   </main>
+  </div>
+</div>
 </div>
 
 <!-- ══ REVIEW EDIT MODAL ══ -->
@@ -1130,6 +1313,11 @@ function playNotifSound(){
 
 // ══ NAVIGATION ══
 let ordersListener = null;
+function updateSidebarActive(page){
+  document.querySelectorAll('.sidebar-nav a[id^="snav-"]').forEach(a=>a.classList.remove('active'));
+  const el=document.getElementById('snav-'+page);
+  if(el)el.classList.add('active');
+}
 function navigate(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   // الأوردرات listener المنفصل (للصفحة اللي بتعمل filter) — مش محتاجه دلوقتي إننا عندنا global
@@ -1576,57 +1764,192 @@ async function deleteProduct(id){
 
 // ══ CUSTOMERS ══
 let _allCustomers=[];
+let _customerTab='all';
 async function loadCustomers(){
   showSpinner('جاري تحميل العملاء...');
   try{
-    const snap=await db.ref('orders').get();
-    const orders=objToArr(snap.val());
-    // group by phone
+    // ── 1. جلب الطلبات ─────────────────────────────────────────
+    let orders = [];
+    try{
+      const ordersSnap = await db.ref('orders').get();
+      const raw = ordersSnap.val();
+      if(raw && typeof raw==='object'){
+        orders = Object.entries(raw).map(([id,v])=>{
+          if(!v || typeof v!=='object') return null;
+          return {id, ...v};
+        }).filter(Boolean);
+      }
+    }catch(e){ console.warn('orders fetch failed:', e.message); }
+
+    // ── 2. جلب المستخدمين المسجّلين ────────────────────────────
+    let usersRaw = {};
+    try{
+      const usersSnap = await db.ref('users').get();
+      const raw = usersSnap.val();
+      if(raw && typeof raw==='object') usersRaw = raw;
+    }catch(e){ console.warn('users fetch failed:', e.message); }
+
+    // ── 3. بناء الـ map من الطلبات ──────────────────────────────
     const map={};
     orders.forEach(o=>{
-      const key=o.phone||o.customerName||'unknown';
-      if(!map[key]) map[key]={name:o.customerName||'—',phone:o.phone||'—',orders:[],totalSpent:0,lastOrder:0};
-      map[key].orders.push(o);
-      map[key].totalSpent+=o.totalPrice||0;
-      if((o.createdAt||0)>map[key].lastOrder) map[key].lastOrder=o.createdAt||0;
+      try{
+        const phone = (o.phone||'').toString().trim();
+        const key   = phone || (o.customerName||'').trim() || 'unknown';
+        if(!map[key]) map[key]={
+          name: (o.customerName||'—').toString(),
+          phone: phone||'—',
+          email: (o.email||'—').toString(),
+          orders:[], totalSpent:0, lastOrder:0,
+          isRegistered:false, uid:null, profile:null
+        };
+        map[key].orders.push(o);
+        map[key].totalSpent += Number(o.totalPrice)||0;
+        const t = Number(o.createdAt)||0;
+        if(t > map[key].lastOrder) map[key].lastOrder = t;
+        if(o.email && map[key].email==='—') map[key].email = o.email.toString();
+      }catch(e){ console.warn('order parse error:', e.message, o); }
     });
-    _allCustomers=Object.values(map).sort((a,b)=>b.lastOrder-a.lastOrder);
-    renderCustomers(_allCustomers);
-  }catch(err){console.error(err);showToast('خطأ في تحميل العملاء','error')}
-  finally{hideSpinner()}
+
+    // ── 4. ربط / إضافة المستخدمين المسجّلين ────────────────────
+    Object.entries(usersRaw).forEach(([uid, u])=>{
+      try{
+        if(!u || typeof u!=='object') return;
+        const phone = (u.phone||'').toString().trim();
+        const email = (u.email||'').toString().trim();
+        const name  = (u.displayName||u.name||'').toString().trim();
+
+        // حاول تلاقي مدخل موجود بالتليفون أولاً
+        let found = phone && map[phone] ? map[phone] : null;
+
+        // لو مش لاقيه، دور بالإيميل
+        if(!found && email){
+          found = Object.values(map).find(c=>
+            c.email===email ||
+            c.orders.some(o=>(o.email||'')=== email)
+          ) || null;
+        }
+
+        if(found){
+          found.isRegistered = true;
+          found.uid     = uid;
+          found.profile = u;
+          if(phone && found.phone==='—') found.phone = phone;
+          if(email && found.email==='—') found.email = email;
+          if(name  && found.name ==='—') found.name  = name;
+        } else {
+          // مستخدم مسجّل بدون طلبات خالص
+          const key = phone || email || uid;
+          map[key]={
+            name: name || email || '—',
+            phone: phone||'—',
+            email: email||'—',
+            orders:[], totalSpent:0,
+            lastOrder: Number(u.createdAt)||0,
+            isRegistered:true, uid, profile:u
+          };
+        }
+      }catch(e){ console.warn('user parse error:', e.message, uid); }
+    });
+
+    // ── 5. ترتيب وعرض ──────────────────────────────────────────
+    _allCustomers = Object.values(map).sort((a,b)=>b.lastOrder-a.lastOrder);
+
+    const regCount     = _allCustomers.filter(c=>c.isRegistered).length;
+    const guestCount   = _allCustomers.filter(c=>!c.isRegistered && c.orders.length>0).length;
+    const noOrderCount = _allCustomers.filter(c=>c.isRegistered && c.orders.length===0).length;
+    const _se=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+    _se('cstat-all',        _allCustomers.length);
+    _se('cstat-registered', regCount);
+    _se('cstat-orders-only',guestCount);
+    _se('cstat-no-orders',  noOrderCount);
+
+    filterCustomers();
+
+  }catch(err){
+    console.error('loadCustomers critical error:', err);
+    showToast('خطأ في تحميل العملاء: ' + err.message, 'error');
+  }finally{ hideSpinner(); }
+}
+function setCustomerTab(tab){
+  _customerTab=tab;
+  ['all','registered','guest','noorder'].forEach(t=>{
+    document.getElementById('ctab-'+t)?.classList.toggle('active',t===tab);
+  });
+  filterCustomers();
 }
 function filterCustomers(){
   const q=(document.getElementById('customer-search')?.value||'').toLowerCase().trim();
-  renderCustomers(q?_allCustomers.filter(c=>c.name.toLowerCase().includes(q)||c.phone.includes(q)):_allCustomers);
+  let list=_allCustomers;
+  if(_customerTab==='registered') list=list.filter(c=>c.isRegistered);
+  else if(_customerTab==='guest')  list=list.filter(c=>!c.isRegistered && c.orders.length>0);
+  else if(_customerTab==='noorder')list=list.filter(c=>c.isRegistered && c.orders.length===0);
+  if(q) list=list.filter(c=>
+    c.name.toLowerCase().includes(q)||
+    c.phone.includes(q)||
+    (c.email||'').toLowerCase().includes(q)
+  );
+  renderCustomers(list);
 }
 function renderCustomers(customers){
   const grid=document.getElementById('customers-grid');
   if(!customers.length){grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">👥</div><h3>لا يوجد عملاء</h3></div>`;return;}
   grid.innerHTML=customers.map(c=>{
-    const pendingCount=c.orders.filter(o=>o.status==='pending').length;
-    const deliveredCount=c.orders.filter(o=>o.status==='delivered').length;
-    const avgOrder=c.orders.length?Math.round(c.totalSpent/c.orders.length):0;
+    const pendingCount   = c.orders.filter(o=>o.status==='pending').length;
+    const deliveredCount = c.orders.filter(o=>o.status==='delivered').length;
+    const avgOrder       = c.orders.length ? Math.round(c.totalSpent/c.orders.length) : 0;
+    const joinDate       = c.profile?.createdAt ? formatDate(c.profile.createdAt) : null;
+    const email          = c.email && c.email!=='—' ? c.email : (c.profile?.email||null);
+    const addressCount   = c.profile?.addresses ? Object.keys(c.profile.addresses).length : 0;
+
+    const regBadge = c.isRegistered
+      ? `<span style="background:rgba(0,200,83,.12);color:var(--success);border:1px solid rgba(0,200,83,.25);border-radius:99px;padding:.05rem .5rem;font-size:.6rem;font-family:var(--font-mono);font-weight:700">✅ مسجّل</span>`
+      : `<span style="background:rgba(255,255,255,.06);color:var(--text-muted);border:1px solid var(--border);border-radius:99px;padding:.05rem .5rem;font-size:.6rem;font-family:var(--font-mono)">🛒 زبون فقط</span>`;
+
+    const vipBadge = c.orders.length>3
+      ? `<span style="background:rgba(255,179,0,.12);color:var(--accent-gold);border:1px solid rgba(255,179,0,.2);border-radius:99px;padding:.05rem .45rem;font-size:.62rem;font-family:var(--font-mono)">⭐ VIP</span>` : '';
+
     return`<div class="customer-card" onclick='openCustomerDrawer(${JSON.stringify(c)})'>
-      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.85rem">
-        <div style="width:42px;height:42px;border-radius:50%;background:rgba(255,61,0,.12);border:1.5px solid rgba(255,61,0,.25);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.2rem;color:var(--accent);flex-shrink:0">
+      <!-- Header -->
+      <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem">
+        <div style="width:44px;height:44px;border-radius:50%;background:${c.isRegistered?'rgba(0,200,83,.12)':'rgba(255,61,0,.12)'};border:1.5px solid ${c.isRegistered?'rgba(0,200,83,.35)':'rgba(255,61,0,.25)'};display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.2rem;color:${c.isRegistered?'var(--success)':'var(--accent)'};flex-shrink:0">
           ${(c.name||'؟').charAt(0).toUpperCase()}
         </div>
         <div style="flex:1;min-width:0">
-          <div class="customer-name" style="margin-bottom:.1rem">${esc(c.name)}</div>
-          <div style="font-size:.75rem;color:var(--text-muted);display:flex;align-items:center;gap:.4rem">
-            📱 ${esc(c.phone||'—')}
-            ${c.orders.length>3?`<span style="background:rgba(255,179,0,.12);color:var(--accent-gold);border:1px solid rgba(255,179,0,.2);border-radius:99px;padding:.05rem .45rem;font-size:.62rem;font-family:var(--font-mono)">VIP</span>`:''}
+          <div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:.2rem">
+            <span class="customer-name" style="margin-bottom:0">${esc(c.name)}</span>
+            ${vipBadge}
           </div>
+          <div style="display:flex;gap:.35rem;flex-wrap:wrap">${regBadge}</div>
         </div>
       </div>
+
+      <!-- Contact Info -->
+      <div style="display:flex;flex-direction:column;gap:.28rem;margin-bottom:.75rem">
+        <div style="font-size:.78rem;color:var(--text-muted);display:flex;align-items:center;gap:.4rem">
+          <span>📱</span><span style="color:var(--text-secondary);font-family:var(--font-mono);font-size:.75rem">${esc(c.phone||'—')}</span>
+        </div>
+        ${email?`<div style="font-size:.75rem;color:var(--text-muted);display:flex;align-items:center;gap:.4rem;min-width:0">
+          <span>📧</span><span style="color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px">${esc(email)}</span>
+        </div>`:''}
+        ${joinDate?`<div style="font-size:.72rem;color:var(--text-muted);display:flex;align-items:center;gap:.4rem">
+          <span>📅</span><span>تسجيل: ${joinDate}</span>
+        </div>`:''}
+        ${addressCount?`<div style="font-size:.72rem;color:var(--text-muted);display:flex;align-items:center;gap:.4rem">
+          <span>📍</span><span>${addressCount} عنوان محفوظ</span>
+        </div>`:''}
+      </div>
+
+      <!-- Stats -->
       <div class="customer-stats">
         <div class="cstat"><div class="cstat-val">${c.orders.length}</div><div class="cstat-lbl">طلبات</div></div>
-        <div class="cstat"><div class="cstat-val" style="font-size:.9rem">${Number(c.totalSpent).toLocaleString()}<span style="font-size:.55rem"> EGP</span></div><div class="cstat-lbl">إجمالي</div></div>
-        <div class="cstat"><div class="cstat-val" style="font-size:.9rem">${Number(avgOrder).toLocaleString()}<span style="font-size:.55rem"> EGP</span></div><div class="cstat-lbl">متوسط</div></div>
+        <div class="cstat"><div class="cstat-val" style="font-size:.88rem">${Number(c.totalSpent).toLocaleString()}<span style="font-size:.52rem"> ج</span></div><div class="cstat-lbl">إجمالي</div></div>
+        <div class="cstat"><div class="cstat-val" style="font-size:.88rem">${Number(avgOrder).toLocaleString()}<span style="font-size:.52rem"> ج</span></div><div class="cstat-lbl">متوسط</div></div>
       </div>
-      <div style="display:flex;justify-content:space-between;margin-top:.75rem;padding-top:.65rem;border-top:1px solid var(--border);font-size:.72rem;color:var(--text-muted)">
-        <span>✅ ${deliveredCount} مكتملة · ⏳ ${pendingCount} انتظار</span>
-        <span>${formatDate(c.lastOrder)}</span>
+
+      <!-- Footer -->
+      <div style="display:flex;justify-content:space-between;margin-top:.7rem;padding-top:.6rem;border-top:1px solid var(--border);font-size:.7rem;color:var(--text-muted)">
+        ${c.orders.length ? `<span>✅ ${deliveredCount} مكتملة · ⏳ ${pendingCount} انتظار</span>` : `<span style="color:var(--text-muted)">لا توجد طلبات بعد</span>`}
+        <span>${c.lastOrder ? formatDate(c.lastOrder) : '—'}</span>
       </div>
     </div>`;
   }).join('');
@@ -1674,11 +1997,22 @@ function renderCustomerDrawerContent(customer, profile, uid){
         <div style="font-weight:800;font-size:1rem;color:var(--text-primary);margin-bottom:.2rem">${esc(customer.name)}</div>
         <div style="font-size:.78rem;color:var(--text-muted)">${profile?'👤 حساب مسجّل':'👤 زبون بدون حساب'}</div>
       </div>
-      ${phone?`<a href="https://wa.me/2${phone.replace(/^0/,'')}" target="_blank" style="background:#25D366;color:#fff;border:none;border-radius:var(--radius-sm);padding:.5rem .85rem;font-size:.78rem;font-weight:700;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:.3rem;flex-shrink:0">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        واتساب
-      </a>`:''}
+      <div style="display:flex;flex-direction:column;gap:.4rem;flex-shrink:0;align-items:flex-end">
+        ${phone?`<a href="https://wa.me/2${phone.replace(/^0/,'')}" target="_blank" style="background:#25D366;color:#fff;border:none;border-radius:var(--radius-sm);padding:.42rem .7rem;font-size:.73rem;font-weight:700;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:.3rem">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          واتساب
+        </a>`:''}
+        <button class="btn btn-secondary btn-sm" style="font-size:.72rem;padding:.38rem .65rem" onclick='openEditCustomerModal(${JSON.stringify({uid, name:customer.name, phone, email, profile})})'>✏️ تعديل</button>
+      </div>
     </div>
+    ${uid?`<!-- Danger Zone -->
+    <div style="background:rgba(255,23,68,.05);border:1px solid rgba(255,23,68,.18);border-radius:var(--radius-md);padding:.9rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;gap:.75rem;flex-wrap:wrap">
+      <div>
+        <div style="font-size:.8rem;font-weight:700;color:var(--danger);margin-bottom:.15rem">🗑️ حذف الأكونت</div>
+        <div style="font-size:.7rem;color:var(--text-muted)">حذف البيانات من Firebase — الطلبات مش هتتأثر</div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="confirmDeleteCustomer('${uid}','${esc(customer.name)}')">حذف الأكونت</button>
+    </div>`:''}
 
     <!-- Contact Details -->
     <div class="order-detail-section">
@@ -1787,6 +2121,97 @@ function closeCustomerDrawer(){
   document.getElementById('customer-drawer').classList.remove('open');
 }
 
+// ══ EDIT / DELETE CUSTOMER ══
+let _editingCustomerUid = null;
+
+function openEditCustomerModal(data){
+  _editingCustomerUid = data.uid || null;
+  document.getElementById('ec-name').value  = data.name  || '';
+  document.getElementById('ec-phone').value = data.phone && data.phone!=='—' ? data.phone : '';
+  document.getElementById('ec-email').value = data.email && data.email!=='—' ? data.email : '';
+  document.getElementById('fg-ec-name').classList.remove('has-error');
+  document.getElementById('ec-delete-confirm').style.display = 'none';
+  // Show delete btn only if has a uid (registered account)
+  document.getElementById('ec-show-delete-btn').style.display = _editingCustomerUid ? 'inline-flex' : 'none';
+  document.getElementById('edit-customer-modal').style.display = 'flex';
+}
+
+function closeEditCustomerModal(){
+  document.getElementById('edit-customer-modal').style.display = 'none';
+  _editingCustomerUid = null;
+}
+
+async function saveEditCustomer(){
+  const name  = document.getElementById('ec-name').value.trim();
+  const phone = document.getElementById('ec-phone').value.trim();
+  const email = document.getElementById('ec-email').value.trim();
+
+  // Validate
+  const fg = document.getElementById('fg-ec-name');
+  if(!name){ fg.classList.add('has-error'); return; }
+  fg.classList.remove('has-error');
+
+  if(!_editingCustomerUid){
+    showToast('هذا العميل ليس لديه حساب مسجّل للتعديل','error');
+    return;
+  }
+
+  const btn = document.getElementById('ec-save-btn');
+  btn.disabled = true;
+  btn.textContent = 'جاري الحفظ...';
+
+  try{
+    const updates = {};
+    if(name)  updates.displayName = name;
+    if(phone) updates.phone = phone;
+    if(email) updates.email = email;
+    await db.ref('users/' + _editingCustomerUid).update(updates);
+    showToast('تم تحديث بيانات العميل بنجاح ✅','success');
+    closeEditCustomerModal();
+    closeCustomerDrawer();
+    loadCustomers();
+  }catch(err){
+    console.error(err);
+    showToast('حدث خطأ أثناء التحديث: ' + err.message,'error');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = '💾 حفظ التعديلات';
+  }
+}
+
+function confirmDeleteCustomer(uid, name){
+  // Called from drawer danger zone button
+  _editingCustomerUid = uid;
+  // Open edit modal pre-filled and show confirm panel directly
+  document.getElementById('ec-name').value  = name || '';
+  document.getElementById('ec-phone').value = '';
+  document.getElementById('ec-email').value = '';
+  document.getElementById('fg-ec-name').classList.remove('has-error');
+  document.getElementById('ec-show-delete-btn').style.display = 'inline-flex';
+  document.getElementById('ec-delete-confirm').style.display  = 'block';
+  document.getElementById('edit-customer-modal').style.display = 'flex';
+}
+
+async function executeDeleteCustomer(){
+  if(!_editingCustomerUid){ showToast('لا يوجد UID للحذف','error'); return; }
+  const btn = document.getElementById('ec-delete-confirm-btn');
+  btn.disabled = true;
+  btn.textContent = 'جاري الحذف...';
+  try{
+    await db.ref('users/' + _editingCustomerUid).remove();
+    showToast('تم حذف بيانات الأكونت بنجاح 🗑️','success');
+    closeEditCustomerModal();
+    closeCustomerDrawer();
+    loadCustomers();
+  }catch(err){
+    console.error(err);
+    showToast('خطأ أثناء الحذف: ' + err.message,'error');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = '🗑️ نعم، احذف الأكونت';
+  }
+}
+
 // ══ PROMO CODES ══
 let editingPromoId=null;
 function togglePromoType(){
@@ -1835,7 +2260,8 @@ function populatePromoTargets(promo){
 async function savePromo(){
   const code=document.getElementById('pm-code').value.trim().toUpperCase();
   const type=document.getElementById('pm-type').value;
-  const discount=parseFloat(document.getElementById('pm-discount').value);
+  const discountRaw=document.getElementById('pm-discount').value.trim();
+  const discount=discountRaw?parseFloat(discountRaw):null;
   const message=document.getElementById('pm-message').value.trim();
   const expiry=document.getElementById('pm-expiry').value;
   const active=document.getElementById('pm-active').value==='true';
@@ -1844,26 +2270,69 @@ async function savePromo(){
   // targets
   const targetProducts=[...document.querySelectorAll('#pm-products-list input:checked')].map(i=>i.value);
   const targetGovs=[...document.querySelectorAll('#pm-govs-list input:checked')].map(i=>i.value);
+
+  // Validation
   let valid=true;
-  if(!code){document.getElementById('fg-pcode').classList.add('has-error');valid=false}else document.getElementById('fg-pcode').classList.remove('has-error');
-  if(type!=='freeship'&&(isNaN(discount)||discount<1||discount>100)){showToast('أدخل نسبة خصم صحيحة (1-100)','error');valid=false;}
-  if(!message){showToast('الرسالة مطلوبة','error');valid=false;}
+  if(!code){document.getElementById('fg-pcode').classList.add('has-error');valid=false}
+  else document.getElementById('fg-pcode').classList.remove('has-error');
+  if((type==='discount'||type==='both')&&(!discount||discount<1||discount>100)){
+    showToast('أدخل نسبة خصم صحيحة (1-100)','error');valid=false;
+  }
   if(!valid)return;
-  const btn=document.getElementById('promo-save-btn');btn.disabled=true;btn.textContent='جاري الحفظ...';
-  const data={code,type,message,active,targetProducts,targetGovs,updatedAt:Date.now()};
-  if(type!=='freeship') data.discount=discount;
-  if(expiry) data.expiry=expiry;
-  if(maxUse) data.maxUse=maxUse;
+
+  const btn=document.getElementById('promo-save-btn');
+  btn.disabled=true;btn.textContent='جاري الحفظ...';
+
   try{
-    if(editingPromoId){await db.ref('promoCodes/'+editingPromoId).update(data);showToast('تم تحديث الكود ✓','success')}
-    else{
-      const snap=await db.ref('promoCodes').orderByChild('code').equalTo(code).get();
-      if(snap.exists()){showToast('الكود ده موجود بالفعل!','error');btn.disabled=false;btn.textContent='💾 حفظ الكود';return;}
-      data.createdAt=Date.now();await db.ref('promoCodes').push(data);showToast('تم إضافة الكود ✓','success');
+    // Check for duplicate code (skip own id on edit)
+    const allSnap=await db.ref('promoCodes').get();
+    if(allSnap.exists()){
+      let dupFound=false;
+      allSnap.forEach(child=>{
+        if((child.val().code||'').toUpperCase()===code && child.key!==editingPromoId){
+          dupFound=true;
+        }
+      });
+      if(dupFound){
+        showToast('الكود ده موجود بالفعل!','error');
+        btn.disabled=false;btn.textContent='💾 حفظ الكود';
+        return;
+      }
     }
-    closePromoModal();await loadPromos();
-  }catch(err){console.error(err);showToast('خطأ: '+err.message,'error')}
-  finally{btn.disabled=false;btn.textContent='💾 حفظ الكود'}
+
+    const data={
+      code,type,
+      message: message || `تم تطبيق كود ${code}! 🎉`,
+      active,
+      targetProducts,
+      targetGovs,
+      updatedAt:Date.now()
+    };
+    // Only set discount if needed
+    if(type!=='freeship' && discount) data.discount=discount;
+    else data.discount=null; // clear if switched to freeship
+    // expiry: set or clear
+    data.expiry=expiry||null;
+    // maxUse: set or clear
+    data.maxUse=maxUse||null;
+
+    if(editingPromoId){
+      await db.ref('promoCodes/'+editingPromoId).update(data);
+      showToast('تم تحديث الكود ✓','success');
+    } else {
+      data.createdAt=Date.now();
+      data.useCount=0;
+      await db.ref('promoCodes').push(data);
+      showToast('تم إضافة الكود ✓','success');
+    }
+    closePromoModal();
+    await loadPromos();
+  }catch(err){
+    console.error(err);
+    showToast('خطأ: '+err.message,'error');
+  }finally{
+    btn.disabled=false;btn.textContent='💾 حفظ الكود';
+  }
 }
 async function togglePromoActive(id,current){
   try{await db.ref('promoCodes/'+id).update({active:!current});showToast(!current?'تم تفعيل الكود ✓':'تم تعطيل الكود','info');await loadPromos()}
@@ -1874,14 +2343,39 @@ async function deletePromo(id){
   try{await db.ref('promoCodes/'+id).remove();showToast('تم حذف الكود','info');await loadPromos()}
   catch{showToast('فشل الحذف','error')}
 }
+async function resetPromoCount(id){
+  if(!confirm('إعادة تصفير عداد الاستخدام لهذا الكود؟'))return;
+  try{await db.ref('promoCodes/'+id+'/useCount').set(0);showToast('تم تصفير العداد ✓','success');await loadPromos()}
+  catch{showToast('فشل التصفير','error')}
+}
 async function loadPromos(){
   showSpinner('جاري التحميل...');
   try{
     await loadProductsData(); // make sure products loaded for targeting UI
     const snap=await db.ref('promoCodes').get();
-    renderPromos(objToArr(snap.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)));
+    const all=objToArr(snap.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    // stats
+    const today=new Date().toISOString().slice(0,10);
+    const activeCount=all.filter(p=>p.active!==false&&(!p.expiry||p.expiry>=today)).length;
+    const inactiveCount=all.length-activeCount;
+    const totalUses=all.reduce((s,p)=>s+(p.useCount||0),0);
+    const setEl=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+    setEl('pstat-total',all.length);
+    setEl('pstat-active',activeCount);
+    setEl('pstat-expired',inactiveCount);
+    setEl('pstat-uses',totalUses);
+    window._allPromos=all;
+    filterPromos();
   }catch(err){console.error(err);showToast('خطأ في تحميل الأكواد','error')}
   finally{hideSpinner()}
+}
+function filterPromos(){
+  const q=(document.getElementById('promo-search')?.value||'').trim().toLowerCase();
+  if(!window._allPromos)return;
+  const filtered=q
+    ?window._allPromos.filter(p=>(p.code||'').toLowerCase().includes(q)||(p.message||'').toLowerCase().includes(q))
+    :window._allPromos;
+  renderPromos(filtered);
 }
 async function loadProductsData(){
   if(_allProducts.length) return;
@@ -1897,23 +2391,36 @@ function renderPromos(promos){
   list.innerHTML=promos.map(p=>{
     const expired=p.expiry&&p.expiry<now;
     const inactive=p.active===false;
-    const discInfo=p.type!=='freeship'&&p.discount?` — ${p.discount}%`:'';
-    const expiryHtml=p.expiry?`<span class="promo-expiry ${expired?'promo-expired':''}">${expired?'❌ منتهي':'⏰ '+p.expiry}</span>`:`<span class="promo-expiry">∞ بلا تاريخ</span>`;
-    // targets display
-    const prodTags=(p.targetProducts||[]).length?`<div style="margin-top:.35rem">${p.targetProducts.map(id=>{const pr=_allProducts.find(x=>x.id===id);return`<span class="target-tag">${pr?esc(pr.name):id}</span>`}).join('')}</div>`:'';
-    const govTags=(p.targetGovs||[]).length?`<div style="margin-top:.25rem">${p.targetGovs.map(k=>{const g=EGYPT_GOVS.find(x=>x.key===k);return`<span class="target-tag">📍${g?g.name:k}</span>`}).join('')}</div>`:'';
-    return`<div class="${inactive?'promo-row promo-inactive':'promo-row'}">
+    const discInfo=(p.type!=='freeship'&&p.discount)?` — ${p.discount}%`:'';
+    const expiryHtml=p.expiry
+      ?`<span class="promo-expiry ${expired?'promo-expired':''}">${expired?'❌ منتهي':'⏰ '+p.expiry}</span>`
+      :`<span class="promo-expiry">∞ بلا تاريخ</span>`;
+    const useCount=p.useCount||0;
+    const maxUseDisplay=p.maxUse
+      ?`<span style="font-family:var(--font-mono);font-size:.68rem;color:${useCount>=p.maxUse?'var(--danger)':'var(--text-muted)'}">🔢 ${useCount}/${p.maxUse} استخدام</span>`
+      :`<span style="font-family:var(--font-mono);font-size:.68rem;color:var(--text-muted)">🔢 ${useCount} استخدام</span>`;
+    const prodTags=(p.targetProducts||[]).length
+      ?`<div style="margin-top:.3rem">${p.targetProducts.map(id=>{const pr=_allProducts.find(x=>x.id===id);return`<span class="target-tag">${pr?esc(pr.name):id}</span>`}).join('')}</div>`:''  ;
+    const govTags=(p.targetGovs||[]).length
+      ?`<div style="margin-top:.25rem">${p.targetGovs.map(k=>{const g=EGYPT_GOVS.find(x=>x.key===k);return`<span class="target-tag">📍${g?g.name:k}</span>`}).join('')}</div>`:'';
+    const promoObj={code:p.code,type:p.type,discount:p.discount||'',message:p.message||'',expiry:p.expiry||'',active:p.active!==false,maxUse:p.maxUse||'',targetProducts:p.targetProducts||[],targetGovs:p.targetGovs||[]};
+    return`<div class="promo-row${inactive?' promo-inactive':''}">
       <span class="promo-code">${esc(p.code)}</span>
       <div>
-        <span class="promo-type-tag ${typeCls[p.type]||'promo-discount'}">${typeLabel[p.type]||p.type}${discInfo}</span>
-        <div class="promo-msg">"${esc(p.message)}"</div>
-        ${p.maxUse?`<div style="font-size:.7rem;color:var(--text-muted);margin-top:.2rem">🔢 الاستخدام: <span style="color:${(p.usageCount||0)>=p.maxUse?'var(--danger)':'var(--accent-gold)'}">${p.usageCount||0}/${p.maxUse}</span></div>`:p.usageCount?`<div style="font-size:.7rem;color:var(--text-muted);margin-top:.2rem">🔢 استُخدم: ${p.usageCount} مرة</div>`:''}
+        <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.3rem">
+          <span class="promo-type-tag ${typeCls[p.type]||'promo-discount'}">${typeLabel[p.type]||p.type}${discInfo}</span>
+          ${maxUseDisplay}
+        </div>
+        <div class="promo-msg">"${esc(p.message||'—')}"</div>
         ${prodTags}${govTags}
       </div>
       ${expiryHtml}
       <span class="status-badge ${p.active!==false?'s-confirmed':'s-pending'}">${p.active!==false?'✅ مفعّل':'⏸ معطّل'}</span>
-      <button class="btn btn-secondary btn-sm" onclick='openEditPromoModal(${JSON.stringify(p.id)},${JSON.stringify({code:p.code,type:p.type,discount:p.discount||"",message:p.message,expiry:p.expiry||"",active:p.active!==false,maxUse:p.maxUse||"",targetProducts:p.targetProducts||[],targetGovs:p.targetGovs||[]})})'>تعديل</button>
-      <button class="btn btn-danger btn-sm" onclick="deletePromo('${p.id}')">حذف</button>
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+        <button class="btn btn-secondary btn-sm" onclick='openEditPromoModal(${JSON.stringify(p.id)},${JSON.stringify(promoObj)})'>✏️ تعديل</button>
+        <button class="btn btn-danger btn-sm" onclick="deletePromo('${p.id}')">🗑 حذف</button>
+        <button class="btn btn-sm" style="background:rgba(0,200,83,.1);color:var(--success);border:1px solid rgba(0,200,83,.2)" onclick="resetPromoCount('${p.id}')">↺ صفّر</button>
+      </div>
     </div>`;
   }).join('');
 }
@@ -2768,21 +3275,31 @@ async function deleteAd(id){
 }
 </script>
 <div id="page-sound" class="page">
-  <nav class="navbar"><div class="nav-inner">
-    <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
-    <ul class="nav-links">
-      <li><a onclick="navigate('dashboard')">الرئيسية</a></li>
-      <li><a onclick="navigate('orders')">الطلبات</a></li>
-      <li><a onclick="navigate('products')">المنتجات</a></li>
-      <li><a onclick="navigate('customers')">العملاء</a></li>
-      <li><a onclick="navigate('promos')">أكواد الخصم</a></li>
-      <li><a onclick="navigate('shipping')">الشحن</a></li>
-      <li><a onclick="navigate('reviews')">التقييمات</a></li>
-      <li><a class="active">🔊 الصوت</a></li>
-      <li><a onclick="navigate('ads')">📢 الإعلانات</a></li>
-    </ul>
-    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
-  </div></nav>
+  <div class="app-layout">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
   <main class="page-container">
     <div class="page-header">
       <div class="page-header-title"><span class="label">إعدادات</span><h1>صوت الطلب</h1></div>
@@ -2828,24 +3345,36 @@ async function deleteAd(id){
       </div>
     </div>
   </main>
+  </div>
+</div>
 </div>
 <!-- ══ ADS MANAGEMENT PAGE ══ -->
 <div id="page-ads" class="page">
-  <nav class="navbar"><div class="nav-inner">
-    <div class="nav-logo" onclick="navigate('dashboard')">PIT <span>HOUSE</span> <small>ADMIN</small></div>
-    <ul class="nav-links">
-      <li><a onclick="navigate('dashboard')">الرئيسية</a></li>
-      <li><a onclick="navigate('orders')">الطلبات</a></li>
-      <li><a onclick="navigate('products')">المنتجات</a></li>
-      <li><a onclick="navigate('customers')">العملاء</a></li>
-      <li><a onclick="navigate('promos')">أكواد الخصم</a></li>
-      <li><a onclick="navigate('shipping')">الشحن</a></li>
-      <li><a onclick="navigate('reviews')">التقييمات</a></li>
-      <li><a onclick="navigate('sound')">🔊 الصوت</a></li>
-      <li><a class="active">📢 الإعلانات</a></li>
-    </ul>
-    <button class="btn btn-secondary btn-sm" onclick="doLogout()">خروج</button>
-  </div></nav>
+  <div class="app-layout">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
   <main class="page-container">
     <div class="page-header">
       <div class="page-header-title"><span class="label">إدارة الشريط الإعلاني</span><h1>الإعلانات</h1></div>
@@ -2868,6 +3397,48 @@ async function deleteAd(id){
       <div class="empty-state"><div class="empty-icon">📢</div><h3>لا توجد إعلانات</h3><p>اضغط "+ إضافة إعلان" لإنشاء إعلان جديد في شريط العروض</p></div>
     </div>
   </main>
+  </div>
+</div>
+</div>
+
+<!-- ══ EDIT CUSTOMER MODAL ══ -->
+<div id="edit-customer-modal" class="modal-backdrop" style="display:none" onclick="if(event.target===this)closeEditCustomerModal()">
+  <div class="modal-box" style="max-width:480px">
+    <h2>✏️ تعديل بيانات العميل</h2>
+
+    <div class="form-group" id="fg-ec-name">
+      <label class="form-label">الاسم *</label>
+      <input type="text" class="form-control" id="ec-name" placeholder="الاسم الكامل"/>
+      <span class="form-error">الاسم مطلوب</span>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">رقم التليفون</label>
+      <input type="text" class="form-control" id="ec-phone" placeholder="01xxxxxxxxx" style="font-family:var(--font-mono)"/>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">البريد الإلكتروني</label>
+      <input type="email" class="form-control" id="ec-email" placeholder="example@email.com"/>
+      <div class="form-hint">تغيير الإيميل هنا بيغيّر البيانات في Realtime DB بس — مش في Firebase Auth</div>
+    </div>
+
+    <!-- Confirm Delete inside modal (hidden by default) -->
+    <div id="ec-delete-confirm" style="display:none;background:rgba(255,23,68,.07);border:1px solid rgba(255,23,68,.25);border-radius:var(--radius-md);padding:1rem;margin-top:1rem">
+      <div style="font-size:.85rem;font-weight:700;color:var(--danger);margin-bottom:.4rem">⚠️ تأكيد حذف الأكونت</div>
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.85rem">هيتحذف بيانات المستخدم من Firebase Realtime Database. الطلبات القديمة هتفضل موجودة.</div>
+      <div style="display:flex;gap:.6rem">
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('ec-delete-confirm').style.display='none'">إلغاء</button>
+        <button class="btn btn-danger" id="ec-delete-confirm-btn" onclick="executeDeleteCustomer()">🗑️ نعم، احذف الأكونت</button>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-danger btn-sm" id="ec-show-delete-btn" onclick="document.getElementById('ec-delete-confirm').style.display='block'" style="margin-left:auto">🗑️ حذف الأكونت</button>
+      <button class="btn btn-secondary" onclick="closeEditCustomerModal()">إلغاء</button>
+      <button class="btn btn-primary" id="ec-save-btn" onclick="saveEditCustomer()">💾 حفظ التعديلات</button>
+    </div>
+  </div>
 </div>
 
 <!-- ══ AD MODAL ══ -->
