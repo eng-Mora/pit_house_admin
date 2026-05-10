@@ -330,6 +330,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -380,6 +381,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -432,6 +434,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -488,6 +491,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -525,61 +529,7 @@
         <div class="stat-label">عدد الفواتير</div>
       </div>
     </div>
-    <!-- ══ إدارة السيولة ══ -->
-    <div style="background:var(--bg-card);border:1px solid rgba(255,179,0,.25);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.75rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem">
-        <div>
-          <div style="font-family:var(--font-mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-gold);margin-bottom:.25rem">إدارة السيولة</div>
-          <div style="font-family:var(--font-display);font-size:1.3rem;letter-spacing:.06em">💰 الكاشير</div>
-        </div>
-        <div style="background:var(--bg-secondary);border:1px solid rgba(255,179,0,.2);border-radius:var(--radius-md);padding:.85rem 1.5rem;text-align:center">
-          <div id="liquidity-balance" style="font-family:var(--font-display);font-size:2rem;color:var(--success);line-height:1">—</div>
-          <div style="font-family:var(--font-mono);font-size:.62rem;color:var(--text-muted);margin-top:.2rem">رصيد السيولة الفعلي</div>
-        </div>
-      </div>
 
-      <!-- إضافة / سحب -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
-        <!-- إضافة سيولة -->
-        <div style="background:rgba(0,200,83,.05);border:1px solid rgba(0,200,83,.2);border-radius:var(--radius-md);padding:1.1rem">
-          <div style="font-weight:800;color:var(--success);margin-bottom:.85rem;font-size:.9rem">➕ إيداع / إضافة سيولة</div>
-          <div class="form-group" style="margin-bottom:.75rem">
-            <label class="form-label">المبلغ (جنيه)</label>
-            <input type="number" class="form-control" id="liq-deposit-amount" placeholder="أدخل المبلغ" min="1" style="border-color:rgba(0,200,83,.3)"/>
-          </div>
-          <div class="form-group" style="margin-bottom:.85rem">
-            <label class="form-label">ملاحظة (اختياري)</label>
-            <input type="text" class="form-control" id="liq-deposit-note" placeholder="مثال: إيداع من المبيعات" style="border-color:rgba(0,200,83,.3)"/>
-          </div>
-          <button class="btn btn-success btn-full" onclick="addLiquidity()">💵 إضافة سيولة</button>
-        </div>
-
-        <!-- سحب سيولة -->
-        <div style="background:rgba(255,23,68,.05);border:1px solid rgba(255,23,68,.2);border-radius:var(--radius-md);padding:1.1rem">
-          <div style="font-weight:800;color:var(--danger);margin-bottom:.85rem;font-size:.9rem">➖ سحب / صرف سيولة</div>
-          <div class="form-group" style="margin-bottom:.75rem">
-            <label class="form-label">المبلغ (جنيه)</label>
-            <input type="number" class="form-control" id="liq-withdraw-amount" placeholder="أدخل المبلغ" min="1" style="border-color:rgba(255,23,68,.3)"/>
-          </div>
-          <div class="form-group" style="margin-bottom:.85rem">
-            <label class="form-label">ملاحظة (اختياري)</label>
-            <input type="text" class="form-control" id="liq-withdraw-note" placeholder="مثال: صرف مصاريف تشغيل" style="border-color:rgba(255,23,68,.3)"/>
-          </div>
-          <button class="btn btn-danger btn-full" onclick="withdrawLiquidity()">💸 سحب سيولة</button>
-        </div>
-      </div>
-
-      <!-- سجل حركات السيولة -->
-      <div style="margin-top:1.25rem">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
-          <div style="font-family:var(--font-mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)">آخر حركات السيولة</div>
-          <button class="btn btn-secondary btn-sm" onclick="loadLiquidityLog()">🔄 تحديث</button>
-        </div>
-        <div id="liquidity-log" style="max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:.4rem">
-          <div style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.82rem">جاري التحميل...</div>
-        </div>
-      </div>
-    </div>
 
     <!-- فلتر -->
     <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap">
@@ -708,6 +658,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -768,6 +719,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -842,6 +794,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -870,6 +823,123 @@
 </div>
 </div>
 
+<!-- ══ LIQUIDITY PAGE ══ -->
+<div id="page-liquidity" class="page">
+  <div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+      <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
+  <main class="page-container">
+
+    <div class="page-header">
+      <div class="page-header-title">
+        <span class="label">إدارة المال</span>
+        <h1>💰 السيولة</h1>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="loadLiquidityPage()">🔄 تحديث</button>
+      <button class="btn btn-secondary btn-sm" onclick="diagnoseLiquidityLog()" style="font-size:.72rem;color:var(--accent-gold);border-color:rgba(255,179,0,.3)">🔍 تشخيص</button>
+    </div>
+
+    <!-- ══ داشبورد الأرقام ══ -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem">
+      <div class="stat-card" style="border-color:rgba(0,200,83,.3)">
+        <div class="stat-icon">💵</div>
+        <div class="stat-value" id="liq-stat-balance" style="color:var(--success)">—</div>
+        <div class="stat-label">رصيد السيولة</div>
+      </div>
+      <div class="stat-card" style="border-color:rgba(0,200,83,.2)">
+        <div class="stat-icon">⬆️</div>
+        <div class="stat-value" id="liq-stat-in" style="color:var(--success)">—</div>
+        <div class="stat-label">إجمالي الداخل</div>
+      </div>
+      <div class="stat-card" style="border-color:rgba(255,23,68,.2)">
+        <div class="stat-icon">⬇️</div>
+        <div class="stat-value" id="liq-stat-out" style="color:var(--danger)">—</div>
+        <div class="stat-label">إجمالي الخارج</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-value" id="liq-stat-count">—</div>
+        <div class="stat-label">عدد الحركات</div>
+      </div>
+    </div>
+
+    <!-- ══ إضافة / سحب ══ -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.75rem">
+      <!-- إضافة سيولة -->
+      <div style="background:rgba(0,200,83,.05);border:1px solid rgba(0,200,83,.2);border-radius:var(--radius-md);padding:1.1rem">
+        <div style="font-weight:800;color:var(--success);margin-bottom:.85rem;font-size:.9rem">➕ إيداع / إضافة سيولة</div>
+        <div class="form-group" style="margin-bottom:.75rem">
+          <label class="form-label">المبلغ (جنيه)</label>
+          <input type="number" class="form-control" id="liq-deposit-amount" placeholder="أدخل المبلغ" min="1" style="border-color:rgba(0,200,83,.3)"/>
+        </div>
+        <div class="form-group" style="margin-bottom:.85rem">
+          <label class="form-label">ملاحظة (اختياري)</label>
+          <input type="text" class="form-control" id="liq-deposit-note" placeholder="مثال: إيداع من المبيعات" style="border-color:rgba(0,200,83,.3)"/>
+        </div>
+        <button class="btn btn-success btn-full" onclick="addLiquidity()">💵 إضافة سيولة</button>
+      </div>
+
+      <!-- سحب سيولة -->
+      <div style="background:rgba(255,23,68,.05);border:1px solid rgba(255,23,68,.2);border-radius:var(--radius-md);padding:1.1rem">
+        <div style="font-weight:800;color:var(--danger);margin-bottom:.85rem;font-size:.9rem">➖ سحب / صرف سيولة</div>
+        <div class="form-group" style="margin-bottom:.75rem">
+          <label class="form-label">المبلغ (جنيه)</label>
+          <input type="number" class="form-control" id="liq-withdraw-amount" placeholder="أدخل المبلغ" min="1" style="border-color:rgba(255,23,68,.3)"/>
+        </div>
+        <div class="form-group" style="margin-bottom:.85rem">
+          <label class="form-label">ملاحظة (اختياري)</label>
+          <input type="text" class="form-control" id="liq-withdraw-note" placeholder="مثال: صرف مصاريف تشغيل" style="border-color:rgba(255,23,68,.3)"/>
+        </div>
+        <button class="btn btn-danger btn-full" onclick="withdrawLiquidity()">💸 سحب سيولة</button>
+      </div>
+    </div>
+
+    <!-- ══ سجل الحركات ══ -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+        <div style="font-family:var(--font-display);font-size:1.2rem;letter-spacing:.06em">📋 سجل الحركات</div>
+        <div style="display:flex;gap:.3rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.2rem">
+          <button id="liq-filter-all" onclick="setLiqFilter('all')" style="font-size:.68rem;padding:.28rem .65rem;border-radius:3px;border:none;cursor:pointer;font-family:var(--font-ar);font-weight:700;background:var(--accent);color:#fff;transition:all .15s">الكل</button>
+          <button id="liq-filter-deposit" onclick="setLiqFilter('deposit')" style="font-size:.68rem;padding:.28rem .65rem;border-radius:3px;border:none;cursor:pointer;font-family:var(--font-ar);font-weight:700;background:transparent;color:var(--success);transition:all .15s">⬆️ داخل</button>
+          <button id="liq-filter-withdraw" onclick="setLiqFilter('withdraw')" style="font-size:.68rem;padding:.28rem .65rem;border-radius:3px;border:none;cursor:pointer;font-family:var(--font-ar);font-weight:700;background:transparent;color:var(--danger);transition:all .15s">⬇️ خارج</button>
+        </div>
+      </div>
+      <!-- ملخص سريع -->
+      <div id="liq-summary" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:1rem"></div>
+      <div id="liquidity-log" style="display:flex;flex-direction:column;gap:.4rem">
+        <div style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.82rem">جاري التحميل...</div>
+      </div>
+    </div>
+
+  </main>
+  </div>
+</div>
+</div>
+
+
 <!-- ══ SHIPPING ══ -->
 <div id="page-shipping" class="page">
   <div class="app-layout">
@@ -892,6 +962,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -935,6 +1006,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -1377,12 +1449,9 @@ function startLiquidityListener(){
   if(_liquidityListener) return;
   _liquidityListener = db.ref('liquidityLog').on('value', ()=>{
     const activePage = [...document.querySelectorAll('.page.active')].map(p=>p.id)[0];
-    if(activePage === 'page-invoices'){
-      updateLiquidityBalance();
+    updateLiquidityBalance();
+    if(activePage === 'page-invoices' || activePage === 'page-liquidity'){
       loadLiquidityLog();
-    } else {
-      // حدّث الرصيد في الخلفية عشان الداشبورد صح
-      updateLiquidityBalance();
     }
   }, err=>{console.error('liquidity listener error:',err)});
 }
@@ -1435,6 +1504,7 @@ function navigate(page){
   if(page==='sound')     loadSoundSettings();
   if(page==='ads')       loadAds();
   if(page==='merchants') loadMerchants();
+  if(page==='liquidity') loadLiquidityPage();
 }
 
 // ══ AUTH ══
@@ -3175,38 +3245,141 @@ async function deleteInvoice(id){
 }
 
 // ══ LIQUIDITY MANAGEMENT ══
+async function loadLiquidityPage(){
+  await Promise.all([updateLiquidityBalance(), loadLiquidityLog()]);
+}
+
 async function loadLiquidityLog(){
   const logEl=document.getElementById('liquidity-log');
   if(!logEl)return;
   try{
     const snap=await db.ref('liquidityLog').get();
     const entries=[];
-    snap.forEach(s=>entries.push({id:s.key,...s.val()}));
+    if(snap.exists()){
+      snap.forEach(s=>{
+        const val=s.val();
+        if(val && typeof val === 'object'){
+          // قبول أي entry فيها amount، حتى لو type مش محدد
+          const entry={id:s.key,...val};
+          if(!entry.type) entry.type='deposit'; // fallback
+          entries.push(entry);
+        }
+      });
+    }
     entries.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-    entries.splice(20);
+    console.log('[LiqLog] loaded entries:', entries.length, entries.map(e=>e.id));
+
+    // حساب ملخص
+    let totalDeposit=0, totalWithdraw=0;
+    entries.forEach(e=>{
+      if(e.type==='deposit') totalDeposit+=Number(e.amount)||0;
+      else if(e.type==='withdraw') totalWithdraw+=Number(e.amount)||0;
+    });
+    const summaryEl=document.getElementById('liq-summary');
+    if(summaryEl){
+      summaryEl.innerHTML=`
+        <div style="background:rgba(0,200,83,.07);border:1px solid rgba(0,200,83,.2);border-radius:var(--radius-sm);padding:.55rem .75rem;text-align:center">
+          <div style="font-family:var(--font-display);font-size:1.05rem;color:var(--success)">+${formatPrice(totalDeposit)}</div>
+          <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--text-muted);margin-top:.1rem">إجمالي المضاف</div>
+        </div>
+        <div style="background:rgba(255,23,68,.07);border:1px solid rgba(255,23,68,.2);border-radius:var(--radius-sm);padding:.55rem .75rem;text-align:center">
+          <div style="font-family:var(--font-display);font-size:1.05rem;color:var(--danger)">-${formatPrice(totalWithdraw)}</div>
+          <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--text-muted);margin-top:.1rem">إجمالي المسحوب</div>
+        </div>
+        <div style="background:rgba(255,179,0,.07);border:1px solid rgba(255,179,0,.2);border-radius:var(--radius-sm);padding:.55rem .75rem;text-align:center">
+          <div style="font-family:var(--font-display);font-size:1.05rem;color:${(totalDeposit-totalWithdraw)>=0?'var(--success)':'var(--danger)'};">${formatPrice(totalDeposit-totalWithdraw)}</div>
+          <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--text-muted);margin-top:.1rem">الصافي</div>
+        </div>`;
+    }
+
+    // حفظ الكل للفلترة (لازم يكون قبل أي return)
+    window._liqAllEntries = entries;
+
     if(!entries.length){
       logEl.innerHTML=`<div style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.82rem">لا توجد حركات سيولة بعد</div>`;
       return;
     }
-    logEl.innerHTML=entries.map(e=>{
-      const isDeposit=e.type==='deposit';
-      const color=isDeposit?'var(--success)':'var(--danger)';
-      const icon=isDeposit?'➕':'➖';
-      const label=isDeposit?'إيداع':'سحب';
-      const date=e.createdAt?new Date(e.createdAt).toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
-      return`<div style="background:var(--bg-secondary);border:1px solid var(--border);border-right:3px solid ${color};border-radius:var(--radius-sm);padding:.6rem .9rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
-        <span style="font-size:1rem">${icon}</span>
-        <div style="flex:1;min-width:0">
-          <div style="font-weight:700;font-size:.85rem;color:var(--text-primary)">${esc(e.note||label)}</div>
-          <div style="font-family:var(--font-mono);font-size:.65rem;color:var(--text-muted);margin-top:.1rem">${date}</div>
-        </div>
-        <div style="font-family:var(--font-display);font-size:1.1rem;color:${color};white-space:nowrap">${isDeposit?'+':'-'} ${formatPrice(e.amount)}</div>
-        <button class="btn btn-danger btn-sm" style="padding:.2rem .45rem;font-size:.68rem" onclick="deleteLiquidityEntry('${e.id}')">✕</button>
-      </div>`;
-    }).join('');
+
+    renderLiquidityLog(window._liqActiveFilter||'all');
   }catch(err){
     if(logEl) logEl.innerHTML=`<div style="text-align:center;padding:1rem;color:var(--danger);font-size:.82rem">خطأ في تحميل السجل</div>`;
   }
+}
+
+function setLiqFilter(f){
+  window._liqActiveFilter=f;
+  // تحديث أزرار الفلتر
+  ['all','deposit','withdraw'].forEach(k=>{
+    const btn=document.getElementById('liq-filter-'+k);
+    if(!btn)return;
+    if(k===f){
+      btn.style.background= k==='deposit'?'var(--success)': k==='withdraw'?'var(--danger)':'var(--accent)';
+      btn.style.color='#fff';
+    } else {
+      btn.style.background='transparent';
+      btn.style.color= k==='deposit'?'var(--success)': k==='withdraw'?'var(--danger)':'var(--text-muted)';
+    }
+  });
+  renderLiquidityLog(f);
+}
+
+function renderLiquidityLog(filter){
+  const logEl=document.getElementById('liquidity-log');
+  if(!logEl)return;
+  const all = window._liqAllEntries||[];
+  if(!all.length){
+    logEl.innerHTML=`<div style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.82rem">لا توجد حركات سيولة بعد</div>`;
+    return;
+  }
+  const filtered = filter==='all' ? all : all.filter(e=>e.type===filter);
+
+  if(!filtered.length){
+    logEl.innerHTML=`<div style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.82rem">لا توجد حركات في هذا التصنيف</div>`;
+    return;
+  }
+
+  // حساب الرصيد المتراكم (من الأقدم للأحدث)
+  const forBalance=[...all].sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+  const balanceMap={};
+  let running=0;
+  forBalance.forEach(e=>{
+    if(e.type==='deposit') running+=Number(e.amount)||0;
+    else if(e.type==='withdraw') running-=Number(e.amount)||0;
+    balanceMap[e.id]=running;
+  });
+
+  logEl.innerHTML=filtered.map(e=>{
+    const isDeposit=e.type==='deposit';
+    const color=isDeposit?'var(--success)':'var(--danger)';
+    const bgColor=isDeposit?'rgba(0,200,83,.05)':'rgba(255,23,68,.05)';
+    const borderColor=isDeposit?'rgba(0,200,83,.25)':'rgba(255,23,68,.25)';
+    const icon=isDeposit?'⬆️':'⬇️';
+    const typeLabel=isDeposit
+      ? `<span style="background:rgba(0,200,83,.15);color:var(--success);border:1px solid rgba(0,200,83,.3);font-family:var(--font-mono);font-size:.6rem;font-weight:700;padding:.15rem .45rem;border-radius:99px;letter-spacing:.05em">إضافة ✓</span>`
+      : `<span style="background:rgba(255,23,68,.12);color:var(--danger);border:1px solid rgba(255,23,68,.25);font-family:var(--font-mono);font-size:.6rem;font-weight:700;padding:.15rem .45rem;border-radius:99px;letter-spacing:.05em">سحب ✕</span>`;
+    const date=e.createdAt?new Date(e.createdAt).toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+    const balAfter=balanceMap[e.id]!==undefined?`<span style="font-family:var(--font-mono);font-size:.6rem;color:var(--text-muted)">رصيد بعدها: <span style="color:${(balanceMap[e.id]||0)>=0?'var(--success)':'var(--danger)'}">${formatPrice(balanceMap[e.id])}</span></span>`:'';
+    const sourceTag=e.source==='order'?`<span style="background:rgba(33,150,243,.1);color:#42A5F5;border:1px solid rgba(33,150,243,.2);font-family:var(--font-mono);font-size:.58rem;padding:.1rem .4rem;border-radius:99px">📦 أوردر</span>`:
+                    e.source==='invoice'?`<span style="background:rgba(255,179,0,.1);color:var(--accent-gold);border:1px solid rgba(255,179,0,.2);font-family:var(--font-mono);font-size:.58rem;padding:.1rem .4rem;border-radius:99px">🧾 فاتورة</span>`:'';
+    return`<div style="background:${bgColor};border:1px solid ${borderColor};border-right:3px solid ${color};border-radius:var(--radius-sm);padding:.65rem .9rem">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">
+        <span style="font-size:1.1rem">${icon}</span>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:.2rem">
+            ${typeLabel}
+            ${sourceTag}
+            <span style="font-weight:700;font-size:.85rem;color:var(--text-primary)">${esc(e.note||(isDeposit?'إيداع سيولة':'سحب سيولة'))}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+            <span style="font-family:var(--font-mono);font-size:.63rem;color:var(--text-muted)">🕐 ${date}</span>
+            ${balAfter}
+          </div>
+        </div>
+        <div style="font-family:var(--font-display);font-size:1.25rem;color:${color};white-space:nowrap;font-weight:700">${isDeposit?'+':'-'} ${formatPrice(e.amount)} ج.م</div>
+        <button class="btn btn-danger btn-sm" style="padding:.2rem .45rem;font-size:.68rem;flex-shrink:0" onclick="deleteLiquidityEntry('${e.id}')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 async function updateLiquidityBalance(){
@@ -3241,7 +3414,35 @@ async function updateLiquidityBalance(){
     // تحديث stat-wallet في الداشبورد
     const walletEl=document.getElementById('stat-wallet');
     if(walletEl) walletEl.textContent=formatPrice(totalBalance);
+    // تحديث بطاقات صفحة السيولة
+    const liqStatBal=document.getElementById('liq-stat-balance');
+    if(liqStatBal){liqStatBal.textContent=formatPrice(liqBalance)+' ج.م';liqStatBal.style.color=liqBalance>=0?'var(--success)':'var(--danger)';}
+    const liqStatIn=document.getElementById('liq-stat-in');
+    const liqStatOut=document.getElementById('liq-stat-out');
+    if(liqStatIn||liqStatOut){
+      let din=0,dout=0;
+      liqSnap.forEach(s=>{const e=s.val();if(e.type==='deposit')din+=Number(e.amount)||0;else if(e.type==='withdraw')dout+=Number(e.amount)||0;});
+      if(liqStatIn) liqStatIn.textContent='+'+formatPrice(din)+' ج.م';
+      if(liqStatOut) liqStatOut.textContent='-'+formatPrice(dout)+' ج.م';
+      const cntEl=document.getElementById('liq-stat-count');
+      if(cntEl){let cnt=0;liqSnap.forEach(()=>cnt++);cntEl.textContent=cnt;}
+    }
   }catch(err){console.error('liquidity balance error:',err);}
+}
+
+async function diagnoseLiquidityLog(){
+  try{
+    const snap=await db.ref('liquidityLog').get();
+    if(!snap.exists()){alert('Firebase liquidityLog فارغة تماماً!');return;}
+    let count=0;
+    const lines=[];
+    snap.forEach(s=>{
+      count++;
+      const v=s.val();
+      lines.push(`[${count}] key=${s.key} | type=${v?.type} | amount=${v?.amount} | note=${v?.note} | createdAt=${v?.createdAt?new Date(v.createdAt).toLocaleString('ar-EG'):'—'}`);
+    });
+    alert(`Firebase liquidityLog — ${count} حركة:\n\n${lines.join('\n')}`);
+  }catch(err){alert('خطأ في التشخيص: '+err.message);}
 }
 
 async function addLiquidity(){
@@ -3254,7 +3455,8 @@ async function addLiquidity(){
     await db.ref('liquidityLog').push({type:'deposit',amount,note,createdAt:Date.now()});
     showToast(`✅ تم إضافة ${formatPrice(amount)} ج.م`,'success');
     amountEl.value='';noteEl.value='';
-    await Promise.all([updateLiquidityBalance(),loadLiquidityLog()]);
+    // الـ listener هيعمل reload تلقائي — بس نعمل reload يدوي كـ fallback
+    setTimeout(()=>Promise.all([updateLiquidityBalance(),loadLiquidityLog()]),300);
   }catch(err){showToast('خطأ: '+err.message,'error');}
 }
 
@@ -3268,7 +3470,7 @@ async function withdrawLiquidity(){
     await db.ref('liquidityLog').push({type:'withdraw',amount,note,createdAt:Date.now()});
     showToast(`✅ تم سحب ${formatPrice(amount)} ج.م`,'info');
     amountEl.value='';noteEl.value='';
-    await Promise.all([updateLiquidityBalance(),loadLiquidityLog()]);
+    setTimeout(()=>Promise.all([updateLiquidityBalance(),loadLiquidityLog()]),300);
   }catch(err){showToast('خطأ: '+err.message,'error');}
 }
 
@@ -3652,6 +3854,7 @@ async function deleteMerchant(id, name){
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -3728,6 +3931,7 @@ async function deleteMerchant(id, name){
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -3813,6 +4017,7 @@ async function deleteMerchant(id, name){
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
