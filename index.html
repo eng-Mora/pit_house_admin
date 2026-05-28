@@ -98,6 +98,18 @@
     .s-delivered{background:rgba(255,61,0,.1);color:var(--accent);border:1px solid rgba(255,61,0,.2)}
     .s-holding{background:rgba(156,39,176,.12);color:#CE93D8;border:1px solid rgba(156,39,176,.25)}
     .s-collected{background:rgba(0,200,83,.18);color:#69F0AE;border:1px solid rgba(0,200,83,.35)}
+    /* ── INSTALL SLOTS ── */
+    .slot-row{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:.85rem 1rem;display:flex;align-items:center;gap:.85rem;transition:border-color var(--transition)}
+    .slot-row:hover{border-color:var(--border-hover)}
+    .slot-row.booked{border-color:rgba(255,23,68,.2);background:rgba(255,23,68,.03)}
+    .slot-row.booked .slot-status-dot{background:var(--danger)}
+    .slot-status-dot{width:9px;height:9px;border-radius:50%;background:var(--success);flex-shrink:0;box-shadow:0 0 6px currentColor}
+    .slot-datetime{flex:1}
+    .slot-dt-main{font-weight:700;font-size:.88rem;color:var(--text-primary)}
+    .slot-dt-sub{font-size:.75rem;color:var(--text-muted);margin-top:.1rem;font-family:var(--font-mono)}
+    .slot-booked-label{font-family:var(--font-mono);font-size:.65rem;font-weight:700;letter-spacing:.06em;background:rgba(255,23,68,.1);color:var(--danger);border:1px solid rgba(255,23,68,.2);border-radius:99px;padding:.2rem .55rem}
+    .slot-available-label{font-family:var(--font-mono);font-size:.65rem;font-weight:700;letter-spacing:.06em;background:rgba(0,200,83,.1);color:var(--success);border:1px solid rgba(0,200,83,.2);border-radius:99px;padding:.2rem .55rem}
+    .install-slot-badge-order{display:inline-flex;align-items:center;gap:.35rem;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:var(--radius-sm);padding:.45rem .75rem;font-size:.82rem;color:#42A5F5;margin-top:.5rem;width:100%}
     .btn-collect{background:linear-gradient(135deg,rgba(0,200,83,.2),rgba(0,200,83,.1));color:#69F0AE;border:1px solid rgba(0,200,83,.4);font-weight:800;letter-spacing:.04em}
     .btn-collect:hover{background:var(--success);color:#000;border-color:var(--success)}
     .status-select{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:.35rem .7rem;font-family:var(--font-ar);font-size:.78rem;font-weight:600;cursor:pointer;outline:none;transition:border-color var(--transition)}
@@ -317,6 +329,33 @@
     .ledger-mini-totals{display:flex;gap:.5rem;font-family:var(--font-mono);font-size:.65rem;justify-content:flex-end}
     .ledger-search-bar{display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap}
     .ledger-search-bar input{flex:1;min-width:200px}
+    /* ── VARIANTS ADMIN ── */
+    .variant-row{display:grid;grid-template-columns:auto 1fr auto auto auto auto;gap:.6rem;align-items:center;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.55rem .8rem;margin-bottom:.4rem;transition:border-color var(--transition)}
+    .variant-row:hover{border-color:rgba(255,61,0,.25)}
+    .variant-color-swatch{width:22px;height:22px;border-radius:4px;border:1px solid var(--border);flex-shrink:0}
+    .variant-label-badge{font-weight:700;color:var(--text-primary);font-size:.88rem}
+    .variant-price-tag{font-family:var(--font-display);font-size:.95rem;color:var(--accent-gold);white-space:nowrap}
+    .variant-qty-tag{font-family:var(--font-mono);font-size:.75rem;color:var(--text-muted);white-space:nowrap}
+    .variant-drag-handle{cursor:grab;color:var(--text-muted);font-size:.9rem;user-select:none}
+    /* ── INVENTORY ── */
+    .inv-row{display:grid;grid-template-columns:60px 1fr auto auto auto auto;gap:.9rem;align-items:center;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:.85rem 1.1rem;margin-bottom:.55rem;transition:all var(--transition)}
+    .inv-row:hover{border-color:rgba(255,61,0,.25);transform:translateX(-2px)}
+    .inv-row-low{border-color:rgba(255,23,68,.3)!important}
+    .inv-row-out{border-color:rgba(255,23,68,.55)!important;background:rgba(255,23,68,.03)!important}
+    .inv-qty-badge{font-family:var(--font-display);font-size:1.4rem;letter-spacing:.04em;line-height:1}
+    .inv-qty-ok{color:var(--success)}
+    .inv-qty-low{color:var(--accent-gold)}
+    .inv-qty-out{color:var(--danger)}
+    .inv-qty-wrap{text-align:center;min-width:55px}
+    .inv-qty-label{font-family:var(--font-mono);font-size:.6rem;letter-spacing:.08em;color:var(--text-muted);text-transform:uppercase;margin-top:.15rem}
+    .inv-thumb{width:60px;height:48px;border-radius:var(--radius-sm);object-fit:cover;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+    .inv-thumb img{width:100%;height:100%;object-fit:cover;border-radius:var(--radius-sm)}
+    .inv-filter-bar{display:flex;gap:.65rem;flex-wrap:wrap;margin-bottom:1.2rem;align-items:center}
+    .inv-filter-btn{padding:.38rem .8rem;border-radius:var(--radius-sm);font-family:var(--font-ar);font-size:.78rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-muted);transition:all var(--transition)}
+    .inv-filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .inv-qty-input{width:70px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-mono);font-size:.88rem;padding:.35rem .55rem;outline:none;text-align:center;transition:border-color var(--transition)}
+    .inv-qty-input:focus{border-color:var(--accent)}
+    .inv-adjust-modal .modal-box{max-width:440px}
   </style>
 </head>
 <body>
@@ -359,6 +398,7 @@
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
       <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
@@ -366,6 +406,7 @@
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -411,6 +452,7 @@
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
       <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
@@ -418,6 +460,7 @@
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -465,6 +508,7 @@
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
       <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
@@ -472,6 +516,7 @@
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -523,6 +568,7 @@
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
       <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
@@ -530,6 +576,7 @@
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -692,6 +739,7 @@
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
       <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
@@ -699,6 +747,7 @@
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -754,6 +803,7 @@
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
       <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
@@ -761,6 +811,7 @@
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -830,6 +881,7 @@
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
       <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
@@ -837,6 +889,7 @@
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -881,6 +934,7 @@
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
       <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
@@ -888,6 +942,7 @@
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -1000,6 +1055,7 @@
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
       <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
@@ -1007,6 +1063,7 @@
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -1045,6 +1102,7 @@
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
       <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
@@ -1052,6 +1110,7 @@
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -1147,6 +1206,7 @@
     <div class="tab-bar">
       <div class="tab active" onclick="switchTab('tab-basic','product-modal')">معلومات أساسية</div>
       <div class="tab" onclick="switchTab('tab-media','product-modal')">الصور والفيديوهات</div>
+      <div class="tab" onclick="switchTab('tab-variants','product-modal')">🎨 التنويعات</div>
       <div class="tab" onclick="switchTab('tab-settings','product-modal')">الإعدادات</div>
     </div>
     <!-- TAB: Basic -->
@@ -1213,6 +1273,56 @@
         <div style="display:flex;gap:.5rem;margin-top:.6rem">
           <input type="text" class="form-control" id="new-video-url" placeholder="https://drive.google.com/file/d/.../view"/>
           <button class="btn btn-secondary btn-sm" onclick="addVideo()" style="white-space:nowrap">+ إضافة</button>
+        </div>
+      </div>
+    </div>
+    <!-- TAB: Variants -->
+    <div id="tab-variants" class="tab-panel">
+      <div style="margin-bottom:1rem">
+        <label class="form-label">نوع التنويع</label>
+        <select class="form-control" id="p-variant-type" onchange="onVariantTypeChange()">
+          <option value="none">❌ بدون تنويع</option>
+          <option value="color">🎨 ألوان</option>
+          <option value="size">📐 مقاسات</option>
+          <option value="number">🔢 أرقام</option>
+          <option value="custom">✏️ تنويع حر</option>
+        </select>
+        <div class="form-hint">لو اخترت أي نوع، هيظهر للعميل يختار قبل ما يضيف للسلة</div>
+      </div>
+      <div id="variants-builder" style="display:none">
+        <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem">
+          <div style="font-size:.78rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-bottom:.75rem;text-transform:uppercase">إضافة تنويع جديد</div>
+          <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:.5rem;align-items:end">
+            <div>
+              <label class="form-label" style="font-size:.7rem" id="variant-input-label">الاسم / الكود</label>
+              <input type="text" class="form-control" id="new-variant-label" placeholder="مثال: أحمر" style="font-size:.85rem"/>
+            </div>
+            <div>
+              <label class="form-label" style="font-size:.7rem">سعر مختلف؟ <span style="color:var(--text-muted)">(اختياري)</span></label>
+              <input type="number" class="form-control" id="new-variant-price" placeholder="نفس السعر" min="0" style="width:100px;font-size:.85rem"/>
+            </div>
+            <div>
+              <label class="form-label" style="font-size:.7rem">الكمية</label>
+              <input type="number" class="form-control" id="new-variant-qty" placeholder="∞" min="0" style="width:75px;font-size:.85rem"/>
+            </div>
+            <div style="padding-bottom:0">
+              <button class="btn btn-primary btn-sm" onclick="addVariant()" style="height:38px;padding:.4rem .9rem">+ إضافة</button>
+            </div>
+          </div>
+          <!-- Color preview for color type -->
+          <div id="variant-color-preview-row" style="display:none;margin-top:.6rem;align-items:center;gap:.5rem">
+            <label class="form-label" style="font-size:.7rem;margin:0">لون اختياري:</label>
+            <input type="color" id="new-variant-color" value="#FF3D00" style="width:36px;height:28px;border:1px solid var(--border);border-radius:4px;cursor:pointer;background:transparent"/>
+            <span style="font-size:.72rem;color:var(--text-muted)">للعرض المرئي في الموقع</span>
+          </div>
+        </div>
+        <!-- Variants List -->
+        <div id="variants-list-wrap">
+          <div style="text-align:center;padding:1.2rem;color:var(--text-muted);font-size:.82rem;border:1px dashed var(--border);border-radius:var(--radius-md)">لا توجد تنويعات بعد — أضف من الأعلى</div>
+        </div>
+        <div style="margin-top:.75rem;font-size:.75rem;color:var(--text-muted);display:flex;align-items:center;gap:.4rem">
+          <span>💡</span>
+          <span>السعر الأساسي للمنتج هو السعر الافتراضي — تقدر تحدد سعر مختلف لكل تنويع</span>
         </div>
       </div>
     </div>
@@ -1533,9 +1643,9 @@ function navigate(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   // الأوردرات listener المنفصل (للصفحة اللي بتعمل filter) — مش محتاجه دلوقتي إننا عندنا global
   document.getElementById(`page-${page}`).classList.add('active');
-  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
-  const navEl=document.getElementById(`nav-${page}`);
-  if(navEl) navEl.classList.add('active');
+  document.querySelectorAll('.sidebar-nav a').forEach(a=>a.classList.remove('active'));
+  const snavEl=document.getElementById(`snav-${page}`);
+  if(snavEl) snavEl.classList.add('active');
   window.scrollTo(0,0);
   if(page==='dashboard') loadDashboard();
   if(page==='orders')    { _allOrders=_globalOrders; filterOrders(); }
@@ -1544,6 +1654,7 @@ function navigate(page){
   if(page==='products')  loadProductsPage();
   if(page==='customers') loadCustomers();
   if(page==='promos')    loadPromos();
+  if(page==='slots')     loadAdminSlotsPage();
   if(page==='shipping')  loadShipping();
   if(page==='reviews')   loadReviews();
   if(page==='sound')     loadSoundSettings();
@@ -1551,6 +1662,311 @@ function navigate(page){
   if(page==='merchants') loadMerchants();
   if(page==='liquidity') loadLiquidityPage();
   if(page==='ledger')    loadLedgerPage();
+  if(page==='inventory') loadInventoryPage();
+}
+
+// ══════════════════════════════════════════
+//  INSTALL SLOTS MANAGEMENT — مواعيد التركيب
+// ══════════════════════════════════════════
+let _adminSlots = [];
+
+async function loadAdminSlotsPage(){
+  showSpinner('جاري تحميل المواعيد...');
+  try{
+    const snap = await db.ref('installSlots').get();
+    const data = snap.val();
+    _adminSlots = data
+      ? Object.entries(data).map(([id,v])=>({id,...v})).sort((a,b)=>(a.datetime||0)-(b.datetime||0))
+      : [];
+    updateSlotStats();
+    renderAdminSlots();
+  }catch(err){
+    console.error(err);
+    showToast('خطأ في تحميل المواعيد','error');
+  }finally{ hideSpinner(); }
+}
+
+function updateSlotStats(){
+  const total = _adminSlots.length;
+  const booked = _adminSlots.filter(s=>s.isBooked).length;
+  const available = total - booked;
+  const setEl=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  setEl('slot-stat-total', total);
+  setEl('slot-stat-available', available);
+  setEl('slot-stat-booked', booked);
+}
+
+function renderAdminSlots(){
+  const list = document.getElementById('admin-slots-list');
+  if(!list) return;
+  const filter = (document.getElementById('slot-filter')||{}).value || 'all';
+  let slots = _adminSlots;
+  if(filter==='available') slots = slots.filter(s=>!s.isBooked);
+  if(filter==='booked')    slots = slots.filter(s=> s.isBooked);
+  if(!slots.length){
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon">📅</div><h3>مفيش مواعيد ${filter==='available'?'متاحة':filter==='booked'?'محجوزة':'مضافة'}</h3><p>اضغط "إضافة موعد جديد" لإضافة أول موعد</p></div>`;
+    return;
+  }
+  list.innerHTML = slots.map(s=>{
+    const d = s.datetime ? new Date(s.datetime) : null;
+    const dateStr = d ? d.toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) : '—';
+    const timeStr = d ? d.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}) : '';
+    const bookedHtml = s.isBooked
+      ? `<span class="slot-booked-label">🔒 محجوز${s.bookedOrderId?` — طلب: ${s.bookedOrderId.slice(-6).toUpperCase()}`:''}  </span>`
+      : `<span class="slot-available-label">✅ متاح للحجز</span>`;
+    return `<div class="slot-row${s.isBooked?' booked':''}">
+      <div class="slot-status-dot" style="background:${s.isBooked?'var(--danger)':'var(--success)'}"></div>
+      <div class="slot-datetime">
+        <div class="slot-dt-main">📅 ${esc(dateStr)} ${timeStr?'— 🕐 '+esc(timeStr):''}</div>
+        ${s.note?`<div class="slot-dt-sub">${esc(s.note)}</div>`:''}
+      </div>
+      ${bookedHtml}
+      <div style="display:flex;gap:.4rem;flex-shrink:0">
+        ${!s.isBooked?`<button class="btn btn-danger btn-sm" onclick="deleteSlot('${s.id}')">🗑 حذف</button>`:`<button class="btn btn-secondary btn-sm" onclick="unBookSlot('${s.id}')">🔓 إلغاء الحجز</button>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openAddSlotModal(){
+  const modal = document.getElementById('add-slot-modal');
+  if(!modal) return;
+  // Default to tomorrow
+  const tomorrow = new Date(Date.now() + 86400000);
+  tomorrow.setHours(10, 0, 0, 0);
+  const pad = n => String(n).padStart(2,'0');
+  const dtLocal = `${tomorrow.getFullYear()}-${pad(tomorrow.getMonth()+1)}-${pad(tomorrow.getDate())}T${pad(tomorrow.getHours())}:${pad(tomorrow.getMinutes())}`;
+  document.getElementById('slot-datetime').value = dtLocal;
+  document.getElementById('slot-note').value = '';
+  document.getElementById('slot-dt-err').style.display = 'none';
+  modal.style.display = 'flex';
+}
+
+function closeAddSlotModal(){
+  const modal = document.getElementById('add-slot-modal');
+  if(modal) modal.style.display = 'none';
+}
+
+async function saveNewSlot(){
+  const dtVal = document.getElementById('slot-datetime').value;
+  const errEl = document.getElementById('slot-dt-err');
+  if(!dtVal){ errEl.style.display='block'; return; }
+  errEl.style.display = 'none';
+  const note = document.getElementById('slot-note').value.trim();
+  const btn = document.getElementById('slot-save-btn');
+  if(btn){ btn.disabled=true; btn.textContent='جاري الحفظ...'; }
+  try{
+    const slotData = {
+      datetime: new Date(dtVal).getTime(),
+      note,
+      isBooked: false,
+      active: true,
+      createdAt: Date.now()
+    };
+    const ref = await db.ref('installSlots').push(slotData);
+    _adminSlots.push({id:ref.key, ...slotData});
+    _adminSlots.sort((a,b)=>(a.datetime||0)-(b.datetime||0));
+    updateSlotStats();
+    renderAdminSlots();
+    closeAddSlotModal();
+    showToast('✅ تم إضافة الموعد بنجاح','success');
+  }catch(err){
+    console.error(err);
+    showToast('خطأ في حفظ الموعد','error');
+  }finally{
+    if(btn){ btn.disabled=false; btn.textContent='💾 حفظ الموعد'; }
+  }
+}
+
+async function deleteSlot(id){
+  if(!confirm('تأكيد حذف الموعد؟')) return;
+  try{
+    await db.ref('installSlots/'+id).remove();
+    _adminSlots = _adminSlots.filter(s=>s.id!==id);
+    updateSlotStats();
+    renderAdminSlots();
+    showToast('تم حذف الموعد','success');
+  }catch(err){ showToast('خطأ في الحذف','error'); }
+}
+
+async function unBookSlot(id){
+  if(!confirm('إلغاء حجز هذا الموعد وإتاحته مرة تانية؟')) return;
+  try{
+    await db.ref('installSlots/'+id).update({isBooked:false, bookedOrderId:null, bookedAt:null});
+    const s = _adminSlots.find(s=>s.id===id);
+    if(s){ s.isBooked=false; s.bookedOrderId=null; }
+    updateSlotStats();
+    renderAdminSlots();
+    showToast('✅ تم إلغاء الحجز — الموعد متاح دلوقتي','success');
+  }catch(err){ showToast('خطأ','error'); }
+}
+
+// ══════════════════════════════════════════
+//  INVENTORY MANAGEMENT — الجرد
+// ══════════════════════════════════════════
+let _invProducts = [];
+let _invFilter = 'all';
+const INV_LOW_THRESHOLD = 5; // عتبة الكمية المنخفضة
+
+async function loadInventoryPage(){
+  showSpinner('جاري تحميل المخزون...');
+  try{
+    const snap = await db.ref('products').get();
+    _invProducts = objToArr(snap.val()).sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar'));
+    updateInventoryStats();
+    filterInventory();
+    // populate modal select
+    const sel = document.getElementById('inv-adj-product');
+    if(sel){
+      sel.innerHTML = `<option value="">— اختر منتج —</option>`
+        + _invProducts.map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
+    }
+  }catch(err){console.error(err);showToast('خطأ في تحميل المخزون','error')}
+  finally{hideSpinner()}
+}
+
+function getInvQty(p){
+  const q = p.qty != null && p.qty !== '' ? Number(p.qty) : (p.stock != null && p.stock !== '' ? Number(p.stock) : null);
+  return q;
+}
+
+function updateInventoryStats(){
+  const total = _invProducts.length;
+  const out   = _invProducts.filter(p=>{ const q=getInvQty(p); return q!=null && q<=0; }).length;
+  const low   = _invProducts.filter(p=>{ const q=getInvQty(p); return q!=null && q>0 && q<=INV_LOW_THRESHOLD; }).length;
+  const instock = _invProducts.filter(p=>{ const q=getInvQty(p); return q==null || q>INV_LOW_THRESHOLD; }).length;
+  const totalValue = _invProducts.reduce((s,p)=>{
+    const q=getInvQty(p); const cost=p.costPrice!=null&&p.costPrice!==''?Number(p.costPrice):Number(p.price||0);
+    return s + (q!=null&&q>0 ? q*cost : 0);
+  },0);
+  const setEl=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  setEl('inv-stat-total', total);
+  setEl('inv-stat-instock', instock);
+  setEl('inv-stat-low', low);
+  setEl('inv-stat-out', out);
+  setEl('inv-stat-value', formatPrice(totalValue)+' ج.م');
+}
+
+function setInvFilter(f){
+  _invFilter = f;
+  ['all','instock','low','out'].forEach(k=>{
+    const btn=document.getElementById('inv-f-'+k);
+    if(btn) btn.classList.toggle('active', k===f);
+  });
+  filterInventory();
+}
+
+function filterInventory(){
+  const q = (document.getElementById('inv-search')?.value||'').toLowerCase().trim();
+  let list = _invProducts;
+  // apply category filter
+  if(_invFilter==='out')     list = list.filter(p=>{ const v=getInvQty(p); return v!=null&&v<=0; });
+  else if(_invFilter==='low')     list = list.filter(p=>{ const v=getInvQty(p); return v!=null&&v>0&&v<=INV_LOW_THRESHOLD; });
+  else if(_invFilter==='instock') list = list.filter(p=>{ const v=getInvQty(p); return v==null||v>INV_LOW_THRESHOLD; });
+  // text search
+  if(q) list = list.filter(p=>(p.name||'').toLowerCase().includes(q)||(p.sku||'').toLowerCase().includes(q)||(p.category||'').toLowerCase().includes(q));
+  renderInventoryList(list);
+}
+
+function renderInventoryList(products){
+  const c = document.getElementById('inventory-list');
+  if(!c) return;
+  if(!products.length){
+    c.innerHTML=`<div class="empty-state"><div class="empty-icon">📦</div><h3>لا توجد منتجات</h3><p>لا توجد نتائج مطابقة</p></div>`;
+    return;
+  }
+  c.innerHTML = products.map(p=>{
+    const qty = getInvQty(p);
+    const isOut  = qty!=null && qty<=0;
+    const isLow  = qty!=null && qty>0 && qty<=INV_LOW_THRESHOLD;
+    const hasQty = qty!=null;
+    const qtyClass = isOut?'inv-qty-out': isLow?'inv-qty-low': 'inv-qty-ok';
+    const rowClass  = isOut?'inv-row-out': isLow?'inv-row-low': '';
+    const thumb = p.imageUrl ? `<div class="inv-thumb"><img src="${esc(p.imageUrl)}" onerror="this.style.display='none'"/></div>` : `<div class="inv-thumb">🔧</div>`;
+    const cost = p.costPrice!=null&&p.costPrice!==''?Number(p.costPrice):null;
+    const totalVal = hasQty&&qty>0&&cost!=null ? formatPrice(qty*cost)+' ج.م' : (hasQty&&qty>0&&p.price ? formatPrice(qty*Number(p.price||0))+' ج.م' : '—');
+    const statusTag = isOut
+      ? `<span class="status-badge s-pending" style="white-space:nowrap">❌ نفذ</span>`
+      : isLow
+        ? `<span class="status-badge" style="background:rgba(255,179,0,.12);color:var(--accent-gold);border:1px solid rgba(255,179,0,.25);white-space:nowrap">⚠️ منخفض</span>`
+        : `<span class="status-badge s-confirmed" style="white-space:nowrap">✅ متاح</span>`;
+    return `<div class="inv-row ${rowClass}">
+      ${thumb}
+      <div>
+        <div style="font-weight:800;color:var(--text-primary);margin-bottom:.2rem">${esc(p.name)}</div>
+        <div style="font-size:.75rem;color:var(--text-muted);display:flex;gap:.6rem;flex-wrap:wrap">
+          ${p.sku?`<span style="font-family:var(--font-mono);color:var(--accent-gold)">${esc(p.sku)}</span>`:''}
+          ${p.category?`<span>📁 ${esc(p.category)}</span>`:''}
+          <span>💵 ${formatPrice(p.price||0)} ج.م</span>
+          ${cost!=null?`<span style="color:var(--text-muted)">تكلفة: ${formatPrice(cost)} ج.م</span>`:''}
+          <span style="color:var(--accent-gold)">قيمة المخزون: ${totalVal}</span>
+        </div>
+      </div>
+      <div class="inv-qty-wrap">
+        <div class="inv-qty-badge ${qtyClass}">${hasQty?qty:'—'}</div>
+        <div class="inv-qty-label">قطعة</div>
+      </div>
+      ${statusTag}
+      <button class="btn btn-secondary btn-sm" onclick="openInventoryAdjustModal('${p.id}')">✏️ تعديل</button>
+    </div>`;
+  }).join('');
+}
+
+function openInventoryAdjustModal(productId){
+  document.getElementById('inv-adj-qty').value = '';
+  document.getElementById('inv-adj-note').value = '';
+  document.getElementById('inv-adj-type').value = 'set';
+  const wrapEl = document.getElementById('inv-adj-current-wrap');
+  const sel = document.getElementById('inv-adj-product');
+  if(productId && sel){
+    sel.value = productId;
+    onInvAdjProductChange();
+  } else {
+    if(wrapEl) wrapEl.style.display='none';
+  }
+  document.getElementById('inv-adjust-modal').style.display='flex';
+  setTimeout(()=>document.getElementById('inv-adj-product').focus(),150);
+}
+
+function closeInventoryAdjustModal(){
+  document.getElementById('inv-adjust-modal').style.display='none';
+}
+
+function onInvAdjProductChange(){
+  const pid = document.getElementById('inv-adj-product').value;
+  const wrap = document.getElementById('inv-adj-current-wrap');
+  const qEl  = document.getElementById('inv-adj-current-qty');
+  if(!pid){wrap.style.display='none';return;}
+  const prod = _invProducts.find(p=>p.id===pid);
+  if(!prod){wrap.style.display='none';return;}
+  const qty = getInvQty(prod);
+  qEl.textContent = qty!=null ? qty : '—';
+  wrap.style.display = 'block';
+}
+
+async function saveInventoryAdjust(){
+  const pid  = document.getElementById('inv-adj-product').value;
+  const type = document.getElementById('inv-adj-type').value;
+  const qtyVal = document.getElementById('inv-adj-qty').value.trim();
+  if(!pid){showToast('اختر منتجاً أولاً','error');return;}
+  if(qtyVal===''||isNaN(Number(qtyVal))||Number(qtyVal)<0){showToast('أدخل كمية صحيحة','error');return;}
+  const inputQty = Number(qtyVal);
+  const prod = _invProducts.find(p=>p.id===pid);
+  if(!prod){showToast('المنتج غير موجود','error');return;}
+  const currentQty = getInvQty(prod) || 0;
+  let newQty;
+  if(type==='set')      newQty = inputQty;
+  else if(type==='add') newQty = currentQty + inputQty;
+  else                  newQty = Math.max(0, currentQty - inputQty);
+  const btn = document.getElementById('inv-adj-save-btn');
+  btn.disabled=true; btn.textContent='جاري الحفظ...';
+  try{
+    await db.ref('products/'+pid).update({qty:newQty, stock:newQty});
+    showToast(`✅ تم تحديث كمية "${prod.name}" إلى ${newQty} قطعة`,'success');
+    closeInventoryAdjustModal();
+    await loadInventoryPage();
+  }catch(err){showToast('خطأ: '+err.message,'error')}
+  finally{btn.disabled=false; btn.textContent='💾 حفظ التعديل';}
 }
 
 // ══ AUTH ══
@@ -1726,6 +2142,7 @@ function openOrderDrawer(order){
     <div class="order-detail-section">
       <div class="od-label">المنتجات</div>
       <div class="od-items">${(order.items||[]).map(i=>`<div class="od-item"><span>${esc(i.name)}${i.withInstallation?` <span style="font-size:.7rem;background:rgba(33,150,243,.15);color:#42A5F5;border:1px solid rgba(33,150,243,.25);border-radius:99px;padding:.12rem .45rem;font-family:var(--font-mono)">🔧 تركيب</span>`:''}</span><span style="font-family:var(--font-mono)">${i.qty} × ${formatPrice(i.price)}${i.withInstallation&&i.installationPrice?`<br/><span style="font-size:.7rem;color:#42A5F5">+${formatPrice(i.installationPrice)} تركيب</span>`:''}</span></div>`).join('')}</div>
+      ${order.installationSlot?`<div class="install-slot-badge-order">📅 <span><strong>موعد التركيب:</strong> ${esc(order.installationSlot.dateLabel||'—')}${order.installationSlot.timeLabel?' — '+esc(order.installationSlot.timeLabel):''}</span></div>`:''}
     </div>
     <div class="order-detail-section">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
@@ -1880,7 +2297,7 @@ function generateSKU(){
 }
 
 function openProductModal(){
-  editingProductId=null;_extraImages=[];_videos=[];
+  editingProductId=null;_extraImages=[];_videos=[];_variants=[];
   document.getElementById('product-modal-title').textContent='إضافة منتج جديد';
   ['p-name','p-price','p-cost','p-qty','p-category','p-desc','p-image','p-warranty-period','p-installation-price','p-installation-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   generateSKU();
@@ -1890,6 +2307,11 @@ function openProductModal(){
   document.getElementById('p-installation-wrap').style.display='none';
   document.getElementById('new-image-url').value='';
   document.getElementById('new-video-url').value='';
+  // reset variants
+  document.getElementById('p-variant-type').value='none';
+  document.getElementById('variants-builder').style.display='none';
+  document.getElementById('variant-color-preview-row').style.display='none';
+  renderVariantsList();
   renderMediaLists();
   switchTab('tab-basic','product-modal');
   document.getElementById('product-modal').style.display='flex';
@@ -1898,6 +2320,7 @@ function openEditProductModal(id, p){
   editingProductId=id;
   _extraImages=p.extraImages||[];
   _videos=p.videos||[];
+  _variants = Array.isArray(p.variants) ? p.variants.map(v=>({...v})) : [];
   document.getElementById('product-modal-title').textContent='تعديل المنتج';
   document.getElementById('p-name').value=p.name||'';
   document.getElementById('p-sku').value=p.sku||'';
@@ -1916,6 +2339,13 @@ function openEditProductModal(id, p){
   document.getElementById('p-installation-price').value=p.installationPrice||'';
   document.getElementById('p-installation-desc').value=p.installationDesc||'';
   document.getElementById('p-installation-wrap').style.display=hasInst?'block':'none';
+  // Variants
+  const vType = (p.variantType && p.variantType!=='none' && _variants.length>0) ? p.variantType : 'none';
+  document.getElementById('p-variant-type').value = vType;
+  document.getElementById('variants-builder').style.display = vType!=='none' ? 'block' : 'none';
+  document.getElementById('variant-color-preview-row').style.display = vType==='color' ? 'flex' : 'none';
+  onVariantTypeChange();
+  renderVariantsList();
   renderMediaLists();
   switchTab('tab-basic','product-modal');
   document.getElementById('product-modal').style.display='flex';
@@ -1971,7 +2401,10 @@ async function saveProduct(){
   if(hasInstallation&&(isNaN(installationPrice)||installationPrice<0)){document.getElementById('fg-installation-price').classList.add('has-error');valid=false}else document.getElementById('fg-installation-price')?.classList.remove('has-error');
   if(!valid)return;
   const btn=document.getElementById('product-save-btn');btn.disabled=true;btn.textContent='جاري الحفظ...';
-  const data={name,sku,price,costPrice,qty,category,description:desc,imageUrl:image,extraImages:_extraImages,videos:_videos,warranty,warrantyPeriod,active,hasInstallation,installationPrice:hasInstallation?installationPrice:0,installationDesc:hasInstallation?installationDesc:'',updatedAt:Date.now()};
+  const data={name,sku,price,costPrice,qty,category,description:desc,imageUrl:image,extraImages:_extraImages,videos:_videos,warranty,warrantyPeriod,active,hasInstallation,installationPrice:hasInstallation?installationPrice:0,installationDesc:hasInstallation?installationDesc:'',
+    variantType: document.getElementById('p-variant-type').value,
+    variants: _variants.length>0 ? _variants : [],
+    updatedAt:Date.now()};
   try{
     if(editingProductId){await db.ref('products/'+editingProductId).update(data);showToast('تم تحديث المنتج ✓','success')}
     else{data.createdAt=Date.now();await db.ref('products').push(data);showToast('تم إضافة المنتج ✓','success')}
@@ -1979,6 +2412,80 @@ async function saveProduct(){
   }catch(err){console.error(err);showToast('خطأ: '+err.message,'error')}
   finally{btn.disabled=false;btn.textContent='💾 حفظ المنتج'}
 }
+// ══ VARIANTS MANAGEMENT ══
+let _variants = []; // [{id, label, price, qty, color}]
+
+function onVariantTypeChange(){
+  const type = document.getElementById('p-variant-type').value;
+  const builder = document.getElementById('variants-builder');
+  const colorRow = document.getElementById('variant-color-preview-row');
+  const inputLabel = document.getElementById('variant-input-label');
+  builder.style.display = type==='none' ? 'none' : 'block';
+  colorRow.style.display = type==='color' ? 'flex' : 'none';
+  const labels = {color:'اسم اللون (مثال: أحمر)', size:'المقاس (مثال: XL)', number:'الرقم (مثال: 42)', custom:'التنويع (مثال: بريميوم)'};
+  if(inputLabel) inputLabel.textContent = labels[type] || 'الاسم / الكود';
+  const inp = document.getElementById('new-variant-label');
+  const hints = {color:'مثال: أحمر، أسود، أبيض', size:'مثال: S, M, L, XL, XXL', number:'مثال: 40, 41, 42, 43', custom:'مثال: نسخة عادية، نسخة بريميوم'};
+  if(inp) inp.placeholder = hints[type] || 'اسم التنويع';
+}
+
+function addVariant(){
+  const label = document.getElementById('new-variant-label').value.trim();
+  const priceRaw = document.getElementById('new-variant-price').value.trim();
+  const qtyRaw = document.getElementById('new-variant-qty').value.trim();
+  const colorEl = document.getElementById('new-variant-color');
+  const type = document.getElementById('p-variant-type').value;
+  if(!label){showToast('اكتب اسم التنويع أولاً','error');return;}
+  // check duplicate
+  if(_variants.find(v=>v.label.toLowerCase()===label.toLowerCase())){showToast('هذا التنويع موجود بالفعل','error');return;}
+  const variant = {
+    id: 'v_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
+    label,
+    price: priceRaw!=='' ? Number(priceRaw) : null,
+    qty: qtyRaw!=='' ? Number(qtyRaw) : null,
+    color: (type==='color' && colorEl) ? colorEl.value : null
+  };
+  _variants.push(variant);
+  document.getElementById('new-variant-label').value='';
+  document.getElementById('new-variant-price').value='';
+  document.getElementById('new-variant-qty').value='';
+  renderVariantsList();
+  showToast('✓ تمت إضافة التنويع','success');
+}
+
+function removeVariant(id){
+  _variants = _variants.filter(v=>v.id!==id);
+  renderVariantsList();
+}
+
+function renderVariantsList(){
+  const wrap = document.getElementById('variants-list-wrap');
+  if(!wrap) return;
+  if(!_variants.length){
+    wrap.innerHTML=`<div style="text-align:center;padding:1.2rem;color:var(--text-muted);font-size:.82rem;border:1px dashed var(--border);border-radius:var(--radius-md)">لا توجد تنويعات بعد — أضف من الأعلى</div>`;
+    return;
+  }
+  const basePrice = parseFloat(document.getElementById('p-price').value)||0;
+  wrap.innerHTML = _variants.map((v,i)=>{
+    const displayPrice = v.price!=null ? v.price : basePrice;
+    const swatchHtml = v.color ? `<div class="variant-color-swatch" style="background:${esc(v.color)}"></div>` : `<div style="width:22px;height:22px;border-radius:4px;background:var(--bg-secondary);border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--text-muted)">${i+1}</div>`;
+    const priceBadge = v.price!=null
+      ? `<span class="variant-price-tag">${Number(v.price).toLocaleString('ar-EG')} ج.م</span>`
+      : `<span style="font-size:.72rem;color:var(--text-muted);font-family:var(--font-mono)">سعر أساسي</span>`;
+    const qtyBadge = v.qty!=null
+      ? `<span class="variant-qty-tag">${v.qty} قطعة</span>`
+      : `<span style="font-size:.72rem;color:var(--text-muted);font-family:var(--font-mono)">∞</span>`;
+    return `<div class="variant-row" id="vrow-${v.id}">
+      <span class="variant-drag-handle">⠿</span>
+      ${swatchHtml}
+      <span class="variant-label-badge">${esc(v.label)}</span>
+      ${priceBadge}
+      ${qtyBadge}
+      <button class="btn btn-danger btn-sm" style="padding:.2rem .5rem;font-size:.7rem" onclick="removeVariant('${v.id}')">✕</button>
+    </div>`;
+  }).join('');
+}
+
 async function deleteProduct(id){
   if(!confirm('هل تريد حذف هذا المنتج؟'))return;
   try{await db.ref('products/'+id).remove();showToast('تم حذف المنتج','info');await loadProductsPage()}
@@ -4341,6 +4848,7 @@ function printLedgerStatement(key){
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
       <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
@@ -4348,6 +4856,7 @@ function printLedgerStatement(key){
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -4419,6 +4928,7 @@ function printLedgerStatement(key){
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
       <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
@@ -4426,6 +4936,7 @@ function printLedgerStatement(key){
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -4506,6 +5017,7 @@ function printLedgerStatement(key){
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
       <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
@@ -4513,6 +5025,7 @@ function printLedgerStatement(key){
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -4660,6 +5173,7 @@ function printLedgerStatement(key){
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
       <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
@@ -4667,6 +5181,7 @@ function printLedgerStatement(key){
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -4724,4 +5239,209 @@ function printLedgerStatement(key){
   </div>
 </div>
 
+<!-- ══ INVENTORY PAGE — الجرد ══ -->
+<div id="page-inventory" class="page">
+  <div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+      <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
+  <main class="page-container">
+
+    <div class="page-header">
+      <div class="page-header-title">
+        <span class="label">المخزون</span>
+        <h1>📦 الجرد</h1>
+      </div>
+      <button class="btn btn-primary" onclick="openInventoryAdjustModal()">+ تعديل كميات</button>
+    </div>
+
+    <!-- Stats -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2rem">
+      <div class="stat-card">
+        <div class="stat-icon">🛍️</div>
+        <div class="stat-value" id="inv-stat-total">—</div>
+        <div class="stat-label">إجمالي المنتجات</div>
+      </div>
+      <div class="stat-card" style="border-color:rgba(0,200,83,.25)">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value" id="inv-stat-instock" style="color:var(--success)">—</div>
+        <div class="stat-label">متاح في المخزن</div>
+      </div>
+      <div class="stat-card" style="border-color:rgba(255,179,0,.3)">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-value" id="inv-stat-low" style="color:var(--accent-gold)">—</div>
+        <div class="stat-label">كمية منخفضة</div>
+      </div>
+      <div class="stat-card" style="border-color:rgba(255,23,68,.35)">
+        <div class="stat-icon">❌</div>
+        <div class="stat-value" id="inv-stat-out" style="color:var(--danger)">—</div>
+        <div class="stat-label">نفدت الكمية</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value" id="inv-stat-value">—</div>
+        <div class="stat-label">قيمة المخزون</div>
+      </div>
+    </div>
+
+    <!-- Filter & Search -->
+    <div class="inv-filter-bar">
+      <input class="search-input" id="inv-search" placeholder="🔍 ابحث باسم منتج أو SKU..." oninput="filterInventory()" style="flex:1;min-width:200px"/>
+      <button class="inv-filter-btn active" id="inv-f-all" onclick="setInvFilter('all')">الكل</button>
+      <button class="inv-filter-btn" id="inv-f-instock" onclick="setInvFilter('instock')">✅ متاح</button>
+      <button class="inv-filter-btn" id="inv-f-low" onclick="setInvFilter('low')">⚠️ منخفض</button>
+      <button class="inv-filter-btn" id="inv-f-out" onclick="setInvFilter('out')">❌ نفذ</button>
+    </div>
+
+    <!-- Inventory List -->
+    <div id="inventory-list">
+      <div class="empty-state"><div class="empty-icon">📦</div><h3>جاري التحميل...</h3></div>
+    </div>
+
+  </main>
+  </div>
+  </div>
+</div>
+
+<!-- ══ INVENTORY ADJUST MODAL ══ -->
+<div id="inv-adjust-modal" class="modal-backdrop inv-adjust-modal" style="display:none" onclick="if(event.target===this)closeInventoryAdjustModal()">
+  <div class="modal-box">
+    <h2>📦 تعديل كميات المخزون</h2>
+    <div class="form-group">
+      <label class="form-label">اختر المنتج</label>
+      <select class="form-control" id="inv-adj-product" onchange="onInvAdjProductChange()">
+        <option value="">— اختر منتج —</option>
+      </select>
+    </div>
+    <div id="inv-adj-current-wrap" style="display:none;margin-bottom:1rem">
+      <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:.82rem;color:var(--text-muted)">الكمية الحالية</span>
+        <span id="inv-adj-current-qty" style="font-family:var(--font-display);font-size:1.6rem;color:var(--accent-gold)">—</span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">نوع التعديل</label>
+      <select class="form-control" id="inv-adj-type">
+        <option value="set">📌 تحديد كمية محددة</option>
+        <option value="add">➕ إضافة للكمية الحالية</option>
+        <option value="subtract">➖ خصم من الكمية الحالية</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">الكمية</label>
+      <input type="number" class="form-control" id="inv-adj-qty" min="0" placeholder="أدخل الكمية" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">ملاحظة (اختياري)</label>
+      <input type="text" class="form-control" id="inv-adj-note" placeholder="مثال: استلام بضاعة جديدة" maxlength="80"/>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeInventoryAdjustModal()">إلغاء</button>
+      <button class="btn btn-primary" id="inv-adj-save-btn" onclick="saveInventoryAdjust()">💾 حفظ التعديل</button>
+    </div>
+  </div>
+</div>
+
 </body>
+
+<!-- ══ INSTALL SLOTS PAGE ══ -->
+<div id="page-slots" class="page">
+  <div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+      <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
+  <main class="page-container">
+    <div class="page-header">
+      <div class="page-header-title"><span class="label">الجدولة</span><h1>مواعيد التركيب</h1></div>
+      <button class="btn btn-primary" onclick="openAddSlotModal()">+ إضافة موعد جديد</button>
+    </div>
+    <div class="stats-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));margin-bottom:2rem">
+      <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-value" id="slot-stat-total">—</div><div class="stat-label">إجمالي المواعيد</div></div>
+      <div class="stat-card" style="border-color:rgba(0,200,83,.25)"><div class="stat-icon">✅</div><div class="stat-value" id="slot-stat-available" style="color:var(--success)">—</div><div class="stat-label">متاح للحجز</div></div>
+      <div class="stat-card" style="border-color:rgba(255,23,68,.2)"><div class="stat-icon">🔒</div><div class="stat-value" id="slot-stat-booked" style="color:var(--danger)">—</div><div class="stat-label">محجوز</div></div>
+    </div>
+    <div class="section-header">
+      <h2 class="section-title">جميع المواعيد</h2>
+      <select class="form-control" id="slot-filter" onchange="renderAdminSlots()" style="font-size:.8rem;padding:.4rem .75rem;width:auto">
+        <option value="all">الكل</option>
+        <option value="available">متاح فقط</option>
+        <option value="booked">محجوز فقط</option>
+      </select>
+    </div>
+    <div id="admin-slots-list" style="display:flex;flex-direction:column;gap:.65rem;margin-top:1rem">
+      <div class="empty-state"><div class="spinner-ring" style="margin:0 auto"></div></div>
+    </div>
+  </main>
+  </div>
+  </div>
+</div>
+
+<!-- ══ ADD SLOT MODAL ══ -->
+<div id="add-slot-modal" class="modal-backdrop" style="display:none" onclick="if(event.target===this)closeAddSlotModal()">
+  <div class="modal-box" style="max-width:440px">
+    <h2 style="margin-bottom:1.25rem">📅 إضافة موعد تركيب</h2>
+    <div class="form-group">
+      <label class="form-label">التاريخ والوقت *</label>
+      <input type="datetime-local" class="form-control" id="slot-datetime"/>
+      <span class="form-error" id="slot-dt-err" style="display:none">من فضلك اختار التاريخ والوقت</span>
+    </div>
+    <div class="form-group">
+      <label class="form-label">ملاحظة (اختياري)</label>
+      <input type="text" class="form-control" id="slot-note" placeholder="مثال: موعد صباحي — القاهرة الكبرى" maxlength="100"/>
+    </div>
+    <div style="display:flex;gap:.5rem;margin-top:1.5rem">
+      <button class="btn btn-secondary" onclick="closeAddSlotModal()">إلغاء</button>
+      <button class="btn btn-primary" id="slot-save-btn" onclick="saveNewSlot()">💾 حفظ الموعد</button>
+    </div>
+  </div>
+</div>
