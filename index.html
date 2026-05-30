@@ -416,6 +416,7 @@
   <main class="page-container">
     <div class="page-header">
       <div class="page-header-title"><span class="label">نظرة عامة</span><h1>DASHBOARD</h1></div>
+      <button class="btn btn-danger btn-sm" onclick="openResetModal()" style="border-color:rgba(255,23,68,.4)">🗑️ مسح الداتا</button>
     </div>
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-value" id="stat-total">—</div><div class="stat-label">إجمالي الطلبات</div></div>
@@ -1515,6 +1516,13 @@ const esc = s => {const d=document.createElement('div');d.appendChild(document.c
 const objToArr = obj => obj ? Object.entries(obj).map(([id,v])=>({id,...v})) : [];
 const formatPrice = n => isNaN(n)||n==null ? '—' : Number(n).toLocaleString()+' EGP';
 const formatDate = ts => ts ? new Date(ts).toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric'}) : '—';
+
+function toWhatsAppNumber(raw){
+  let n = (raw||'').toString().replace(/\D/g,'');
+  if(n.startsWith('20')) n = n.slice(2);
+  if(n.startsWith('0'))  n = n.slice(1);
+  return '20' + n;
+}
 const statusBadge = s => {
   const m={pending:['s-pending','⏳ قيد الانتظار'],confirmed:['s-confirmed','✅ مؤكد'],shipped:['s-shipped','🚚 تم الشحن'],delivered:['s-delivered','📦 تم التسليم'],holding:['s-holding','🔒 معلقة'],collected:['s-collected','💚 تم التحصيل']};
   const[cls,lbl]=m[s]||['s-pending',s||'—'];
@@ -2728,7 +2736,7 @@ function renderCustomerDrawerContent(customer, profile, uid){
         <div style="font-size:.78rem;color:var(--text-muted)">${profile?'👤 حساب مسجّل':'👤 زبون بدون حساب'}</div>
       </div>
       <div style="display:flex;flex-direction:column;gap:.4rem;flex-shrink:0;align-items:flex-end">
-        ${phone?`<a href="https://wa.me/2${phone.replace(/^0/,'')}" target="_blank" style="background:#25D366;color:#fff;border:none;border-radius:var(--radius-sm);padding:.42rem .7rem;font-size:.73rem;font-weight:700;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:.3rem">
+        ${phone?`<a href="https://wa.me/${toWhatsAppNumber(phone)}" target="_blank" style="background:#25D366;color:#fff;border:none;border-radius:var(--radius-sm);padding:.42rem .7rem;font-size:.73rem;font-weight:700;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:.3rem">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           واتساب
         </a>`:''}
@@ -3681,7 +3689,34 @@ function openInvoiceModal(type='purchase'){
   renderInvItems();
   // populate datalist from products
   const dl=document.getElementById('inv-products-datalist');
-  dl.innerHTML=_cachedProducts.map(p=>`<option value="${esc(p.name)}">${p.sku?'['+p.sku+'] ':''}</option>`).join('');
+  dl.innerHTML=_cachedProducts.map(p=>`<option value="${esc(p.name)}" data-price="${p.price||0}" data-cost="${p.costPrice!=null&&p.costPrice!==''?p.costPrice:''}"></option>`).join('');
+  // auto-fill price when product is selected from datalist or typed
+  const invItemNameInput = document.getElementById('inv-item-name');
+  function autoFillInvPrice(){
+    const val = invItemNameInput.value.trim();
+    const invType = document.getElementById('inv-type')?.value || 'sale';
+    const prod = _cachedProducts.find(p=>p.name===val || p.sku===val);
+    if(prod){
+      const priceField = document.getElementById('inv-item-price');
+      if(invType==='purchase'){
+        const cp = prod.costPrice!=null&&prod.costPrice!==''?Number(prod.costPrice):Number(prod.price||0);
+        priceField.value = cp;
+      } else {
+        priceField.value = Number(prod.price||0);
+      }
+      // visual flash to confirm auto-fill
+      priceField.style.transition = 'border-color .15s, background .15s';
+      priceField.style.borderColor = 'var(--success)';
+      priceField.style.background  = 'rgba(0,200,83,.08)';
+      setTimeout(()=>{ priceField.style.borderColor=''; priceField.style.background=''; }, 1200);
+      priceField.focus();
+      priceField.select();
+    }
+  }
+  invItemNameInput.oninput  = autoFillInvPrice;
+  invItemNameInput.onchange = autoFillInvPrice;
+  // datalist selection fires 'input' late on some browsers — catch blur too
+  invItemNameInput.addEventListener('blur', autoFillInvPrice);
   // populate merchants datalist
   populateMerchantsDatalist();
   document.getElementById('invoice-modal').style.display='flex';
@@ -3697,11 +3732,20 @@ function updateInvoiceType(){
 function addInvoiceItem(){
   const name=document.getElementById('inv-item-name').value.trim();
   const qty=parseInt(document.getElementById('inv-item-qty').value)||1;
-  const price=parseFloat(document.getElementById('inv-item-price').value)||0;
+  let price=parseFloat(document.getElementById('inv-item-price').value)||0;
   if(!name){showToast('اكتب اسم المنتج','error');return;}
-  // find SKU from cached products
+  // find product from cache
+  const invType = document.getElementById('inv-type')?.value || 'sale';
   const prod=_cachedProducts.find(p=>p.name===name||p.sku===name||p.name.toLowerCase().includes(name.toLowerCase()));
   const sku=prod?.sku||null;
+  // if price still 0, auto-fill from product
+  if(price===0 && prod){
+    if(invType==='purchase'){
+      price = prod.costPrice!=null&&prod.costPrice!==''?Number(prod.costPrice):Number(prod.price||0);
+    } else {
+      price = Number(prod.price||0);
+    }
+  }
   _invItems.push({name,qty,price,sku,id:Date.now()+'_'+Math.random().toString(36).slice(2,6)});
   document.getElementById('inv-item-name').value='';
   document.getElementById('inv-item-qty').value='1';
@@ -4443,14 +4487,16 @@ async function loadLedgerPage(){
   showSpinner('جاري تحميل كشف الحساب...');
   try{
     // جلب كل البيانات
-    const [ordersSnap, invoicesSnap, merchantsSnap] = await Promise.all([
+    const [ordersSnap, invoicesSnap, merchantsSnap, paymentsSnap] = await Promise.all([
       db.ref('orders').get(),
       db.ref('invoices').get(),
-      db.ref('merchants').get()
+      db.ref('merchants').get(),
+      db.ref('ledger_payments').get()
     ]);
     const orders   = objToArr(ordersSnap.val());
     const invoices = objToArr(invoicesSnap.val());
     const merchants = objToArr(merchantsSnap.val());
+    const allPayments = objToArr(paymentsSnap.val());
 
     // بناء قائمة الكيانات
     const entityMap = {};
@@ -4500,8 +4546,17 @@ async function loadLedgerPage(){
       }
     });
 
+    // ربط الحركات النقدية بكل كيان
+    allPayments.forEach(p => {
+      const found = Object.values(entityMap).find(e => e.key === p.entityKey);
+      if(found){
+        if(!found.payments) found.payments = [];
+        found.payments.push(p);
+      }
+    });
+
     _ledgerAllEntities = Object.values(entityMap)
-      .filter(e => e.orders.length || e.invoices.length)
+      .filter(e => e.orders.length || e.invoices.length || (e.payments&&e.payments.length))
       .sort((a,b) => (a.name||'').localeCompare(b.name||'','ar'));
 
     // تحديث الإحصائيات
@@ -4576,22 +4631,22 @@ function renderLedgerList(list){
 function calcLedgerBalance(entity){
   let totalDebit = 0, totalCredit = 0;
   if(entity.type==='customer'){
-    // الطلبات: debit = إجمالي الطلب (العميل مدين بيه)
-    //           credit = لو status=collected أو paid → تحصّل
     entity.orders.forEach(o=>{
       const amt = Number(o.totalPrice)||0;
       totalDebit += amt;
       if(o.status==='collected' || o.status==='delivered') totalCredit += amt;
     });
-    // فواتير بيع مربوطة بالعميل (لو موجودة) → credit
     entity.invoices.filter(i=>i.type==='sale').forEach(i=>{ totalCredit += Number(i.total)||0; });
     entity.invoices.filter(i=>i.type==='purchase').forEach(i=>{ totalDebit += Number(i.total)||0; });
   } else {
-    // تاجر: فاتورة شراء = إحنا مدينين له (debit علينا)
-    //        فاتورة بيع = هو دفع لنا (credit لنا)
     entity.invoices.filter(i=>i.type==='purchase').forEach(i=>{ totalDebit += Number(i.total)||0; });
     entity.invoices.filter(i=>i.type==='sale').forEach(i=>{ totalCredit += Number(i.total)||0; });
   }
+  // الحركات النقدية اليدوية
+  (entity.payments||[]).forEach(p=>{
+    if(p.dir==='credit') totalCredit += Number(p.amount)||0;  // دفع نقدي من العميل / تحصيل
+    else totalDebit += Number(p.amount)||0;                    // دفع نقدي منا للتاجر
+  });
   const balance = totalCredit - totalDebit;
   return {balance, totalDebit, totalCredit};
 }
@@ -4642,6 +4697,23 @@ function buildLedgerTransactions(entity){
       badgeClass: isPurchase?'s-pending':'s-collected'
     });
   });
+  // الحركات النقدية اليدوية
+  (entity.payments||[]).forEach(p=>{
+    const amt = Number(p.amount)||0;
+    const isCredit = p.dir==='credit';
+    txs.push({
+      date: p.createdAt||0,
+      dateStr: p.dateStr || formatDate(p.createdAt),
+      ref: p.ref || 'CASH',
+      desc: (isCredit ? '💵 دفع نقدي' : '💸 صرف نقدي') + (p.notes ? ' — ' + p.notes : ''),
+      debit: isCredit ? 0 : amt,
+      credit: isCredit ? amt : 0,
+      type:'payment', rawId:p.id,
+      badge: isCredit ? 'دفع نقدي' : 'صرف نقدي',
+      badgeClass: isCredit ? 's-collected' : 's-pending',
+      canDelete: true
+    });
+  });
   return txs.sort((a,b)=>a.date-b.date);
 }
 
@@ -4681,7 +4753,8 @@ function openLedgerStatement(key){
         </div>
       </div>
       <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-        ${phone?`<a href="https://wa.me/2${phone.replace(/^0/,'')}" target="_blank" class="btn btn-success btn-sm">💬 واتساب</a>`:''}
+        ${phone?`<a href="https://wa.me/${toWhatsAppNumber(phone)}" target="_blank" class="btn btn-success btn-sm">💬 واتساب</a>`:''}
+        <button class="btn btn-primary btn-sm" onclick="openAddPaymentModal('${key}')">💵 إضافة دفعة</button>
         <button class="btn btn-secondary btn-sm" onclick="printLedgerStatement('${key}')">🖨️ طباعة</button>
         <button class="btn btn-secondary btn-sm" onclick="this.closest('.modal-backdrop').remove()">✕ إغلاق</button>
       </div>
@@ -4743,9 +4816,12 @@ function openLedgerStatement(key){
                   ${tx.credit>0 ? Number(tx.credit).toLocaleString('ar-EG') : '<span style="color:var(--text-muted);font-size:.7rem">—</span>'}
                 </td>
                 <td style="padding:.6rem .85rem;text-align:center">
-                  <span style="font-family:var(--font-display);font-size:.95rem;color:${isPositiveRunning?'var(--success)':'var(--danger)'}">
-                    ${isPositiveRunning?'+':''}${Number(tx.running).toLocaleString('ar-EG')}
-                  </span>
+                  <div style="display:flex;align-items:center;justify-content:center;gap:.4rem">
+                    <span style="font-family:var(--font-display);font-size:.95rem;color:${isPositiveRunning?'var(--success)':'var(--danger)'}">
+                      ${isPositiveRunning?'+':''}${Number(tx.running).toLocaleString('ar-EG')}
+                    </span>
+                    ${tx.canDelete ? `<button title="حذف الحركة" onclick="deleteLedgerPayment('${tx.rawId}','${key}')" style="background:rgba(255,23,68,.1);border:1px solid rgba(255,23,68,.2);border-radius:4px;color:var(--danger);cursor:pointer;font-size:.65rem;padding:.1rem .35rem;line-height:1" >🗑️</button>` : ''}
+                  </div>
                 </td>
               </tr>`;
             }).join('')}
@@ -4764,6 +4840,103 @@ function openLedgerStatement(key){
   </div>`;
   modal.onclick = e=>{ if(e.target===modal) modal.remove(); };
   document.body.appendChild(modal);
+}
+
+// ══ LEDGER CASH PAYMENTS ══
+function openAddPaymentModal(entityKey){
+  const entity = _ledgerAllEntities.find(e=>e.key===entityKey);
+  if(!entity) return;
+  const isCustomer = entity.type==='customer';
+  // close existing modal if open (keep ledger modal)
+  const existing = document.getElementById('add-payment-modal');
+  if(existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'add-payment-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem';
+  modal.innerHTML = `
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-top:3px solid var(--accent);border-radius:var(--radius-lg);padding:2rem;width:100%;max-width:440px">
+      <h2 style="margin-bottom:1.25rem;font-family:var(--font-display);font-size:1.5rem;letter-spacing:.06em">💵 إضافة حركة نقدية</h2>
+      <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:1.25rem">العميل: <strong style="color:var(--text-primary)">${esc(entity.name)}</strong></div>
+      <div class="form-group">
+        <label class="form-label">نوع الحركة *</label>
+        <select class="form-control" id="pay-dir">
+          ${isCustomer
+            ? '<option value="credit">💵 تحصيل نقدي (العميل دفع)</option><option value="debit">💸 رد مبلغ (رددنا للعميل)</option>'
+            : '<option value="debit">💸 دفع نقدي (دفعنا للتاجر)</option><option value="credit">💵 تحصيل من التاجر</option>'}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">المبلغ (EGP) *</label>
+        <input type="number" class="form-control" id="pay-amount" min="1" placeholder="أدخل المبلغ" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">التاريخ *</label>
+        <input type="date" class="form-control" id="pay-date" value="${new Date().toISOString().slice(0,10)}" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">ملاحظة (اختياري)</label>
+        <input type="text" class="form-control" id="pay-notes" placeholder="مثال: دفع كاش في المحل" maxlength="120" />
+      </div>
+      <div style="display:flex;gap:.6rem;margin-top:1.5rem">
+        <button class="btn btn-secondary" onclick="document.getElementById('add-payment-modal').remove()">إلغاء</button>
+        <button class="btn btn-primary" id="pay-save-btn" onclick="saveLedgerPayment('${entityKey}')">💾 حفظ الحركة</button>
+      </div>
+    </div>
+  `;
+  modal.onclick = e=>{ if(e.target===modal) modal.remove(); };
+  document.body.appendChild(modal);
+}
+
+async function saveLedgerPayment(entityKey){
+  const btn = document.getElementById('pay-save-btn');
+  const amount = parseFloat(document.getElementById('pay-amount')?.value||0);
+  const dir = document.getElementById('pay-dir')?.value||'credit';
+  const dateVal = document.getElementById('pay-date')?.value||'';
+  const notes = (document.getElementById('pay-notes')?.value||'').trim();
+
+  if(!amount||amount<=0){ showToast('أدخل مبلغاً صحيحاً','error'); return; }
+  if(!dateVal){ showToast('اختار التاريخ','error'); return; }
+
+  btn.disabled=true; btn.textContent='جاري الحفظ...';
+  try{
+    const ref = 'PAY-' + Date.now().toString(36).toUpperCase();
+    const newPay = {
+      entityKey,
+      dir,
+      amount,
+      notes,
+      dateStr: dateVal,
+      ref,
+      createdAt: Date.now()
+    };
+    const newRef = db.ref('ledger_payments').push();
+    newPay.id = newRef.key;
+    await newRef.set(newPay);
+
+    document.getElementById('add-payment-modal')?.remove();
+    showToast('✅ تم حفظ الحركة النقدية','success');
+    // reload the ledger and reopen the statement
+    await loadLedgerPage();
+    openLedgerStatement(entityKey);
+  }catch(err){
+    showToast('خطأ: '+err.message,'error');
+    btn.disabled=false; btn.textContent='💾 حفظ الحركة';
+  }
+}
+
+async function deleteLedgerPayment(payId, entityKey){
+  if(!confirm('هل تريد حذف هذه الحركة النقدية؟')) return;
+  try{
+    await db.ref('ledger_payments/'+payId).remove();
+    showToast('تم حذف الحركة','success');
+    // close ledger modal and reload
+    document.querySelectorAll('.modal-backdrop').forEach(m=>m.remove());
+    await loadLedgerPage();
+    openLedgerStatement(entityKey);
+  }catch(err){
+    showToast('خطأ في الحذف: '+err.message,'error');
+  }
 }
 
 function printLedgerStatement(key){
@@ -5445,3 +5618,158 @@ function printLedgerStatement(key){
     </div>
   </div>
 </div>
+
+<!-- ══ RESET DATABASE MODAL ══ -->
+<div id="reset-db-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;align-items:center;justify-content:center;padding:1rem;overflow-y:auto">
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-top:3px solid var(--danger);border-radius:var(--radius-lg);padding:2rem;width:100%;max-width:520px;position:relative;margin:auto">
+
+    <!-- Header -->
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div style="font-size:2.5rem;margin-bottom:.4rem">⚠️</div>
+      <h2 style="font-family:var(--font-display);font-size:1.7rem;letter-spacing:.08em;color:var(--danger);margin-bottom:.3rem">مسح الداتا بيز</h2>
+      <p style="font-size:.8rem;color:var(--text-muted);line-height:1.6">اختار البيانات اللي عايز تمسحها وادخل الباسورد للتأكيد</p>
+    </div>
+
+    <!-- Checkboxes -->
+    <div style="background:rgba(255,23,68,.04);border:1px solid rgba(255,23,68,.18);border-radius:var(--radius-md);padding:1rem;margin-bottom:1.25rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
+        <span style="font-family:var(--font-mono);font-size:.62rem;letter-spacing:.12em;color:var(--danger);text-transform:uppercase">اختار ما تريد مسحه</span>
+        <div style="display:flex;gap:.5rem">
+          <button onclick="resetSelectAll(true)"  style="font-size:.65rem;padding:.2rem .5rem;background:rgba(255,23,68,.12);border:1px solid rgba(255,23,68,.25);border-radius:4px;color:var(--danger);cursor:pointer">تحديد الكل</button>
+          <button onclick="resetSelectAll(false)" style="font-size:.65rem;padding:.2rem .5rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px;color:var(--text-muted);cursor:pointer">إلغاء الكل</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
+        <label class="reset-chk-item"><input type="checkbox" class="reset-chk" value="orders"         checked> 📦 الطلبات</label>
+        <label class="reset-chk-item"><input type="checkbox" class="reset-chk" value="invoices"       checked> 🧾 الفواتير</label>
+        <label class="reset-chk-item"><input type="checkbox" class="reset-chk" value="users"          checked> 👥 العملاء</label>
+        <label class="reset-chk-item"><input type="checkbox" class="reset-chk" value="promoCodes"     checked> 🎟️ أكواد الخصم</label>
+        <label class="reset-chk-item"><input type="checkbox" class="reset-chk" value="liquidityLog"   checked> 💰 سجل السيولة</label>
+        <label class="reset-chk-item"><input type="checkbox" class="reset-chk" value="ledger_payments"checked> 📒 حركات الحساب</label>
+        <label class="reset-chk-item"><input type="checkbox" class="reset-chk" value="installSlots"   checked> 📅 مواعيد التركيب</label>
+        <label class="reset-chk-item"><input type="checkbox" class="reset-chk" value="merchants"      checked> 🏪 التجار</label>
+        <label class="reset-chk-item"><input type="checkbox" class="reset-chk" value="ads"            checked> 📢 الإعلانات</label>
+        <label class="reset-chk-item"><input type="checkbox" class="reset-chk" value="reviews"        checked> ⭐ التقييمات</label>
+        <label class="reset-chk-item" style="border-color:rgba(255,160,0,.25);background:rgba(255,160,0,.04)"><input type="checkbox" class="reset-chk" value="products"> 🛍️ المنتجات</label>
+        <label class="reset-chk-item" style="border-color:rgba(255,160,0,.25);background:rgba(255,160,0,.04)"><input type="checkbox" class="reset-chk" value="shippingRates"> 🚚 أسعار الشحن</label>
+        <label class="reset-chk-item" style="border-color:rgba(255,160,0,.25);background:rgba(255,160,0,.04);grid-column:1/-1"><input type="checkbox" class="reset-chk" value="settings"> ⚙️ الإعدادات</label>
+      </div>
+      <div style="margin-top:.65rem;font-size:.7rem;color:rgba(255,160,0,.7);font-family:var(--font-mono)">⚠️ المنتجات والشحن والإعدادات غير محددة افتراضياً — حددها بنفسك لو عايز تمسحها</div>
+    </div>
+
+    <!-- Password -->
+    <div class="form-group" style="margin-bottom:1.25rem">
+      <label class="form-label" style="color:var(--text-primary)">🔒 الباسورد</label>
+      <div style="position:relative">
+        <input type="password" id="reset-confirm-input" class="form-control" placeholder="ادخل الباسورد..." autocomplete="off" oninput="checkResetReady()" style="font-family:var(--font-mono);font-size:1rem;padding-left:2.8rem"/>
+        <span onclick="toggleResetPwd()" style="position:absolute;left:.75rem;top:50%;transform:translateY(-50%);cursor:pointer;font-size:1rem;user-select:none" id="reset-pwd-eye">👁️</span>
+      </div>
+      <div id="reset-pwd-err" style="display:none;font-size:.73rem;color:var(--danger);margin-top:.35rem">❌ باسورد غلط</div>
+    </div>
+
+    <!-- Buttons -->
+    <div style="display:flex;gap:.6rem">
+      <button class="btn btn-secondary" style="flex:1" onclick="closeResetModal()">إلغاء</button>
+      <button id="reset-confirm-btn" class="btn btn-danger" style="flex:1;opacity:.4;cursor:not-allowed" disabled onclick="executeResetDatabase()">
+        🗑️ مسح المحدد
+      </button>
+    </div>
+
+    <!-- Progress overlay -->
+    <div id="reset-progress" style="display:none;position:absolute;inset:0;background:rgba(10,10,10,.93);border-radius:var(--radius-lg);align-items:center;justify-content:center;flex-direction:column;gap:1rem;text-align:center">
+      <div class="spinner-ring" style="width:48px;height:48px;border-width:4px"></div>
+      <div id="reset-progress-text" style="font-family:var(--font-mono);font-size:.82rem;color:var(--text-secondary)">جاري المسح...</div>
+    </div>
+  </div>
+</div>
+
+<style>
+.reset-chk-item{
+  display:flex;align-items:center;gap:.5rem;
+  font-size:.78rem;color:var(--text-secondary);
+  padding:.38rem .55rem;border-radius:6px;cursor:pointer;
+  border:1px solid transparent;transition:background .15s,border-color .15s;
+  user-select:none;
+}
+.reset-chk-item:hover{ background:rgba(255,23,68,.06);border-color:rgba(255,23,68,.15); }
+.reset-chk-item input{ accent-color:var(--danger);width:15px;height:15px;cursor:pointer;flex-shrink:0; }
+.reset-chk-item:has(input:checked){ background:rgba(255,23,68,.07);border-color:rgba(255,23,68,.2);color:var(--text-primary); }
+</style>
+
+<script>
+function openResetModal(){
+  const m = document.getElementById('reset-db-modal');
+  m.style.display = 'flex';
+  document.getElementById('reset-confirm-input').value = '';
+  document.getElementById('reset-pwd-err').style.display = 'none';
+  document.getElementById('reset-confirm-btn').disabled = true;
+  document.getElementById('reset-confirm-btn').style.opacity = '.4';
+  document.getElementById('reset-confirm-btn').style.cursor = 'not-allowed';
+  document.getElementById('reset-progress').style.display = 'none';
+  // reset all checkboxes to checked
+  document.querySelectorAll('.reset-chk').forEach(c=>c.checked=true);
+}
+
+function closeResetModal(){
+  document.getElementById('reset-db-modal').style.display = 'none';
+}
+
+function toggleResetPwd(){
+  const inp = document.getElementById('reset-confirm-input');
+  const eye = document.getElementById('reset-pwd-eye');
+  if(inp.type==='password'){ inp.type='text'; eye.textContent='🙈'; }
+  else { inp.type='password'; eye.textContent='👁️'; }
+}
+
+function resetSelectAll(val){
+  document.querySelectorAll('.reset-chk').forEach(c=>c.checked=val);
+  checkResetReady();
+}
+
+function checkResetReady(){
+  const pwd     = document.getElementById('reset-confirm-input')?.value || '';
+  const anyChecked = [...document.querySelectorAll('.reset-chk')].some(c=>c.checked);
+  const btn     = document.getElementById('reset-confirm-btn');
+  const errEl   = document.getElementById('reset-pwd-err');
+  // show error only if typed something wrong
+  if(pwd.length > 0 && pwd !== 'haithomz'){
+    errEl.style.display = 'block';
+  } else {
+    errEl.style.display = 'none';
+  }
+  const ready = pwd === 'haithomz' && anyChecked;
+  btn.disabled      = !ready;
+  btn.style.opacity = ready ? '1' : '.4';
+  btn.style.cursor  = ready ? 'pointer' : 'not-allowed';
+}
+
+async function executeResetDatabase(){
+  const btn = document.getElementById('reset-confirm-btn');
+  if(btn.disabled) return;
+
+  const selected = [...document.querySelectorAll('.reset-chk:checked')].map(c=>c.value);
+  if(!selected.length){ showToast('محدتش أي حاجة!','error'); return; }
+
+  btn.disabled = true;
+  const progress     = document.getElementById('reset-progress');
+  const progressText = document.getElementById('reset-progress-text');
+  progress.style.display = 'flex';
+
+  try{
+    for(const node of selected){
+      progressText.textContent = `جاري مسح: ${node}...`;
+      await db.ref(node).remove();
+    }
+    progressText.textContent = '✅ تم المسح بنجاح!';
+    await new Promise(r=>setTimeout(r,1200));
+    closeResetModal();
+    showToast(`✅ تم مسح ${selected.length} عنصر بنجاح`,'success');
+    navigate('dashboard');
+  }catch(err){
+    progressText.textContent = '❌ خطأ: ' + err.message;
+    showToast('خطأ: '+err.message,'error');
+    setTimeout(()=>{ progress.style.display='none'; btn.disabled=false; },3000);
+  }
+}
+</script>
+
