@@ -280,33 +280,38 @@
     @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.3)}}
     @keyframes scan-flash{0%{box-shadow:0 0 0 0 rgba(0,200,83,.6)}70%{box-shadow:0 0 0 10px rgba(0,200,83,0)}100%{box-shadow:0 0 0 0 rgba(0,200,83,0)}}
     .product-row.scan-hit{border-color:var(--success)!important;animation:scan-flash .8s ease;}
+    /* ══ A4 INVOICE PRINT ══ */
     @media print{
       body>*:not(#shared-print-overlay):not(#invoice-print-overlay){display:none!important}
       #shared-print-overlay,#invoice-print-overlay{position:static!important;background:#fff!important;padding:0!important}
       #shared-print-btns,#invoice-print-overlay>div>div:first-child{display:none!important}
       #shared-print-content,#invoice-print-content{border-radius:0!important;box-shadow:none!important}
-      /* ── GK420t Label Printer Support ── */
+    }
+    /* ══ DEFAULT PAGE = A4 ══ */
+    @page{
+      size:A4 portrait;
+      margin:10mm 12mm;
+    }
+    /* ══ LABEL PRINT OVERRIDE ══ */
+    @media print{
+      /* ── Label Printer Support — 3.5" x 3" = 88.9mm x 76.2mm ── */
       body.print-label{margin:0!important;padding:0!important}
       body.print-label #shared-print-content{
-        width:101.6mm!important;
+        width:88.9mm!important;
         min-height:0!important;
         padding:0!important;
         margin:0 auto!important;
         page-break-after:always;
       }
       body.print-label .barcode-label-wrap{
-        width:101.6mm!important;
+        width:88.9mm!important;
         padding:3mm 4mm!important;
         box-sizing:border-box!important;
       }
-      @page{
-        size:101.6mm 63.5mm;
-        margin:0;
-      }
-      body.print-label @page{
-        size:101.6mm 63.5mm;
-        margin:0;
-      }
+    }
+    @page :label-page{
+      size:88.9mm 76.2mm;
+      margin:0;
     }
     @media(max-width:768px){
       .product-row{grid-template-columns:50px 1fr auto}
@@ -704,7 +709,7 @@
 <div id="invoice-print-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;overflow-y:auto;padding:2rem">
   <div style="max-width:700px;margin:0 auto">
     <div style="display:flex;gap:.75rem;margin-bottom:1rem;justify-content:flex-end">
-      <button class="btn btn-primary" onclick="window.print()">🖨️ طباعة</button>
+      <button class="btn btn-primary" onclick="printInvoiceA4()">🖨️ طباعة A4</button>
       <button class="btn btn-secondary" onclick="document.getElementById('invoice-print-overlay').style.display='none'">✕ إغلاق</button>
     </div>
     <div id="invoice-print-content" style="background:#fff;color:#111;border-radius:8px;padding:2rem;font-family:Arial,sans-serif"></div>
@@ -1293,18 +1298,22 @@
       <div id="variants-builder" style="display:none">
         <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem">
           <div style="font-size:.78rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-bottom:.75rem;text-transform:uppercase">إضافة تنويع جديد</div>
-          <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:.5rem;align-items:end">
+          <div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:.5rem;align-items:end">
             <div>
               <label class="form-label" style="font-size:.7rem" id="variant-input-label">الاسم / الكود</label>
-              <input type="text" class="form-control" id="new-variant-label" placeholder="مثال: أحمر" style="font-size:.85rem"/>
+              <input type="text" class="form-control" id="new-variant-label" placeholder="مثال: أحمر" style="font-size:.85rem" onkeydown="if(event.key==='Enter')addVariant()"/>
             </div>
             <div>
-              <label class="form-label" style="font-size:.7rem">سعر مختلف؟ <span style="color:var(--text-muted)">(اختياري)</span></label>
-              <input type="number" class="form-control" id="new-variant-price" placeholder="نفس السعر" min="0" style="width:100px;font-size:.85rem"/>
+              <label class="form-label" style="font-size:.7rem">سعر البيع؟ <span style="color:var(--text-muted)">(اختياري)</span></label>
+              <input type="number" class="form-control" id="new-variant-price" placeholder="نفس السعر" min="0" style="width:100px;font-size:.85rem" onkeydown="if(event.key==='Enter')addVariant()"/>
+            </div>
+            <div>
+              <label class="form-label" style="font-size:.7rem">سعر الشراء <span style="color:var(--text-muted)">(اختياري)</span></label>
+              <input type="number" class="form-control" id="new-variant-cost" placeholder="—" min="0" style="width:100px;font-size:.85rem" onkeydown="if(event.key==='Enter')addVariant()"/>
             </div>
             <div>
               <label class="form-label" style="font-size:.7rem">الكمية</label>
-              <input type="number" class="form-control" id="new-variant-qty" placeholder="∞" min="0" style="width:75px;font-size:.85rem"/>
+              <input type="number" class="form-control" id="new-variant-qty" placeholder="∞" min="0" style="width:75px;font-size:.85rem" onkeydown="if(event.key==='Enter')addVariant()"/>
             </div>
             <div style="padding-bottom:0">
               <button class="btn btn-primary btn-sm" onclick="addVariant()" style="height:38px;padding:.4rem .9rem">+ إضافة</button>
@@ -1323,7 +1332,7 @@
         </div>
         <div style="margin-top:.75rem;font-size:.75rem;color:var(--text-muted);display:flex;align-items:center;gap:.4rem">
           <span>💡</span>
-          <span>السعر الأساسي للمنتج هو السعر الافتراضي — تقدر تحدد سعر مختلف لكل تنويع</span>
+          <span>السعر الأساسي للمنتج هو سعر البيع الافتراضي — تقدر تحدد سعر بيع وسعر شراء مختلف لكل تنويع</span>
         </div>
       </div>
     </div>
@@ -2440,6 +2449,7 @@ function onVariantTypeChange(){
 function addVariant(){
   const label = document.getElementById('new-variant-label').value.trim();
   const priceRaw = document.getElementById('new-variant-price').value.trim();
+  const costRaw = document.getElementById('new-variant-cost').value.trim();
   const qtyRaw = document.getElementById('new-variant-qty').value.trim();
   const colorEl = document.getElementById('new-variant-color');
   const type = document.getElementById('p-variant-type').value;
@@ -2450,15 +2460,18 @@ function addVariant(){
     id: 'v_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
     label,
     price: priceRaw!=='' ? Number(priceRaw) : null,
+    costPrice: costRaw!=='' ? Number(costRaw) : null,
     qty: qtyRaw!=='' ? Number(qtyRaw) : null,
     color: (type==='color' && colorEl) ? colorEl.value : null
   };
   _variants.push(variant);
   document.getElementById('new-variant-label').value='';
   document.getElementById('new-variant-price').value='';
+  document.getElementById('new-variant-cost').value='';
   document.getElementById('new-variant-qty').value='';
   renderVariantsList();
   showToast('✓ تمت إضافة التنويع','success');
+  document.getElementById('new-variant-label').focus();
 }
 
 function removeVariant(id){
@@ -2480,14 +2493,18 @@ function renderVariantsList(){
     const priceBadge = v.price!=null
       ? `<span class="variant-price-tag">${Number(v.price).toLocaleString('ar-EG')} ج.م</span>`
       : `<span style="font-size:.72rem;color:var(--text-muted);font-family:var(--font-mono)">سعر أساسي</span>`;
+    const costBadge = v.costPrice!=null
+      ? `<span style="font-family:var(--font-display);font-size:.9rem;color:var(--text-muted);white-space:nowrap" title="سعر الشراء">🛒 ${Number(v.costPrice).toLocaleString('ar-EG')}</span>`
+      : `<span style="font-size:.72rem;color:var(--text-muted);font-family:var(--font-mono)">—</span>`;
     const qtyBadge = v.qty!=null
       ? `<span class="variant-qty-tag">${v.qty} قطعة</span>`
       : `<span style="font-size:.72rem;color:var(--text-muted);font-family:var(--font-mono)">∞</span>`;
-    return `<div class="variant-row" id="vrow-${v.id}">
+    return `<div class="variant-row" id="vrow-${v.id}" style="grid-template-columns:auto 1fr auto auto auto auto auto">
       <span class="variant-drag-handle">⠿</span>
       ${swatchHtml}
       <span class="variant-label-badge">${esc(v.label)}</span>
       ${priceBadge}
+      ${costBadge}
       ${qtyBadge}
       <button class="btn btn-danger btn-sm" style="padding:.2rem .5rem;font-size:.7rem" onclick="removeVariant('${v.id}')">✕</button>
     </div>`;
@@ -3525,16 +3542,16 @@ function drawBarcode(svgEl, text, opts={}){
   svgEl.innerHTML=html;
 }
 
-// ── PRODUCT BARCODE PRINT (GK420t — 4"×2.5" label = 101.6mm×63.5mm) ──
+// ── PRODUCT BARCODE PRINT (3.5" × 3" label = 88.9mm × 76.2mm) ──
 function printProductBarcode(p){
   const val=(p.sku||p.name.replace(/[^A-Z0-9\-\.]/gi,'').slice(0,14)).toUpperCase();
   const svgId='pbc_'+Math.random().toString(36).slice(2,8);
   const html=`
     <div class="barcode-label-wrap" style="
-      width:101.6mm;
-      height:63.5mm;
+      width:88.9mm;
+      height:76.2mm;
       box-sizing:border-box;
-      padding:3mm 5mm;
+      padding:4mm 5mm;
       display:flex;
       flex-direction:column;
       align-items:center;
@@ -3544,17 +3561,17 @@ function printProductBarcode(p){
       color:#000;
       overflow:hidden;
     ">
-      <div style="font-size:7pt;letter-spacing:.18em;text-transform:uppercase;color:#555;margin-bottom:1.5mm">PIT HOUSE</div>
-      <div style="font-size:11pt;font-weight:900;text-align:center;margin-bottom:1mm;max-width:95mm;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${esc(p.name)}</div>
-      ${p.category?`<div style="font-size:7pt;color:#666;margin-bottom:2mm">${esc(p.category)}</div>`:''}
-      <svg id="${svgId}" style="display:block;margin:0 auto 1.5mm;max-width:90mm"></svg>
-      <div style="font-family:monospace;font-size:7pt;letter-spacing:.12em;color:#333;margin-bottom:1.5mm">${esc(val)}</div>
-      ${p.price?`<div style="font-size:14pt;font-weight:900;border-top:0.5mm solid #ddd;padding-top:1.5mm;width:100%;text-align:center">${formatPrice(p.price)} ج.م</div>`:''}
+      <div style="font-size:7pt;letter-spacing:.18em;text-transform:uppercase;color:#555;margin-bottom:2mm">PIT HOUSE</div>
+      <div style="font-size:12pt;font-weight:900;text-align:center;margin-bottom:2mm;max-width:82mm;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${esc(p.name)}</div>
+      ${p.category?`<div style="font-size:7pt;color:#666;margin-bottom:2.5mm">${esc(p.category)}</div>`:''}
+      <svg id="${svgId}" style="display:block;margin:0 auto 2mm;max-width:80mm"></svg>
+      <div style="font-family:monospace;font-size:7pt;letter-spacing:.12em;color:#333;margin-bottom:2mm">${esc(val)}</div>
+      ${p.price?`<div style="font-size:16pt;font-weight:900;border-top:0.5mm solid #ddd;padding-top:2mm;width:100%;text-align:center">${formatPrice(p.price)} ج.م</div>`:''}
     </div>`;
   document.getElementById('shared-print-content').innerHTML=html;
   document.getElementById('shared-print-overlay').style.display='block';
   const svgEl=document.getElementById(svgId);
-  if(svgEl) drawBarcode(svgEl,val,{h:40,barW:1.8});
+  if(svgEl) drawBarcode(svgEl,val,{h:52,barW:2});
   // Show label-specific buttons
   document.getElementById('btn-print-label').style.display='inline-flex';
   document.getElementById('btn-print-a4').style.display='none';
@@ -3571,22 +3588,38 @@ function closeSharedPrint(){
   document.getElementById('btn-print-a4').style.display='none';
 }
 
+// dynamic @page style tag for switching between label and A4
+let _pageSizeStyleEl = null;
+function setPageSize(cssText){
+  if(!_pageSizeStyleEl){
+    _pageSizeStyleEl = document.createElement('style');
+    _pageSizeStyleEl.id = 'dynamic-page-size';
+    document.head.appendChild(_pageSizeStyleEl);
+  }
+  _pageSizeStyleEl.textContent = cssText;
+}
+
 function doPrint(mode){
   if(mode==='label'){
+    setPageSize('@page{ size:88.9mm 76.2mm; margin:0; }');
+    document.body.classList.remove('print-a4');
     document.body.classList.add('print-label');
-    // shrink inner container so @page kicks in cleanly
-    document.getElementById('shared-print-inner').style.maxWidth='101.6mm';
+    document.getElementById('shared-print-inner').style.maxWidth='88.9mm';
     document.getElementById('shared-print-content').style.padding='0';
   } else {
+    setPageSize('@page{ size:A4 portrait; margin:10mm 12mm; }');
     document.body.classList.remove('print-label');
+    document.body.classList.add('print-a4');
     document.getElementById('shared-print-inner').style.maxWidth='720px';
   }
   window.print();
   // restore after print dialog closes
   setTimeout(()=>{
     document.body.classList.remove('print-label');
+    document.body.classList.remove('print-a4');
     document.getElementById('shared-print-inner').style.maxWidth='720px';
-  },1000);
+    setPageSize('@page{ size:A4 portrait; margin:10mm 12mm; }');
+  },1500);
 }
 
 // ── WAYBILL PRINT ──
@@ -3670,6 +3703,7 @@ function printWaybill(order){
 // ══ INVOICES ══
 let _allInvoices=[];
 let _invItems=[];
+let _editingInvoiceId=null;
 
 function genInvRef(){
   const d=new Date();const yy=String(d.getFullYear()).slice(2);
@@ -3680,11 +3714,13 @@ function genInvRef(){
 
 function openInvoiceModal(type='purchase'){
   _invItems=[];
+  _editingInvoiceId=null;
   document.getElementById('inv-type').value=type;
   document.getElementById('inv-ref').value='';
   document.getElementById('inv-party').value='';
   document.getElementById('inv-notes').value='';
   document.getElementById('inv-date').value=new Date().toISOString().slice(0,10);
+  document.getElementById('inv-save-btn').textContent='💾 حفظ الفاتورة';
   updateInvoiceType();
   renderInvItems();
   // populate datalist from products
@@ -3797,17 +3833,31 @@ async function saveInvoice(){
   if(!party){showToast('اكتب اسم التاجر / الجهة','error');return;}
   if(!_invItems.length){showToast('أضف منتج واحد على الأقل','error');return;}
   const total=_invItems.reduce((s,i)=>s+i.qty*i.price,0);
-  const btn=document.getElementById('inv-save-btn');btn.disabled=true;btn.textContent='جاري الحفظ...';
+  const btn=document.getElementById('inv-save-btn');
+  const isEditing=!!_editingInvoiceId;
+  btn.disabled=true;btn.textContent='جاري الحفظ...';
   try{
-    const inv={ref,type,party,date,notes,items:_invItems,total,createdAt:Date.now()};
-    await db.ref('invoices').push(inv);
-    showToast(`✅ تم حفظ الفاتورة ${ref}`,'success');
-    closeInvoiceModal();
-    await loadInvoicesPage();
-    // show print
-    printInvoice(inv);
+    if(isEditing){
+      // Edit mode — update existing invoice
+      const editId=_editingInvoiceId;
+      const inv={ref,type,party,date,notes,items:_invItems,total};
+      await db.ref('invoices/'+editId).update(inv);
+      showToast(`✅ تم تعديل الفاتورة ${ref}`,'success');
+      _editingInvoiceId=null;
+      closeInvoiceModal();
+      await loadInvoicesPage();
+    } else {
+      // New invoice
+      const inv={ref,type,party,date,notes,items:_invItems,total,createdAt:Date.now()};
+      await db.ref('invoices').push(inv);
+      showToast(`✅ تم حفظ الفاتورة ${ref}`,'success');
+      closeInvoiceModal();
+      await loadInvoicesPage();
+      // show print
+      printInvoice(inv);
+    }
   }catch(err){showToast('خطأ: '+err.message,'error')}
-  finally{btn.disabled=false;btn.textContent='💾 حفظ الفاتورة';}
+  finally{btn.disabled=false;btn.textContent='💾 '+(isEditing?'حفظ التعديلات':'حفظ الفاتورة');}
 }
 
 async function loadInvoicesPage(){
@@ -3876,6 +3926,7 @@ function renderInvoicesList(list){
         <div style="font-family:var(--font-display);font-size:1.4rem;color:${color}">${isPurchase?'-':'+'} ${formatPrice(inv.total)}</div>
         <div style="display:flex;gap:.4rem">
           <button class="btn btn-secondary btn-sm" onclick='printInvoice(${JSON.stringify(inv)})'>🖨️ طباعة</button>
+          <button class="btn btn-success btn-sm" onclick="editInvoice('${inv.id}')">✏️ تعديل</button>
           <button class="btn btn-danger btn-sm" onclick="deleteInvoice('${inv.id}')">حذف</button>
         </div>
       </div>
@@ -3887,6 +3938,48 @@ async function deleteInvoice(id){
   if(!confirm('حذف هذه الفاتورة؟'))return;
   try{await db.ref('invoices/'+id).remove();showToast('تم الحذف','info');await loadInvoicesPage();}
   catch(err){showToast('خطأ في الحذف','error');}
+}
+
+async function editInvoice(id){
+  const inv=_allInvoices.find(i=>i.id===id);
+  if(!inv){showToast('الفاتورة مش موجودة','error');return;}
+  // Make sure products cached
+  if(!_cachedProducts.length){
+    const ps=await db.ref('products').get();
+    _cachedProducts=objToArr(ps.val());
+  }
+  _editingInvoiceId=id;
+  _invItems=(inv.items||[]).map(i=>({...i, id: i.id||Date.now()+'_'+Math.random().toString(36).slice(2,6)}));
+  document.getElementById('inv-type').value=inv.type||'purchase';
+  document.getElementById('inv-ref').value=inv.ref||'';
+  document.getElementById('inv-party').value=inv.party||'';
+  document.getElementById('inv-notes').value=inv.notes||'';
+  document.getElementById('inv-date').value=inv.date||new Date().toISOString().slice(0,10);
+  document.getElementById('inv-save-btn').textContent='💾 حفظ التعديلات';
+  updateInvoiceType();
+  renderInvItems();
+  // populate datalists
+  const dl=document.getElementById('inv-products-datalist');
+  dl.innerHTML=_cachedProducts.map(p=>`<option value="${esc(p.name)}" data-price="${p.price||0}" data-cost="${p.costPrice!=null&&p.costPrice!==''?p.costPrice:''}"></option>`).join('');
+  const invItemNameInput=document.getElementById('inv-item-name');
+  function autoFillInvPrice(){
+    const val=invItemNameInput.value.trim();
+    const invType=document.getElementById('inv-type')?.value||'sale';
+    const prod=_cachedProducts.find(p=>p.name===val||p.sku===val);
+    if(prod){
+      const priceField=document.getElementById('inv-item-price');
+      priceField.value=invType==='purchase'?(prod.costPrice!=null&&prod.costPrice!==''?Number(prod.costPrice):Number(prod.price||0)):Number(prod.price||0);
+      priceField.style.borderColor='var(--success)';
+      setTimeout(()=>{priceField.style.borderColor='';},1200);
+    }
+  }
+  invItemNameInput.oninput=autoFillInvPrice;
+  invItemNameInput.onchange=autoFillInvPrice;
+  invItemNameInput.addEventListener('blur',autoFillInvPrice);
+  populateMerchantsDatalist();
+  document.getElementById('invoice-modal').style.display='flex';
+  // update modal title to show edit mode
+  document.getElementById('invoice-modal-title').textContent=(inv.type==='purchase'?'📥':'📤')+' تعديل فاتورة '+(inv.ref||'');
 }
 
 // ══ LIQUIDITY MANAGEMENT ══
@@ -4129,6 +4222,17 @@ async function deleteLiquidityEntry(id){
 }
 
 // ── PRINT INVOICE WITH BARCODES ──
+function printInvoiceA4(){
+  setPageSize('@page{ size:A4 portrait; margin:10mm 12mm; }');
+  document.body.classList.remove('print-label');
+  document.body.classList.add('print-a4');
+  window.print();
+  setTimeout(()=>{
+    document.body.classList.remove('print-a4');
+    setPageSize('@page{ size:A4 portrait; margin:10mm 12mm; }');
+  },1500);
+}
+
 function printInvoice(inv){
   const isPurchase=inv.type==='purchase';
   const bcIds=[];
