@@ -98,6 +98,8 @@
     .s-delivered{background:rgba(255,61,0,.1);color:var(--accent);border:1px solid rgba(255,61,0,.2)}
     .s-holding{background:rgba(156,39,176,.12);color:#CE93D8;border:1px solid rgba(156,39,176,.25)}
     .s-collected{background:rgba(0,200,83,.18);color:#69F0AE;border:1px solid rgba(0,200,83,.35)}
+    .s-return-req{background:rgba(255,152,0,.15);color:#FFB74D;border:1px solid rgba(255,152,0,.3)}
+    .s-returned{background:rgba(255,193,7,.12);color:#FFD54F;border:1px solid rgba(255,193,7,.25)}
     /* ── INSTALL SLOTS ── */
     .slot-row{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:.85rem 1rem;display:flex;align-items:center;gap:.85rem;transition:border-color var(--transition)}
     .slot-row:hover{border-color:var(--border-hover)}
@@ -429,6 +431,7 @@
       <div class="stat-card" style="border-color:rgba(156,39,176,.3)"><div class="stat-icon">🔒</div><div class="stat-value" id="stat-holding" style="color:#CE93D8">—</div><div class="stat-label">معلقة (Holding)</div></div>
       <div class="stat-card" style="border-color:rgba(0,200,83,.25)"><div class="stat-icon">💰</div><div class="stat-value" id="stat-wallet" style="color:var(--success)">—</div><div class="stat-label">المحصّل (الكاشير)</div></div>
       <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-value" id="stat-revenue">—</div><div class="stat-label">إجمالي الإيرادات</div></div>
+      <div class="stat-card" style="border-color:rgba(255,152,0,.3)"><div class="stat-icon">↩️</div><div class="stat-value" id="stat-returns" style="color:#FFB74D">—</div><div class="stat-label">طلبات إيرجاع</div></div>
       <div class="stat-card"><div class="stat-icon">🛍️</div><div class="stat-value" id="stat-products">—</div><div class="stat-label">المنتجات</div></div>
       <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="stat-customers">—</div><div class="stat-label">العملاء</div></div>
     </div>
@@ -485,6 +488,8 @@
           <option value="delivered">📦 تم التسليم</option>
           <option value="holding">🔒 معلقة (Holding)</option>
           <option value="collected">💚 تم التحصيل</option>
+          <option value="return_requested">↩️ طلبات إيرجاع</option>
+          <option value="returned">🔄 تم الإيرجاع</option>
         </select>
       </div>
     </div>
@@ -1356,6 +1361,29 @@
           <option value="false">🚫 مخفي</option>
         </select>
       </div>
+      <!-- ══ RETURN POLICY SECTION ══ -->
+      <div style="border-top:1px solid var(--border);margin:1.25rem 0 1rem;padding-top:1.25rem">
+        <div style="font-family:var(--font-display);font-size:1rem;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:1rem">↩️ سياسة الإيرجاع</div>
+        <div class="form-group">
+          <label class="form-label">هل يُسمح بإيرجاع هذا المنتج؟</label>
+          <select class="form-control" id="p-returnable" onchange="toggleReturnFields()">
+            <option value="false">❌ لا — غير قابل للإيرجاع</option>
+            <option value="true">✅ نعم — مسموح بالإيرجاع</option>
+          </select>
+          <div class="form-hint">لو اخترت "نعم"، هيظهر للعميل زر طلب إيرجاع بعد التسليم لحد الفترة المحددة</div>
+        </div>
+        <div id="p-return-wrap" style="display:none">
+          <div class="form-group">
+            <label class="form-label">مدة الإيرجاع (بالأيام) *</label>
+            <input type="number" class="form-control" id="p-return-days" placeholder="مثال: 14" min="1" max="365" step="1"/>
+            <div class="form-hint">عدد الأيام من تاريخ التسليم اللي بيقدر فيها العميل يطلب الإيرجاع</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">شروط الإيرجاع (اختياري)</label>
+            <input type="text" class="form-control" id="p-return-conditions" placeholder="مثال: المنتج في حالته الأصلية غير مستعمل"/>
+          </div>
+        </div>
+      </div>
       <!-- ══ INSTALLATION SECTION ══ -->
       <div style="border-top:1px solid var(--border);margin:1.25rem 0 1rem;padding-top:1.25rem">
         <div style="font-family:var(--font-display);font-size:1rem;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:1rem">🔧 خدمة التركيب</div>
@@ -1533,7 +1561,7 @@ function toWhatsAppNumber(raw){
   return '20' + n;
 }
 const statusBadge = s => {
-  const m={pending:['s-pending','⏳ قيد الانتظار'],confirmed:['s-confirmed','✅ مؤكد'],shipped:['s-shipped','🚚 تم الشحن'],delivered:['s-delivered','📦 تم التسليم'],holding:['s-holding','🔒 معلقة'],collected:['s-collected','💚 تم التحصيل']};
+  const m={pending:['s-pending','⏳ قيد الانتظار'],confirmed:['s-confirmed','✅ مؤكد'],shipped:['s-shipped','🚚 تم الشحن'],delivered:['s-delivered','📦 تم التسليم'],holding:['s-holding','🔒 معلقة'],collected:['s-collected','💚 تم التحصيل'],return_requested:['s-return-req','↩️ طلب إيرجاع'],returned:['s-returned','🔄 تم الإيرجاع']};
   const[cls,lbl]=m[s]||['s-pending',s||'—'];
   return`<span class="status-badge ${cls}">${lbl}</span>`;
 };
@@ -2024,6 +2052,7 @@ function updateDashboardStats(orders){
   const walletTotal=orders.filter(o=>o.status==='collected').reduce((s,o)=>s+(o.totalPrice||0),0);
   const revenue=orders.reduce((s,o)=>s+(o.totalPrice||0),0);
   const customers=[...new Set(orders.map(o=>o.phone).filter(Boolean))];
+  const returnReqs=orders.filter(o=>o.status==='return_requested').length;
   const setEl=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
   setEl('stat-total',orders.length);
   setEl('stat-pending',pending);
@@ -2031,6 +2060,7 @@ function updateDashboardStats(orders){
   setEl('stat-wallet',formatPrice(walletTotal));
   setEl('stat-revenue',formatPrice(revenue));
   setEl('stat-customers',customers.length);
+  setEl('stat-returns',returnReqs);
   // recent orders table
   const recent=[...orders].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).slice(0,6);
   const rc=document.getElementById('recent-orders');
@@ -2072,11 +2102,15 @@ function renderOrders(orders){
   if(!orders.length){c.innerHTML=`<div class="empty-state"><div class="empty-icon">📦</div><h3>لا توجد طلبات</h3></div>`;return;}
   c.innerHTML=`<div class="table-wrapper"><table class="data-table"><thead><tr><th>رقم الطلب</th><th>العميل</th><th>التليفون</th><th>المنطقة</th><th>المنتجات</th><th>الإجمالي</th><th>الكود</th><th>الحالة</th><th>التاريخ</th><th>إجراءات</th></tr></thead><tbody>${orders.map(o=>{
     const collectBtn = (o.status==='holding') ? `<button class="btn btn-collect btn-sm" onclick="collectOrder('${o.id}',${o.totalPrice||0})">💚 Collect</button>` : '';
-    return`<tr><td class="td-mono" style="cursor:pointer" onclick='openOrderDrawer(${JSON.stringify(o)})'>${esc(o.id)}</td><td class="td-name">${esc(o.customerName||'—')}</td><td style="white-space:nowrap;font-family:var(--font-mono);font-size:.8rem">${esc(o.phone||'—')}</td><td style="font-size:.78rem;max-width:140px;color:var(--text-muted)">${esc(o.address||o.city||'—')}</td><td style="font-size:.78rem;max-width:160px">${(o.items||[]).map(i=>`<div>${esc(i.name)} × ${i.qty}</div>`).join('')}</td><td class="td-price">${formatPrice(o.totalPrice)}</td><td style="font-family:var(--font-mono);font-size:.75rem;color:var(--accent-gold)">${o.promoCode?esc(o.promoCode):'—'}</td><td><select class="status-select" data-id="${o.id}" onchange="updateOrderStatus(this)"><option value="pending" ${o.status==='pending'?'selected':''}>⏳ قيد الانتظار</option><option value="confirmed" ${o.status==='confirmed'?'selected':''}>✅ مؤكد</option><option value="shipped" ${o.status==='shipped'?'selected':''}>🚚 تم الشحن</option><option value="delivered" ${o.status==='delivered'?'selected':''}>📦 تم التسليم</option><option value="holding" ${o.status==='holding'?'selected':''}>🔒 معلقة</option><option value="collected" ${o.status==='collected'?'selected':''}>💚 تم التحصيل</option></select></td><td style="white-space:nowrap;font-size:.75rem">${formatDate(o.createdAt)}</td><td style="display:flex;gap:.4rem;flex-wrap:wrap">${collectBtn}<button class="btn btn-secondary btn-sm" onclick='printWaybill(${JSON.stringify(o)})' title="بوليصة شحن">🚚 بوليصة</button><button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.id}')">حذف</button></td></tr>`;
+    return`<tr><td class="td-mono" style="cursor:pointer" onclick='openOrderDrawer(${JSON.stringify(o)})'>${esc(o.id)}</td><td class="td-name">${esc(o.customerName||'—')}</td><td style="white-space:nowrap;font-family:var(--font-mono);font-size:.8rem">${esc(o.phone||'—')}</td><td style="font-size:.78rem;max-width:140px;color:var(--text-muted)">${esc(o.address||o.city||'—')}</td><td style="font-size:.78rem;max-width:160px">${(o.items||[]).map(i=>`<div>${esc(i.name)} × ${i.qty}</div>`).join('')}</td><td class="td-price">${formatPrice(o.totalPrice)}</td><td style="font-family:var(--font-mono);font-size:.75rem;color:var(--accent-gold)">${o.promoCode?esc(o.promoCode):'—'}</td><td><select class="status-select" data-id="${o.id}" onchange="updateOrderStatus(this)"><option value="pending" ${o.status==='pending'?'selected':''}>⏳ قيد الانتظار</option><option value="confirmed" ${o.status==='confirmed'?'selected':''}>✅ مؤكد</option><option value="shipped" ${o.status==='shipped'?'selected':''}>🚚 تم الشحن</option><option value="delivered" ${o.status==='delivered'?'selected':''}>📦 تم التسليم</option><option value="holding" ${o.status==='holding'?'selected':''}>🔒 معلقة</option><option value="collected" ${o.status==='collected'?'selected':''}>💚 تم التحصيل</option><option value="return_requested" ${o.status==='return_requested'?'selected':''}>↩️ طلب إيرجاع</option><option value="returned" ${o.status==='returned'?'selected':''}>🔄 تم الإيرجاع</option></select></td><td style="white-space:nowrap;font-size:.75rem">${formatDate(o.createdAt)}</td><td style="display:flex;gap:.4rem;flex-wrap:wrap">${collectBtn}<button class="btn btn-secondary btn-sm" onclick='printWaybill(${JSON.stringify(o)})' title="بوليصة شحن">🚚 بوليصة</button><button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.id}')">حذف</button></td></tr>`;
   }).join('')}</tbody></table></div>`;
 }
 async function updateOrderStatus(sel){
-  try{await db.ref('orders/'+sel.dataset.id).update({status:sel.value});showToast('تم تحديث الحالة ✓','success')}
+  const newStatus = sel.value;
+  const updateData = {status: newStatus};
+  if(newStatus === 'delivered') updateData.deliveredAt = Date.now();
+  if(newStatus === 'returned') updateData.returnedAt = Date.now();
+  try{await db.ref('orders/'+sel.dataset.id).update(updateData);showToast('تم تحديث الحالة ✓','success')}
   catch(err){showToast('فشل التحديث','error')}
 }
 async function deleteOrder(id){
@@ -2181,9 +2215,13 @@ function openOrderDrawer(order){
         <option value="delivered" ${order.status==='delivered'?'selected':''}>📦 تم التسليم</option>
         <option value="holding" ${order.status==='holding'?'selected':''}>🔒 معلقة (Holding)</option>
         <option value="collected" ${order.status==='collected'?'selected':''}>💚 تم التحصيل</option>
+        <option value="return_requested" ${order.status==='return_requested'?'selected':''}>↩️ طلب إيرجاع</option>
+        <option value="returned" ${order.status==='returned'?'selected':''}>🔄 تم الإيرجاع</option>
       </select>
       ${order.status==='holding'?`<button class="btn btn-collect btn-full" style="margin-top:.75rem" onclick="collectOrder('${order.id}',${order.totalPrice||0});closeOrderDrawer()">💚 Collect — تحصيل ${formatPrice(order.totalPrice||0)}</button>`:''}
       ${order.status==='collected'?`<div style="margin-top:.6rem;font-size:.8rem;color:#69F0AE;font-family:var(--font-mono)">✅ تم التحصيل في ${order.collectedAt?formatDate(order.collectedAt):'—'}</div>`:''}
+      ${order.status==='return_requested'?'<div style="margin-top:.75rem;background:rgba(255,152,0,.08);border:1px solid rgba(255,152,0,.25);border-radius:var(--radius-sm);padding:.85rem"><div style="font-family:var(--font-mono);font-size:.65rem;letter-spacing:.12em;color:#FFB74D;margin-bottom:.4rem">↩️ تفاصيل طلب الإيرجاع</div><div style="font-size:.85rem;color:var(--text-secondary)">'+(order.returnRequest&&order.returnRequest.reason?'<div style="margin-bottom:.3rem"><span style="color:var(--text-muted);font-size:.75rem">السبب: </span>'+esc(order.returnRequest.reason)+'</div>':'')+'<div style="font-size:.75rem;color:var(--text-muted)">طُلب في: '+(order.returnRequest&&order.returnRequest.requestedAt?formatDate(order.returnRequest.requestedAt):'—')+'</div></div></div>':''}
+      ${order.status==='returned'?`<div style="margin-top:.6rem;font-size:.8rem;color:#FFB74D;font-family:var(--font-mono)">🔄 تم قبول الإيرجاع في ${order.returnedAt?formatDate(order.returnedAt):'—'}</div>`:''}
     </div>
     <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.5rem">
       <button class="btn btn-secondary btn-full" onclick='printWaybill(${JSON.stringify(order)})'>🚚 طباعة بوليصة الشحن</button>
@@ -2299,6 +2337,11 @@ function renderProductsList(products){
     </div>`;
   }).join('');
 }
+function toggleReturnFields(){
+  const val = document.getElementById('p-returnable').value==='true';
+  document.getElementById('p-return-wrap').style.display = val ? 'block' : 'none';
+}
+
 function toggleInstallationFields(){
   const has = document.getElementById('p-has-installation').value==='true';
   document.getElementById('p-installation-wrap').style.display = has ? 'block' : 'none';
@@ -2316,12 +2359,14 @@ function generateSKU(){
 function openProductModal(){
   editingProductId=null;_extraImages=[];_videos=[];_variants=[];
   document.getElementById('product-modal-title').textContent='إضافة منتج جديد';
-  ['p-name','p-price','p-cost','p-qty','p-category','p-desc','p-image','p-warranty-period','p-installation-price','p-installation-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['p-name','p-price','p-cost','p-qty','p-category','p-desc','p-image','p-warranty-period','p-installation-price','p-installation-desc','p-return-days','p-return-conditions'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   generateSKU();
   document.getElementById('p-warranty').value='false';
   document.getElementById('p-active').value='true';
   document.getElementById('p-has-installation').value='false';
   document.getElementById('p-installation-wrap').style.display='none';
+  document.getElementById('p-returnable').value='false';
+  document.getElementById('p-return-wrap').style.display='none';
   document.getElementById('new-image-url').value='';
   document.getElementById('new-video-url').value='';
   // reset variants
@@ -2356,6 +2401,12 @@ function openEditProductModal(id, p){
   document.getElementById('p-installation-price').value=p.installationPrice||'';
   document.getElementById('p-installation-desc').value=p.installationDesc||'';
   document.getElementById('p-installation-wrap').style.display=hasInst?'block':'none';
+  // Return policy
+  const returnable = p.returnable===true||p.returnable==='true';
+  document.getElementById('p-returnable').value=String(returnable);
+  document.getElementById('p-return-days').value=p.returnDays||'';
+  document.getElementById('p-return-conditions').value=p.returnConditions||'';
+  document.getElementById('p-return-wrap').style.display=returnable?'block':'none';
   // Variants
   const vType = (p.variantType && p.variantType!=='none' && _variants.length>0) ? p.variantType : 'none';
   document.getElementById('p-variant-type').value = vType;
@@ -2412,13 +2463,18 @@ async function saveProduct(){
   const installationPriceRaw=document.getElementById('p-installation-price').value.trim();
   const installationPrice=installationPriceRaw===''?0:Number(installationPriceRaw);
   const installationDesc=document.getElementById('p-installation-desc').value.trim();
+  // Return policy
+  const returnable=document.getElementById('p-returnable').value==='true';
+  const returnDaysRaw=document.getElementById('p-return-days').value.trim();
+  const returnDays=returnDaysRaw===''?0:Number(returnDaysRaw);
+  const returnConditions=document.getElementById('p-return-conditions').value.trim();
   let valid=true;
   if(!name){document.getElementById('fg-pname').classList.add('has-error');valid=false}else document.getElementById('fg-pname').classList.remove('has-error');
   if(isNaN(price)||price<0){document.getElementById('fg-pprice').classList.add('has-error');valid=false}else document.getElementById('fg-pprice').classList.remove('has-error');
   if(hasInstallation&&(isNaN(installationPrice)||installationPrice<0)){document.getElementById('fg-installation-price').classList.add('has-error');valid=false}else document.getElementById('fg-installation-price')?.classList.remove('has-error');
   if(!valid)return;
   const btn=document.getElementById('product-save-btn');btn.disabled=true;btn.textContent='جاري الحفظ...';
-  const data={name,sku,price,costPrice,qty,category,description:desc,imageUrl:image,extraImages:_extraImages,videos:_videos,warranty,warrantyPeriod,active,hasInstallation,installationPrice:hasInstallation?installationPrice:0,installationDesc:hasInstallation?installationDesc:'',
+  const data={name,sku,price,costPrice,qty,category,description:desc,imageUrl:image,extraImages:_extraImages,videos:_videos,warranty,warrantyPeriod,active,hasInstallation,installationPrice:hasInstallation?installationPrice:0,installationDesc:hasInstallation?installationDesc:'',returnable,returnDays:returnable?returnDays:0,returnConditions:returnable?returnConditions:'',
     variantType: document.getElementById('p-variant-type').value,
     variants: _variants.length>0 ? _variants : [],
     updatedAt:Date.now()};
