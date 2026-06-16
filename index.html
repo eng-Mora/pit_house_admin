@@ -288,6 +288,11 @@
       #shared-print-overlay,#invoice-print-overlay{position:static!important;background:#fff!important;padding:0!important}
       #shared-print-btns,#invoice-print-overlay>div>div:first-child{display:none!important}
       #shared-print-content,#invoice-print-content{border-radius:0!important;box-shadow:none!important}
+      #shared-print-content [contenteditable],#invoice-print-content [contenteditable]{background:transparent!important}
+    }
+    #shared-print-content [contenteditable][data-placeholder]:empty:before,
+    #invoice-print-content [contenteditable][data-placeholder]:empty:before{
+      content:attr(data-placeholder);color:#bbb;
     }
     /* ══ DEFAULT PAGE = A4 ══ */
     @page{
@@ -363,6 +368,21 @@
     .inv-qty-input{width:70px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-mono);font-size:.88rem;padding:.35rem .55rem;outline:none;text-align:center;transition:border-color var(--transition)}
     .inv-qty-input:focus{border-color:var(--accent)}
     .inv-adjust-modal .modal-box{max-width:440px}
+    .inv-pay-btn{
+      padding:.42rem .5rem;font-size:.75rem;font-weight:700;
+      border:1.5px solid var(--border);border-radius:var(--radius-sm);
+      background:var(--bg-secondary);color:var(--text-secondary);
+      cursor:pointer;transition:all .18s;text-align:center;
+    }
+    .inv-pay-btn:hover{border-color:var(--accent);color:var(--accent);}
+    .inv-pay-btn.active{
+      border-color:var(--accent);background:rgba(0,212,255,.12);
+      color:var(--accent);box-shadow:0 0 8px rgba(0,212,255,.2);
+    }
+    .inv-pay-btn[data-val="deferred"].active{
+      border-color:var(--warning,#FFB300);background:rgba(255,179,0,.1);
+      color:var(--warning,#FFB300);box-shadow:0 0 8px rgba(255,179,0,.2);
+    }
   </style>
 </head>
 <body>
@@ -406,14 +426,16 @@
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
       <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
-      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
       <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -462,14 +484,16 @@
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
       <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
-      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
       <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -520,14 +544,16 @@
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
       <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
-      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
       <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -580,14 +606,16 @@
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
       <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
-      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
       <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -670,9 +698,20 @@
         <input type="date" class="form-control" id="inv-date"/>
       </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">ملاحظات</label>
-      <input type="text" class="form-control" id="inv-notes" placeholder="أي ملاحظة إضافية..."/>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+      <div class="form-group">
+        <label class="form-label">ملاحظات</label>
+        <input type="text" class="form-control" id="inv-notes" placeholder="أي ملاحظة إضافية..."/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">💳 طريقة الدفع</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-top:.15rem" id="inv-payment-btns">
+          <button type="button" class="inv-pay-btn" data-val="cash" onclick="selectInvPayment('cash')">💵 نقدي</button>
+          <button type="button" class="inv-pay-btn" data-val="vodafone" onclick="selectInvPayment('vodafone')">📱 فودافون كاش</button>
+          <button type="button" class="inv-pay-btn" data-val="instapay" onclick="selectInvPayment('instapay')">⚡ إنستا باي</button>
+          <button type="button" class="inv-pay-btn" data-val="deferred" onclick="selectInvPayment('deferred')">📋 آجل</button>
+        </div>
+      </div>
     </div>
 
     <!-- بنود الفاتورة -->
@@ -698,10 +737,38 @@
         <button class="btn btn-primary btn-sm" onclick="addInvoiceItem()" style="align-self:flex-end">+ إضافة</button>
       </div>
     </div>
+    <!-- خصم الفاتورة -->
+    <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-md);padding:.85rem 1rem;margin-bottom:.75rem">
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.6rem;font-weight:600">🏷️ خصم على الفاتورة (اختياري)</div>
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:.5rem;align-items:end">
+        <div>
+          <label class="form-label" style="font-size:.72rem">نوع الخصم</label>
+          <select class="form-control" id="inv-disc-type" onchange="updateInvDiscount()" style="min-width:130px">
+            <option value="none">— بدون خصم —</option>
+            <option value="pct">نسبة مئوية %</option>
+            <option value="fixed">مبلغ ثابت ج.م</option>
+          </select>
+        </div>
+        <div id="inv-disc-val-wrap" style="display:none">
+          <label class="form-label" style="font-size:.72rem" id="inv-disc-val-label">قيمة الخصم</label>
+          <input type="number" class="form-control" id="inv-disc-val" placeholder="0" min="0" oninput="updateInvDiscount()"/>
+        </div>
+      </div>
+    </div>
     <!-- الإجمالي -->
     <div style="display:flex;justify-content:flex-end;align-items:center;gap:1.5rem;padding:1rem;background:var(--bg-secondary);border-radius:var(--radius-md);border:1px solid var(--border);margin-bottom:1.25rem">
-      <span style="color:var(--text-muted);font-size:.85rem">إجمالي الفاتورة:</span>
-      <span id="inv-grand-total" style="font-family:var(--font-display);font-size:1.6rem;color:var(--accent-gold)">0 جنيه</span>
+      <div style="text-align:left">
+        <div id="inv-subtotal-row" style="display:none;font-size:.78rem;color:var(--text-muted);margin-bottom:.3rem;text-align:right">
+          المجموع قبل الخصم: <span id="inv-subtotal-val" style="color:var(--text-secondary)">0 جنيه</span>
+        </div>
+        <div id="inv-discount-row" style="display:none;font-size:.78rem;color:var(--danger);margin-bottom:.3rem;text-align:right">
+          الخصم: <span id="inv-discount-val">0 جنيه</span>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:.68rem;color:var(--text-muted);margin-bottom:.2rem">إجمالي الفاتورة</div>
+        <span id="inv-grand-total" style="font-family:var(--font-display);font-size:1.6rem;color:var(--accent-gold)">0 جنيه</span>
+      </div>
     </div>
     <div style="display:flex;gap:.75rem;justify-content:flex-end">
       <button class="btn btn-secondary" onclick="closeInvoiceModal()">إلغاء</button>
@@ -751,14 +818,16 @@
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
       <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
-      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
       <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -815,14 +884,16 @@
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
       <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
-      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
       <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -893,14 +964,16 @@
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
       <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
-      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
       <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -946,14 +1019,16 @@
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
       <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
-      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
       <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -1049,10 +1124,9 @@
 </div>
 
 
-<!-- ══ SHIPPING ══ -->
-<div id="page-shipping" class="page">
+<!-- ══ ACCOUNTS / كشف حساب طرق الدفع ══ -->
+<div id="page-accounts" class="page">
   <div class="app-layout">
-  <!-- ══ SIDEBAR ══ -->
   <aside class="sidebar">
     <div class="sidebar-logo">
       <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
@@ -1067,14 +1141,16 @@
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
       <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
-      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
       <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -1082,18 +1158,55 @@
   </aside>
   <div class="page-content">
   <main class="page-container">
+
     <div class="page-header">
-      <div class="page-header-title"><span class="label">تسعيرة</span><h1>أسعار الشحن</h1></div>
-      <div style="display:flex;gap:.6rem;flex-wrap:wrap">
-        <button class="btn btn-secondary" onclick="setAllShipping()">ضبط موحد للكل</button>
-        <button class="btn btn-primary" onclick="saveShipping()">💾 حفظ التغييرات</button>
+      <div class="page-header-title">
+        <span class="label">إدارة المال</span>
+        <h1>🏦 حسابات الدفع</h1>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="loadAccountsPage()">🔄 تحديث</button>
+    </div>
+
+    <!-- ══ أرصدة الحسابات ══ -->
+    <div id="acc-stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.75rem"></div>
+
+    <!-- ══ إيداع / سحب ══ -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.75rem">
+      <div style="font-family:var(--font-display);font-size:1.05rem;letter-spacing:.06em;margin-bottom:1rem">➕➖ إيداع / سحب من حساب</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75rem;align-items:end">
+        <div class="form-group" style="margin:0">
+          <label class="form-label">الحساب</label>
+          <select class="form-control" id="acc-tx-method"></select>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label class="form-label">المبلغ (جنيه)</label>
+          <input type="number" class="form-control" id="acc-tx-amount" placeholder="أدخل المبلغ" min="1"/>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label class="form-label">ملاحظة (اختياري)</label>
+          <input type="text" class="form-control" id="acc-tx-note" placeholder="مثال: سحب أرباح"/>
+        </div>
+        <div style="display:flex;gap:.5rem">
+          <button class="btn btn-success btn-full" onclick="addAccountTx('deposit')">💵 إيداع</button>
+          <button class="btn btn-danger btn-full" onclick="addAccountTx('withdraw')">💸 سحب</button>
+        </div>
       </div>
     </div>
-    <div id="shipping-save-msg" style="margin-bottom:1rem;font-size:.85rem"></div>
-    <div class="shipping-grid" id="shipping-grid"></div>
+
+    <!-- ══ سجل الحركات ══ -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+        <div style="font-family:var(--font-display);font-size:1.2rem;letter-spacing:.06em">📋 كشف الحساب</div>
+        <div id="acc-log-tabs" style="display:flex;gap:.3rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.2rem;flex-wrap:wrap"></div>
+      </div>
+      <div id="accounts-log" style="display:flex;flex-direction:column;gap:.4rem">
+        <div style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.82rem">جاري التحميل...</div>
+      </div>
+    </div>
+
   </main>
   </div>
-</div>
+  </div>
 </div>
 
 <!-- ══ REVIEWS ══ -->
@@ -1114,14 +1227,16 @@
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
       <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
-      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
       <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -1248,6 +1363,11 @@
           <input type="number" class="form-control" id="p-cost" placeholder="1000" min="0" step="1"/>
           <div class="form-hint">للحساب الداخلي — لا يظهر للعميل</div>
         </div>
+        <div class="form-group" id="fg-psale">
+          <label class="form-label">🔥 سعر الخصم (جنيه)</label>
+          <input type="number" class="form-control" id="p-sale-price" placeholder="اتركها فارغة لو مفيش خصم" min="0" step="1" style="border-color:rgba(255,61,0,.35)"/>
+          <div class="form-hint" style="color:var(--accent)">لو كتبت سعر هنا، السعر الأصلي هيظهر بخط أحمر على الموقع والسعر الجديد بيظهر بجانبه</div>
+        </div>
         <div class="form-group" id="fg-pqty">
           <label class="form-label">الكمية المتاحة</label>
           <input type="number" class="form-control" id="p-qty" placeholder="اتركها فارغة = غير محدود" min="0" step="1"/>
@@ -1295,6 +1415,7 @@
           <option value="none">❌ بدون تنويع</option>
           <option value="color">🎨 ألوان</option>
           <option value="size">📐 مقاسات</option>
+          <option value="scent">🌸 روائح</option>
           <option value="number">🔢 أرقام</option>
           <option value="custom">✏️ تنويع حر</option>
         </select>
@@ -1325,10 +1446,14 @@
             </div>
           </div>
           <!-- Color preview for color type -->
-          <div id="variant-color-preview-row" style="display:none;margin-top:.6rem;align-items:center;gap:.5rem">
+          <div id="variant-color-preview-row" style="display:none;margin-top:.6rem;align-items:center;gap:.5rem;flex-wrap:wrap">
             <label class="form-label" style="font-size:.7rem;margin:0">لون اختياري:</label>
             <input type="color" id="new-variant-color" value="#FF3D00" style="width:36px;height:28px;border:1px solid var(--border);border-radius:4px;cursor:pointer;background:transparent"/>
             <span style="font-size:.72rem;color:var(--text-muted)">للعرض المرئي في الموقع</span>
+            <span style="font-size:.72rem;color:var(--text-muted);margin-right:.5rem">|</span>
+            <label class="form-label" style="font-size:.7rem;margin:0">صورة اللون:</label>
+            <input type="url" id="new-variant-image" placeholder="رابط صورة هذا اللون (اختياري)" style="font-size:.78rem;width:280px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:.35rem .65rem;font-family:var(--font-ar);outline:none"/>
+            <span style="font-size:.72rem;color:var(--text-muted)">عند اختيار هذا اللون ستتغير صورة المنتج</span>
           </div>
         </div>
         <!-- Variants List -->
@@ -1437,14 +1562,16 @@
           <label class="form-label">النوع *</label>
           <select class="form-control" id="pm-type" onchange="togglePromoType()">
             <option value="discount">خصم نسبة %</option>
+            <option value="fixed">خصم مبلغ ثابت ج.م</option>
             <option value="freeship">توصيل مجاني</option>
-            <option value="both">الاتنين (خصم + توصيل)</option>
+            <option value="both">خصم % + توصيل مجاني</option>
+            <option value="fixedship">خصم ثابت + توصيل مجاني</option>
           </select>
         </div>
       </div>
       <div id="fg-discount-wrap" class="form-group">
-        <label class="form-label">نسبة الخصم % *</label>
-        <input type="number" class="form-control" id="pm-discount" placeholder="20" min="1" max="100"/>
+        <label class="form-label" id="pm-discount-label">نسبة الخصم % *</label>
+        <input type="number" class="form-control" id="pm-discount" placeholder="20" min="1"/>
       </div>
       <div class="form-group">
         <label class="form-label">رسالة للعميل *</label>
@@ -1700,7 +1827,6 @@ function navigate(page){
   if(page==='customers') loadCustomers();
   if(page==='promos')    loadPromos();
   if(page==='slots')     loadAdminSlotsPage();
-  if(page==='shipping')  loadShipping();
   if(page==='reviews')   loadReviews();
   if(page==='sound')     loadSoundSettings();
   if(page==='ads')       loadAds();
@@ -1708,21 +1834,34 @@ function navigate(page){
   if(page==='liquidity') loadLiquidityPage();
   if(page==='ledger')    loadLedgerPage();
   if(page==='inventory') loadInventoryPage();
+  if(page==='sup-returns') loadSupplierReturnsPage();
+  if(page==='accounts') loadAccountsPage();
+  if(page==='shipping') loadShippingPage();
 }
 
 // ══════════════════════════════════════════
 //  INSTALL SLOTS MANAGEMENT — مواعيد التركيب
 // ══════════════════════════════════════════
 let _adminSlots = [];
+let _bookingSettings = { workDays:[0,1,2,3,4], openTime:'09:00', closeTime:'17:00' };
 
 async function loadAdminSlotsPage(){
   showSpinner('جاري تحميل المواعيد...');
   try{
-    const snap = await db.ref('installSlots').get();
-    const data = snap.val();
+    const [slotsSnap, settingsSnap] = await Promise.all([
+      db.ref('installSlots').get(),
+      db.ref('bookingSettings').get()
+    ]);
+    // Load slots
+    const data = slotsSnap.val();
     _adminSlots = data
       ? Object.entries(data).map(([id,v])=>({id,...v})).sort((a,b)=>(a.datetime||0)-(b.datetime||0))
       : [];
+    // Load settings
+    if(settingsSnap.exists()){
+      _bookingSettings = {..._bookingSettings, ...settingsSnap.val()};
+    }
+    applyBookingSettingsToUI();
     updateSlotStats();
     renderAdminSlots();
   }catch(err){
@@ -1731,12 +1870,60 @@ async function loadAdminSlotsPage(){
   }finally{ hideSpinner(); }
 }
 
+function applyBookingSettingsToUI(){
+  const s = _bookingSettings;
+  const openEl = document.getElementById('bs-open-time');
+  const closeEl = document.getElementById('bs-close-time');
+  if(openEl) openEl.value = s.openTime||'09:00';
+  if(closeEl) closeEl.value = s.closeTime||'17:00';
+  // Set checkboxes
+  for(let i=0;i<7;i++){
+    const cb = document.getElementById('wd-'+i);
+    if(cb) cb.checked = (s.workDays||[]).includes(i);
+    const lbl = document.getElementById('wd-label-'+i);
+    if(lbl) lbl.style.borderColor = cb&&cb.checked ? 'var(--accent)' : 'var(--border)';
+    if(lbl) lbl.style.color = cb&&cb.checked ? 'var(--accent)' : '';
+  }
+  // Live update label styles on change
+  for(let i=0;i<7;i++){
+    const cb = document.getElementById('wd-'+i);
+    const lbl = document.getElementById('wd-label-'+i);
+    if(cb&&lbl){
+      cb.onchange = ()=>{
+        lbl.style.borderColor = cb.checked ? 'var(--accent)' : 'var(--border)';
+        lbl.style.color = cb.checked ? 'var(--accent)' : '';
+      };
+    }
+  }
+}
+
+async function saveBookingSettings(){
+  const openTime = (document.getElementById('bs-open-time')||{}).value || '09:00';
+  const closeTime = (document.getElementById('bs-close-time')||{}).value || '17:00';
+  const workDays = [];
+  for(let i=0;i<7;i++){
+    const cb = document.getElementById('wd-'+i);
+    if(cb&&cb.checked) workDays.push(i);
+  }
+  if(!workDays.length){ showToast('اختار يوم عمل واحد على الأقل','error'); return; }
+  const msg = document.getElementById('bs-save-msg');
+  if(msg){ msg.textContent='جاري الحفظ...'; msg.style.color='var(--text-muted)'; }
+  try{
+    await db.ref('bookingSettings').set({workDays, openTime, closeTime});
+    _bookingSettings = {workDays, openTime, closeTime};
+    if(msg){ msg.textContent='✅ تم حفظ الإعدادات!'; msg.style.color='var(--success)'; }
+    showToast('✅ تم حفظ إعدادات الحجز','success');
+  }catch(err){
+    if(msg){ msg.textContent='❌ خطأ: '+err.message; msg.style.color='var(--danger)'; }
+    showToast('خطأ في الحفظ','error');
+  }
+}
+
 function updateSlotStats(){
-  const total = _adminSlots.length;
   const booked = _adminSlots.filter(s=>s.isBooked).length;
-  const available = total - booked;
+  const available = _adminSlots.length - booked;
   const setEl=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
-  setEl('slot-stat-total', total);
+  setEl('slot-stat-total', _adminSlots.length);
   setEl('slot-stat-available', available);
   setEl('slot-stat-booked', booked);
 }
@@ -1746,10 +1933,9 @@ function renderAdminSlots(){
   if(!list) return;
   const filter = (document.getElementById('slot-filter')||{}).value || 'all';
   let slots = _adminSlots;
-  if(filter==='available') slots = slots.filter(s=>!s.isBooked);
-  if(filter==='booked')    slots = slots.filter(s=> s.isBooked);
+  if(filter==='booked') slots = slots.filter(s=>s.isBooked);
   if(!slots.length){
-    list.innerHTML=`<div class="empty-state"><div class="empty-icon">📅</div><h3>مفيش مواعيد ${filter==='available'?'متاحة':filter==='booked'?'محجوزة':'مضافة'}</h3><p>اضغط "إضافة موعد جديد" لإضافة أول موعد</p></div>`;
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon">📅</div><h3>مفيش حجوزات ${filter==='booked'?'محجوزة':'بعد'}</h3><p>لما العميل يحجز موعد هيظهر هنا</p></div>`;
     return;
   }
   list.innerHTML = slots.map(s=>{
@@ -1757,74 +1943,26 @@ function renderAdminSlots(){
     const dateStr = d ? d.toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) : '—';
     const timeStr = d ? d.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}) : '';
     const bookedHtml = s.isBooked
-      ? `<span class="slot-booked-label">🔒 محجوز${s.bookedOrderId?` — طلب: ${s.bookedOrderId.slice(-6).toUpperCase()}`:''}  </span>`
-      : `<span class="slot-available-label">✅ متاح للحجز</span>`;
+      ? `<span class="slot-booked-label">🔒 محجوز${s.bookedOrderId?' — طلب: '+s.bookedOrderId.slice(-6).toUpperCase():''}</span>`
+      : `<span class="slot-available-label">✅ متاح</span>`;
     return `<div class="slot-row${s.isBooked?' booked':''}">
       <div class="slot-status-dot" style="background:${s.isBooked?'var(--danger)':'var(--success)'}"></div>
       <div class="slot-datetime">
-        <div class="slot-dt-main">📅 ${esc(dateStr)} ${timeStr?'— 🕐 '+esc(timeStr):''}</div>
+        <div class="slot-dt-main">📅 ${esc(dateStr)} ${s.timeStr?'— 🕐 '+esc(s.timeStr):timeStr?'— 🕐 '+esc(timeStr):''}</div>
         ${s.note?`<div class="slot-dt-sub">${esc(s.note)}</div>`:''}
+        ${s.customerName?`<div class="slot-dt-sub">👤 ${esc(s.customerName)} — ${esc(s.customerPhone||'')}</div>`:''}
       </div>
       ${bookedHtml}
       <div style="display:flex;gap:.4rem;flex-shrink:0">
-        ${!s.isBooked?`<button class="btn btn-danger btn-sm" onclick="deleteSlot('${s.id}')">🗑 حذف</button>`:`<button class="btn btn-secondary btn-sm" onclick="unBookSlot('${s.id}')">🔓 إلغاء الحجز</button>`}
+        ${s.isBooked?`<button class="btn btn-secondary btn-sm" onclick="unBookSlot('${s.id}')">🔓 إلغاء الحجز</button>`:''}
+        <button class="btn btn-danger btn-sm" onclick="deleteSlot('${s.id}')">🗑 حذف</button>
       </div>
     </div>`;
   }).join('');
 }
 
-function openAddSlotModal(){
-  const modal = document.getElementById('add-slot-modal');
-  if(!modal) return;
-  // Default to tomorrow
-  const tomorrow = new Date(Date.now() + 86400000);
-  tomorrow.setHours(10, 0, 0, 0);
-  const pad = n => String(n).padStart(2,'0');
-  const dtLocal = `${tomorrow.getFullYear()}-${pad(tomorrow.getMonth()+1)}-${pad(tomorrow.getDate())}T${pad(tomorrow.getHours())}:${pad(tomorrow.getMinutes())}`;
-  document.getElementById('slot-datetime').value = dtLocal;
-  document.getElementById('slot-note').value = '';
-  document.getElementById('slot-dt-err').style.display = 'none';
-  modal.style.display = 'flex';
-}
-
-function closeAddSlotModal(){
-  const modal = document.getElementById('add-slot-modal');
-  if(modal) modal.style.display = 'none';
-}
-
-async function saveNewSlot(){
-  const dtVal = document.getElementById('slot-datetime').value;
-  const errEl = document.getElementById('slot-dt-err');
-  if(!dtVal){ errEl.style.display='block'; return; }
-  errEl.style.display = 'none';
-  const note = document.getElementById('slot-note').value.trim();
-  const btn = document.getElementById('slot-save-btn');
-  if(btn){ btn.disabled=true; btn.textContent='جاري الحفظ...'; }
-  try{
-    const slotData = {
-      datetime: new Date(dtVal).getTime(),
-      note,
-      isBooked: false,
-      active: true,
-      createdAt: Date.now()
-    };
-    const ref = await db.ref('installSlots').push(slotData);
-    _adminSlots.push({id:ref.key, ...slotData});
-    _adminSlots.sort((a,b)=>(a.datetime||0)-(b.datetime||0));
-    updateSlotStats();
-    renderAdminSlots();
-    closeAddSlotModal();
-    showToast('✅ تم إضافة الموعد بنجاح','success');
-  }catch(err){
-    console.error(err);
-    showToast('خطأ في حفظ الموعد','error');
-  }finally{
-    if(btn){ btn.disabled=false; btn.textContent='💾 حفظ الموعد'; }
-  }
-}
-
 async function deleteSlot(id){
-  if(!confirm('تأكيد حذف الموعد؟')) return;
+  if(!confirm('تأكيد حذف هذا الموعد؟')) return;
   try{
     await db.ref('installSlots/'+id).remove();
     _adminSlots = _adminSlots.filter(s=>s.id!==id);
@@ -1838,17 +1976,33 @@ async function unBookSlot(id){
   if(!confirm('إلغاء حجز هذا الموعد وإتاحته مرة تانية؟')) return;
   try{
     await db.ref('installSlots/'+id).update({isBooked:false, bookedOrderId:null, bookedAt:null});
-    const s = _adminSlots.find(s=>s.id===id);
+    const s = _adminSlots.find(sl=>sl.id===id);
     if(s){ s.isBooked=false; s.bookedOrderId=null; }
     updateSlotStats();
     renderAdminSlots();
-    showToast('✅ تم إلغاء الحجز — الموعد متاح دلوقتي','success');
+    showToast('✅ تم إلغاء الحجز','success');
   }catch(err){ showToast('خطأ','error'); }
 }
-
 // ══════════════════════════════════════════
 //  INVENTORY MANAGEMENT — الجرد
 // ══════════════════════════════════════════
+// جلب المنتجات مع دمج بيانات التكلفة/SKU من products_private (أدمن فقط)
+async function getProductsSnap(){
+  const ps = await db.ref('products').get();
+  let priv = {};
+  try{
+    const pp = await db.ref('products_private').get();
+    priv = pp.val() || {};
+  }catch(e){ /* العميل العادي مالوش صلاحية يقرأ - تجاهل */ }
+  const pv = ps.val() || {};
+  for(const id in pv){
+    if(priv[id]){
+      pv[id].costPrice = priv[id].costPrice ?? null;
+      pv[id].sku = priv[id].sku ?? null;
+    }
+  }
+  return { val:()=>pv, exists:()=>ps.exists() };
+}
 let _invProducts = [];
 let _invFilter = 'all';
 const INV_LOW_THRESHOLD = 5; // عتبة الكمية المنخفضة
@@ -1856,7 +2010,7 @@ const INV_LOW_THRESHOLD = 5; // عتبة الكمية المنخفضة
 async function loadInventoryPage(){
   showSpinner('جاري تحميل المخزون...');
   try{
-    const snap = await db.ref('products').get();
+    const snap = await getProductsSnap();
     _invProducts = objToArr(snap.val()).sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar'));
     updateInventoryStats();
     filterInventory();
@@ -2015,10 +2169,23 @@ async function saveInventoryAdjust(){
 }
 
 // ══ AUTH ══
+let _storeSettings = {name:'PIT HOUSE', address:'القاهرة، مصر', slogan:''};
+async function loadStoreSettings(){
+  try{
+    const snap = await db.ref('settings/store').get();
+    const s = snap.val() || {};
+    _storeSettings = {
+      name: s.name || 'PIT HOUSE',
+      address: s.address || 'القاهرة، مصر',
+      slogan: s.slogan || ''
+    };
+  }catch(e){console.error(e)}
+}
 auth.onAuthStateChanged(user=>{
   if(user && user.email===ADMIN_EMAIL){
     startGlobalListener();
     startLiquidityListener();
+    loadStoreSettings();
     navigate('dashboard');
   } else {
     stopGlobalListener();
@@ -2043,6 +2210,196 @@ document.getElementById('login-btn').addEventListener('click', async()=>{
     if(cred.user.email!==ADMIN_EMAIL){await auth.signOut();hideSpinner();errEl.textContent='وصول مرفوض — أدمن فقط';errEl.style.display='block';return;}
   }catch(err){hideSpinner();errEl.textContent=err.message;errEl.style.display='block'}
 });
+
+// ══════════════════════════════════════════════
+// SUPPLIER RETURNS — مرتجعات التجار
+// ══════════════════════════════════════════════
+let _allSupReturns = [];
+let _srItems = []; // items in current modal
+
+async function loadSupplierReturnsPage(){
+  showSpinner('جاري تحميل المرتجعات...');
+  try{
+    const snap = await db.ref('supplierReturns').get();
+    _allSupReturns = objToArr(snap.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    if(!_cachedProducts.length){ const ps = await getProductsSnap(); _cachedProducts = objToArr(ps.val()); }
+    const mSnap = await db.ref('merchants').get();
+    _allMerchants = objToArr(mSnap.val());
+    updateSupReturnStats();
+    renderSupReturnsList(_allSupReturns);
+  }catch(err){ console.error(err); showToast('خطأ في تحميل المرتجعات','error'); }
+  finally{ hideSpinner(); }
+}
+
+function updateSupReturnStats(){
+  const count = _allSupReturns.length;
+  const totalValue = _allSupReturns.reduce((s,r)=>{
+    return s + (r.items||[]).reduce((si,i)=>si+(i.qty||0)*(i.cost||0),0);
+  },0);
+  const totalQty = _allSupReturns.reduce((s,r)=>{
+    return s + (r.items||[]).reduce((si,i)=>si+(i.qty||0),0);
+  },0);
+  const setEl=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  setEl('sr-stat-count', count);
+  setEl('sr-stat-value', formatPrice(totalValue));
+  setEl('sr-stat-qty', totalQty + ' قطعة');
+}
+
+function renderSupReturnsList(list){
+  const c = document.getElementById('sup-returns-list');
+  if(!c) return;
+  if(!list.length){
+    c.innerHTML=`<div class="empty-state"><div class="empty-icon">↩️</div><h3>لا توجد مرتجعات</h3><p>سجّل مرتجعاتك من التجار هنا</p></div>`;
+    return;
+  }
+  c.innerHTML = list.map(r=>{
+    const totalVal = (r.items||[]).reduce((s,i)=>s+(i.qty||0)*(i.cost||0),0);
+    const totalQty = (r.items||[]).reduce((s,i)=>s+(i.qty||0),0);
+    const itemsHTML = (r.items||[]).map(i=>`
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:.4rem .6rem;border-radius:6px;background:var(--bg-secondary);margin-bottom:.3rem;font-size:.82rem">
+        <span style="font-weight:700;color:var(--text-primary)">${esc(i.name)}</span>
+        <span style="display:flex;gap:1rem;font-family:var(--font-mono)">
+          <span style="color:var(--text-muted)">${i.qty} قطعة</span>
+          <span style="color:var(--accent-gold)">${formatPrice(i.cost)}/قطعة</span>
+          <span style="color:#FFB74D;font-weight:700">${formatPrice(i.qty*i.cost)}</span>
+        </span>
+      </div>`).join('');
+    return `<div style="background:var(--bg-card);border:1px solid rgba(255,152,0,.25);border-right:4px solid #FFB74D;border-radius:var(--radius-md);padding:1.25rem 1.5rem;margin-bottom:.85rem">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.9rem">
+        <div>
+          <div style="font-weight:700;font-size:1rem;color:var(--text-primary);margin-bottom:.2rem">🏪 ${esc(r.supplier)}</div>
+          <div style="font-size:.75rem;color:var(--text-muted);font-family:var(--font-mono)">${r.date||formatDate(r.createdAt)}</div>
+          ${r.reason?`<div style="font-size:.8rem;color:var(--text-secondary);margin-top:.35rem;font-style:italic">📝 ${esc(r.reason)}</div>`:''}
+        </div>
+        <div style="text-align:left;flex-shrink:0">
+          <div style="font-family:var(--font-display);font-size:1.4rem;color:#FFB74D;line-height:1">${formatPrice(totalVal)}</div>
+          <div style="font-size:.68rem;color:var(--text-muted);font-family:var(--font-mono);margin-top:.15rem">${totalQty} قطعة</div>
+          <button class="btn btn-danger btn-sm" style="margin-top:.5rem;font-size:.7rem" onclick="deleteSupReturn('${r.id}')">🗑️ حذف</button>
+        </div>
+      </div>
+      <div>${itemsHTML}</div>
+    </div>`;
+  }).join('');
+}
+
+function filterSupReturns(){
+  const q = (document.getElementById('sr-search')?.value||'').toLowerCase().trim();
+  let list = _allSupReturns;
+  if(q) list = list.filter(r=>(r.supplier||'').toLowerCase().includes(q) || (r.items||[]).some(i=>(i.name||'').toLowerCase().includes(q)));
+  renderSupReturnsList(list);
+}
+
+function openSupReturnModal(){
+  _srItems = [];
+  document.getElementById('sr-supplier').value = '';
+  document.getElementById('sr-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('sr-reason').value = '';
+  document.getElementById('sr-item-name').value = '';
+  document.getElementById('sr-item-qty').value = '1';
+  document.getElementById('sr-item-cost').value = '';
+  // populate datalists
+  const suppDl = document.getElementById('sr-suppliers-datalist');
+  if(suppDl) suppDl.innerHTML = _allMerchants.map(m=>`<option value="${esc(m.name||'')}">`).join('');
+  const prodDl = document.getElementById('sr-products-datalist');
+  if(prodDl) prodDl.innerHTML = _cachedProducts.map(p=>`<option value="${esc(p.name||'')}">`).join('');
+  // autofill cost from product when name typed
+  const nameInp = document.getElementById('sr-item-name');
+  if(nameInp){
+    nameInp.oninput = ()=>{
+      const found = _cachedProducts.find(p=>p.name===nameInp.value||p.sku===nameInp.value);
+      if(found && found.costPrice){ document.getElementById('sr-item-cost').value = found.costPrice; }
+    };
+  }
+  renderSrItems();
+  document.getElementById('sup-return-modal').style.display = 'flex';
+}
+
+function closeSupReturnModal(){ document.getElementById('sup-return-modal').style.display='none'; }
+
+function addSupReturnItem(){
+  const name = document.getElementById('sr-item-name').value.trim();
+  const qty  = parseInt(document.getElementById('sr-item-qty').value)||1;
+  const cost = parseFloat(document.getElementById('sr-item-cost').value)||0;
+  if(!name){ showToast('اكتب اسم المنتج','error'); return; }
+  if(qty<1){ showToast('الكمية لازم تكون 1 على الأقل','error'); return; }
+  const prod = _cachedProducts.find(p=>p.name===name||p.sku===name||p.name.toLowerCase().includes(name.toLowerCase()));
+  _srItems.push({id:Date.now()+'_'+Math.random().toString(36).slice(2,6), name, qty, cost, productId: prod?.id||null, sku: prod?.sku||null});
+  document.getElementById('sr-item-name').value='';
+  document.getElementById('sr-item-qty').value='1';
+  document.getElementById('sr-item-cost').value='';
+  renderSrItems();
+  document.getElementById('sr-item-name').focus();
+}
+
+function removeSrItem(id){ _srItems=_srItems.filter(i=>i.id!==id); renderSrItems(); }
+
+function renderSrItems(){
+  const c = document.getElementById('sr-items-list');
+  const total = _srItems.reduce((s,i)=>s+i.qty*i.cost,0);
+  if(!_srItems.length){
+    c.innerHTML=`<div style="text-align:center;padding:1.2rem;color:var(--text-muted);font-size:.82rem;border:1px dashed var(--border);border-radius:var(--radius-md)">لا توجد منتجات — أضف من الأسفل</div>`;
+  } else {
+    c.innerHTML=`<div style="border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden">
+      <table style="width:100%;border-collapse:collapse;font-size:.82rem">
+        <thead><tr style="background:var(--bg-secondary)">
+          <th style="padding:.5rem .75rem;text-align:right;color:var(--text-muted);font-weight:600">المنتج</th>
+          <th style="padding:.5rem .75rem;text-align:center;color:var(--text-muted);font-weight:600">الكمية</th>
+          <th style="padding:.5rem .75rem;text-align:center;color:var(--text-muted);font-weight:600">سعر الشراء</th>
+          <th style="padding:.5rem .75rem;text-align:center;color:var(--text-muted);font-weight:600">الإجمالي</th>
+          <th style="padding:.5rem .75rem"></th>
+        </tr></thead>
+        <tbody>${_srItems.map(i=>`<tr style="border-top:1px solid var(--border)">
+          <td style="padding:.5rem .75rem"><div style="font-weight:600">${esc(i.name)}</div>${i.sku?`<div style="font-family:var(--font-mono);font-size:.68rem;color:var(--accent-gold)">${esc(i.sku)}</div>`:''}</td>
+          <td style="padding:.5rem .75rem;text-align:center">${i.qty}</td>
+          <td style="padding:.5rem .75rem;text-align:center">${formatPrice(i.cost)}</td>
+          <td style="padding:.5rem .75rem;text-align:center;font-weight:700;color:#FFB74D">${formatPrice(i.qty*i.cost)}</td>
+          <td style="padding:.5rem .75rem;text-align:center"><button class="btn btn-danger btn-sm" style="padding:.2rem .5rem;font-size:.7rem" onclick="removeSrItem('${i.id}')">✕</button></td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+  }
+  document.getElementById('sr-grand-total').textContent = formatPrice(total) + ' جنيه';
+}
+
+async function saveSupplierReturn(){
+  const supplier = document.getElementById('sr-supplier').value.trim();
+  const date     = document.getElementById('sr-date').value || new Date().toISOString().slice(0,10);
+  const reason   = document.getElementById('sr-reason').value.trim();
+  if(!supplier){ showToast('اكتب اسم التاجر','error'); return; }
+  if(!_srItems.length){ showToast('أضف منتج واحد على الأقل','error'); return; }
+  const btn = document.getElementById('sr-save-btn');
+  btn.disabled=true; btn.textContent='جاري الحفظ...';
+  try{
+    const record = { supplier, date, reason, items:_srItems, createdAt:Date.now() };
+    await db.ref('supplierReturns').push(record);
+    // ── Update inventory: ADD qty back (returned goods back in stock) ──
+    const updates = {};
+    for(const item of _srItems){
+      if(!item.productId) continue;
+      const snap = await db.ref('products/'+item.productId).get();
+      if(!snap.exists()) continue;
+      const p = snap.val();
+      const curQty = p.qty!=null ? Number(p.qty) : (p.stock!=null ? Number(p.stock) : 0);
+      const newQty = curQty + item.qty;
+      updates['products/'+item.productId+'/qty']   = newQty;
+      updates['products/'+item.productId+'/stock'] = newQty;
+    }
+    if(Object.keys(updates).length) await db.ref().update(updates);
+    showToast('✅ تم حفظ المرتجع وتحديث الجرد','success');
+    closeSupReturnModal();
+    await loadSupplierReturnsPage();
+  }catch(err){ showToast('خطأ: '+err.message,'error'); }
+  finally{ btn.disabled=false; btn.textContent='💾 حفظ المرتجع'; }
+}
+
+async function deleteSupReturn(id){
+  if(!confirm('حذف هذا المرتجع؟ الكميات المضافة للجرد لن تُعاد تلقائياً.')) return;
+  try{
+    await db.ref('supplierReturns/'+id).remove();
+    showToast('تم الحذف','info');
+    await loadSupplierReturnsPage();
+  }catch(err){ showToast('فشل الحذف','error'); }
+}
+
 async function doLogout(){await auth.signOut()}
 
 // ══ DASHBOARD ══
@@ -2072,7 +2429,7 @@ function updateDashboardStats(orders){
 async function loadDashboard(){
   showSpinner();
   try{
-    const prodSnap=await db.ref('products').get();
+    const prodSnap=await getProductsSnap();
     const products=objToArr(prodSnap.val());
     const setEl=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
     setEl('stat-products',products.length);
@@ -2102,31 +2459,118 @@ function renderOrders(orders){
   if(!orders.length){c.innerHTML=`<div class="empty-state"><div class="empty-icon">📦</div><h3>لا توجد طلبات</h3></div>`;return;}
   c.innerHTML=`<div class="table-wrapper"><table class="data-table"><thead><tr><th>رقم الطلب</th><th>العميل</th><th>التليفون</th><th>المنطقة</th><th>المنتجات</th><th>الإجمالي</th><th>الكود</th><th>الحالة</th><th>التاريخ</th><th>إجراءات</th></tr></thead><tbody>${orders.map(o=>{
     const collectBtn = (o.status==='holding') ? `<button class="btn btn-collect btn-sm" onclick="collectOrder('${o.id}',${o.totalPrice||0})">💚 Collect</button>` : '';
-    return`<tr><td class="td-mono" style="cursor:pointer" onclick='openOrderDrawer(${JSON.stringify(o)})'>${esc(o.id)}</td><td class="td-name">${esc(o.customerName||'—')}</td><td style="white-space:nowrap;font-family:var(--font-mono);font-size:.8rem">${esc(o.phone||'—')}</td><td style="font-size:.78rem;max-width:140px;color:var(--text-muted)">${esc(o.address||o.city||'—')}</td><td style="font-size:.78rem;max-width:160px">${(o.items||[]).map(i=>`<div>${esc(i.name)} × ${i.qty}</div>`).join('')}</td><td class="td-price">${formatPrice(o.totalPrice)}</td><td style="font-family:var(--font-mono);font-size:.75rem;color:var(--accent-gold)">${o.promoCode?esc(o.promoCode):'—'}</td><td><select class="status-select" data-id="${o.id}" onchange="updateOrderStatus(this)"><option value="pending" ${o.status==='pending'?'selected':''}>⏳ قيد الانتظار</option><option value="confirmed" ${o.status==='confirmed'?'selected':''}>✅ مؤكد</option><option value="shipped" ${o.status==='shipped'?'selected':''}>🚚 تم الشحن</option><option value="delivered" ${o.status==='delivered'?'selected':''}>📦 تم التسليم</option><option value="holding" ${o.status==='holding'?'selected':''}>🔒 معلقة</option><option value="collected" ${o.status==='collected'?'selected':''}>💚 تم التحصيل</option><option value="return_requested" ${o.status==='return_requested'?'selected':''}>↩️ طلب إيرجاع</option><option value="returned" ${o.status==='returned'?'selected':''}>🔄 تم الإيرجاع</option></select></td><td style="white-space:nowrap;font-size:.75rem">${formatDate(o.createdAt)}</td><td style="display:flex;gap:.4rem;flex-wrap:wrap">${collectBtn}<button class="btn btn-secondary btn-sm" onclick='printWaybill(${JSON.stringify(o)})' title="بوليصة شحن">🚚 بوليصة</button><button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.id}')">حذف</button></td></tr>`;
+    return`<tr><td class="td-mono" style="cursor:pointer" onclick='openOrderDrawer(${JSON.stringify(o)})'>${esc(o.id)}</td><td class="td-name">${esc(o.customerName||'—')}</td><td style="white-space:nowrap;font-family:var(--font-mono);font-size:.8rem">${esc(o.phone||'—')}</td><td style="font-size:.78rem;max-width:140px;color:var(--text-muted)">${esc(o.address||o.city||'—')}</td><td style="font-size:.78rem;max-width:160px">${(o.items||[]).map(i=>`<div>${esc(i.name)} × ${i.qty}</div>`).join('')}</td><td class="td-price">${formatPrice(o.totalPrice)}</td><td style="font-family:var(--font-mono);font-size:.75rem;color:var(--accent-gold)">${o.promoCode?esc(o.promoCode):'—'}</td><td><select class="status-select" data-id="${o.id}" onchange="updateOrderStatus(this)"><option value="pending" ${o.status==='pending'?'selected':''}>⏳ قيد الانتظار</option><option value="confirmed" ${o.status==='confirmed'?'selected':''}>✅ مؤكد</option><option value="shipped" ${o.status==='shipped'?'selected':''}>🚚 تم الشحن</option><option value="delivered" ${o.status==='delivered'?'selected':''}>📦 تم التسليم</option><option value="holding" ${o.status==='holding'?'selected':''}>🔒 معلقة</option><option value="collected" ${o.status==='collected'?'selected':''}>💚 تم التحصيل</option><option value="return_requested" ${o.status==='return_requested'?'selected':''}>↩️ طلب إيرجاع</option><option value="returned" ${o.status==='returned'?'selected':''}>🔄 تم الإيرجاع</option></select></td><td style="white-space:nowrap;font-size:.75rem">${formatDate(o.createdAt)}</td><td style="display:flex;gap:.4rem;flex-wrap:wrap">${collectBtn}<button class="btn btn-secondary btn-sm" onclick='printWaybill(${JSON.stringify(o)})' title="بوليصة شحن">🚚 بوليصة</button>${o.status==='returned'?`<button class="btn btn-secondary btn-sm" onclick='printReturnInvoice(${JSON.stringify(o)})' title="فاتورة إرجاع">🧾 إرجاع</button>`:''}<button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.id}')">حذف</button></td></tr>`;
   }).join('')}</tbody></table></div>`;
 }
 async function updateOrderStatus(sel){
-  const newStatus = sel.value;
+  const newStatus  = sel.value;
+  const orderId    = sel.dataset.id;
   const updateData = {status: newStatus};
   if(newStatus === 'delivered') updateData.deliveredAt = Date.now();
-  if(newStatus === 'returned') updateData.returnedAt = Date.now();
-  try{await db.ref('orders/'+sel.dataset.id).update(updateData);showToast('تم تحديث الحالة ✓','success')}
-  catch(err){showToast('فشل التحديث','error')}
+  if(newStatus === 'returned')  updateData.returnedAt  = Date.now();
+  try{
+    // Fetch current order status before changing
+    const prevSnap = await db.ref('orders/'+orderId+'/status').get();
+    const prevStatus = prevSnap.val();
+    await db.ref('orders/'+orderId).update(updateData);
+    // ── Inventory sync ──
+    const orderSnap = await db.ref('orders/'+orderId).get();
+    const order = orderSnap.val();
+    const items = order?.items || [];
+    // Deduct: when moving INTO confirmed (and wasn't confirmed before)
+    if(newStatus === 'confirmed' && prevStatus !== 'confirmed'){
+      await _adjustInventoryForOrder(items, 'deduct');
+    }
+    // Restore: when order is returned (was confirmed/shipped/delivered/collected)
+    if(newStatus === 'returned' && ['confirmed','shipped','delivered','holding','collected'].includes(prevStatus)){
+      await _adjustInventoryForOrder(items, 'add');
+    }
+    showToast('تم تحديث الحالة ✓','success');
+  }
+  catch(err){showToast('فشل التحديث: '+err.message,'error')}
+}
+
+async function _adjustInventoryForOrder(items, direction){
+  // items: [{name, qty, variantId?, productId?}]
+  // direction: 'add' | 'deduct'
+  const updates = {};
+  for(const item of items){
+    // Try to find product by name
+    if(!_cachedProducts.length){ const ps = await getProductsSnap(); _cachedProducts = objToArr(ps.val()); }
+    const prod = _cachedProducts.find(p=>p.id===item.productId || p.name===item.name || (item.sku && p.sku===item.sku));
+    if(!prod) continue;
+    const pid = prod.id;
+    // Re-fetch current qty directly from DB to avoid stale cache
+    const pSnap = await db.ref('products/'+pid).get();
+    if(!pSnap.exists()) continue;
+    const pData = pSnap.val();
+    const curQty = pData.qty!=null ? Number(pData.qty) : (pData.stock!=null ? Number(pData.stock) : null);
+    if(curQty == null) continue; // unlimited — skip
+    const delta = Number(item.qty)||1;
+    const newQty = direction==='deduct' ? Math.max(0, curQty-delta) : curQty+delta;
+    updates['products/'+pid+'/qty']   = newQty;
+    updates['products/'+pid+'/stock'] = newQty;
+    // If product has variants, try to adjust variant qty too
+    if(item.variantId && Array.isArray(pData.variants)){
+      const vIdx = pData.variants.findIndex(v=>v.id===item.variantId);
+      if(vIdx>=0 && pData.variants[vIdx].qty!=null){
+        const vCurQty = Number(pData.variants[vIdx].qty);
+        const vNewQty = direction==='deduct' ? Math.max(0,vCurQty-delta) : vCurQty+delta;
+        updates['products/'+pid+'/variants/'+vIdx+'/qty'] = vNewQty;
+      }
+    }
+  }
+  if(Object.keys(updates).length) await db.ref().update(updates);
 }
 async function deleteOrder(id){
   if(!confirm('هل تريد حذف هذا الطلب؟'))return;
-  try{await db.ref('orders/'+id).remove();showToast('تم حذف الطلب','info')}
+  try{
+    await removeAccountEntriesForOrder(id);
+    await db.ref('orders/'+id).remove();showToast('تم حذف الطلب','info')
+  }
   catch(err){showToast('فشل الحذف','error')}
 }
+async function removeAccountEntriesForOrder(orderId){
+  for(const key of Object.keys(ACCOUNT_DEFS)){
+    try{
+      const snap=await db.ref('paymentAccounts/'+key).get();
+      if(!snap.exists())continue;
+      const updates={};
+      snap.forEach(s=>{
+        const v=s.val();
+        if(v && v.source==='order' && v.orderId===orderId) updates[s.key]=null;
+      });
+      if(Object.keys(updates).length) await db.ref('paymentAccounts/'+key).update(updates);
+    }catch(err){}
+  }
+}
+// حساب المبلغ المُحصَّل من الأوردر حسب طريقة الدفع + ملاحظة توضيحية
+// - فودافون كاش / إنستا باي: المبلغ كامل شامل الشحن
+// - الدفع عند الاستلام: تمن المنتجات + رسوم الدفع عند الاستلام بس (من غير الشحن)
+function getOrderCollectInfo(order, fallbackAmount){
+  const totalPrice = order?.totalPrice ?? fallbackAmount ?? 0;
+  const shippingCost = order?.shippingCost || 0;
+  const pm = order?.paymentMethod;
+  if(pm==='vodafone_cash'||pm==='vodafone'||pm==='instapay'){
+    return {amount: totalPrice, note: shippingCost>0 ? '(شامل الشحن)' : ''};
+  } else if(pm==='cash_on_delivery'){
+    return {amount: totalPrice - shippingCost, note: shippingCost>0 ? '(من غير الشحن)' : ''};
+  }
+  return {amount: fallbackAmount ?? totalPrice, note: ''};
+}
 async function collectOrder(id, amount){
-  if(!confirm(`تأكيد تحصيل ${formatPrice(amount)} من هذا الطلب؟`))return;
+  const order = _globalOrders.find(o=>o.id===id);
+  const pm=order?.paymentMethod;
+  const {amount: collectAmount, note: collectNote} = getOrderCollectInfo(order, amount);
+  if(!confirm(`تأكيد تحصيل ${formatPrice(collectAmount)} ${collectNote} من هذا الطلب؟`))return;
   try{
     await db.ref('orders/'+id).update({status:'collected', isHolding:false, collectedAt:Date.now()});
     // إضافة الفلوس تلقائياً في سجل السيولة
-    const order = _globalOrders.find(o=>o.id===id);
     const note = `تحصيل أوردر #${id}${order?' — '+(order.customerName||''):''}`;
-    await db.ref('liquidityLog').push({type:'deposit', amount:Number(amount)||0, note, createdAt:Date.now(), source:'order', orderId:id});
-    showToast(`✅ تم التحصيل وإضافة ${formatPrice(amount)} للكاشير`,'success');
+    await db.ref('liquidityLog').push({type:'deposit', amount:Number(collectAmount)||0, note, createdAt:Date.now(), source:'order', orderId:id});
+    const accKey=mapPaymentToAccount(pm);
+    if(accKey) await pushAccountEntry(accKey,'deposit',collectAmount,note,{source:'order',orderId:id});
+    showToast(`✅ تم التحصيل وإضافة ${formatPrice(collectAmount)} ${collectNote} للكاشير`,'success');
     await updateLiquidityBalance();
   }catch(err){showToast('فشل التحصيل: '+err.message,'error')}
 }
@@ -2139,11 +2583,8 @@ function loadHoldingPage(){
 function renderHoldingPage(holding){
   const setEl=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
   setEl('holding-total-count', holding.length);
-  // إجمالي المعلق = سعر المنتجات بس (بدون شحن)
-  const totalAmt=holding.reduce((s,o)=>{
-    const itemsTotal=(o.items||[]).reduce((si,i)=>si+(i.price||0)*(i.qty||1)+(i.withInstallation&&i.installationPrice?i.installationPrice:0),0);
-    return s+itemsTotal;
-  },0);
+  // إجمالي المعلق = المبلغ المطلوب تحصيله من كل أوردر حسب طريقة الدفع
+  const totalAmt=holding.reduce((s,o)=>s+getOrderCollectInfo(o).amount,0);
   setEl('holding-total-amount', formatPrice(totalAmt));
   const c=document.getElementById('holding-container');
   if(!c) return;
@@ -2154,8 +2595,7 @@ function renderHoldingPage(holding){
   c.innerHTML=holding.map(o=>{
     const items=(o.items||[]).map(i=>`${esc(i.name)} × ${i.qty}`).join(' — ');
     const since=o.updatedAt||o.createdAt;
-    // سعر المنتجات بس بدون الشحن
-    const itemsTotal=(o.items||[]).reduce((s,i)=>s+(i.price||0)*(i.qty||1)+(i.withInstallation&&i.installationPrice?i.installationPrice:0),0);
+    const ci=getOrderCollectInfo(o);
     return`<div style="background:var(--bg-card);border:1px solid rgba(156,39,176,.3);border-right:4px solid #CE93D8;border-radius:var(--radius-md);padding:1.25rem 1.5rem;margin-bottom:.85rem;display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center;transition:all var(--transition)" onmouseover="this.style.borderColor='rgba(156,39,176,.6)'" onmouseout="this.style.borderColor='rgba(156,39,176,.3)'">
       <div>
         <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;flex-wrap:wrap">
@@ -2166,12 +2606,12 @@ function renderHoldingPage(holding){
         <div style="font-weight:800;font-size:1rem;color:var(--text-primary);margin-bottom:.3rem">${esc(o.customerName||'—')} <span style="font-weight:400;color:var(--text-muted);font-size:.85rem">— ${esc(o.phone||'')}</span></div>
         <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:.3rem">📍 ${esc(o.address||o.city||'—')}</div>
         <div style="font-size:.8rem;color:var(--text-secondary)">${items}</div>
-        ${o.shippingCost?`<div style="font-size:.75rem;color:var(--text-muted);margin-top:.3rem">🚚 شحن: ${formatPrice(o.shippingCost)} (مش محسوبة)</div>`:''}
+        ${o.shippingCost?`<div style="font-size:.75rem;color:var(--text-muted);margin-top:.3rem">🚚 شحن: ${formatPrice(o.shippingCost)}${ci.note?' '+ci.note:''}</div>`:''}
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.6rem">
-        <div style="font-family:var(--font-display);font-size:1.8rem;color:var(--accent-gold)">${formatPrice(itemsTotal)}</div>
-        <div style="font-size:.68rem;color:var(--text-muted);font-family:var(--font-mono)">سعر المنتجات</div>
-        <button class="btn btn-collect" onclick="collectOrder('${o.id}',${itemsTotal})" style="width:100%">💚 Collect</button>
+        <div style="font-family:var(--font-display);font-size:1.8rem;color:var(--accent-gold)">${formatPrice(ci.amount)}</div>
+        <div style="font-size:.68rem;color:var(--text-muted);font-family:var(--font-mono)">المطلوب تحصيله ${ci.note}</div>
+        <button class="btn btn-collect" onclick="collectOrder('${o.id}',${ci.amount})" style="width:100%">💚 Collect</button>
         <button class="btn btn-secondary btn-sm" onclick='openOrderDrawer(${JSON.stringify(o)})' style="width:100%;font-size:.75rem">تفاصيل</button>
       </div>
     </div>`;
@@ -2218,13 +2658,14 @@ function openOrderDrawer(order){
         <option value="return_requested" ${order.status==='return_requested'?'selected':''}>↩️ طلب إيرجاع</option>
         <option value="returned" ${order.status==='returned'?'selected':''}>🔄 تم الإيرجاع</option>
       </select>
-      ${order.status==='holding'?`<button class="btn btn-collect btn-full" style="margin-top:.75rem" onclick="collectOrder('${order.id}',${order.totalPrice||0});closeOrderDrawer()">💚 Collect — تحصيل ${formatPrice(order.totalPrice||0)}</button>`:''}
+      ${order.status==='holding'?(()=>{const ci=getOrderCollectInfo(order);return `<button class="btn btn-collect btn-full" style="margin-top:.75rem" onclick="collectOrder('${order.id}',${order.totalPrice||0});closeOrderDrawer()">💚 Collect — تحصيل ${formatPrice(ci.amount)} ${ci.note}</button>`;})():''}
       ${order.status==='collected'?`<div style="margin-top:.6rem;font-size:.8rem;color:#69F0AE;font-family:var(--font-mono)">✅ تم التحصيل في ${order.collectedAt?formatDate(order.collectedAt):'—'}</div>`:''}
       ${order.status==='return_requested'?'<div style="margin-top:.75rem;background:rgba(255,152,0,.08);border:1px solid rgba(255,152,0,.25);border-radius:var(--radius-sm);padding:.85rem"><div style="font-family:var(--font-mono);font-size:.65rem;letter-spacing:.12em;color:#FFB74D;margin-bottom:.4rem">↩️ تفاصيل طلب الإيرجاع</div><div style="font-size:.85rem;color:var(--text-secondary)">'+(order.returnRequest&&order.returnRequest.reason?'<div style="margin-bottom:.3rem"><span style="color:var(--text-muted);font-size:.75rem">السبب: </span>'+esc(order.returnRequest.reason)+'</div>':'')+'<div style="font-size:.75rem;color:var(--text-muted)">طُلب في: '+(order.returnRequest&&order.returnRequest.requestedAt?formatDate(order.returnRequest.requestedAt):'—')+'</div></div></div>':''}
       ${order.status==='returned'?`<div style="margin-top:.6rem;font-size:.8rem;color:#FFB74D;font-family:var(--font-mono)">🔄 تم قبول الإيرجاع في ${order.returnedAt?formatDate(order.returnedAt):'—'}</div>`:''}
     </div>
     <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.5rem">
       <button class="btn btn-secondary btn-full" onclick='printWaybill(${JSON.stringify(order)})'>🚚 طباعة بوليصة الشحن</button>
+      ${order.status==='returned'?`<button class="btn btn-secondary btn-full" onclick='printReturnInvoice(${JSON.stringify(order)})'>🧾 طباعة فاتورة الإرجاع</button>`:''}
       <button class="btn btn-danger btn-full" onclick="deleteOrder('${order.id}');closeOrderDrawer()">🗑 حذف الطلب</button>
     </div>`;
   document.getElementById('order-drawer-backdrop').style.display='block';
@@ -2242,7 +2683,7 @@ let _extraImages=[], _videos=[];
 async function loadProductsPage(){
   showSpinner('جاري تحميل المنتجات...');
   try{
-    const snap=await db.ref('products').get();
+    const snap=await getProductsSnap();
     _allProducts=objToArr(snap.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
     renderProductsList(_allProducts);
   }catch(err){console.error(err);showToast('خطأ في تحميل المنتجات','error')}
@@ -2329,7 +2770,9 @@ function renderProductsList(products){
       <span class="product-warranty-badge ${warr?'warranty-yes':'warranty-no'}">${warr?'✅ ضمان':'❌ لا ضمان'}</span>
       ${(p.hasInstallation===true||p.hasInstallation==='true')?`<span class="product-warranty-badge" style="background:rgba(33,150,243,.1);color:#42A5F5;border:1px solid rgba(33,150,243,.2)">🔧 +${formatPrice(p.installationPrice||0)}</span>`:`<span class="product-warranty-badge" style="opacity:.35">🔧 بدون تركيب</span>`}
       ${cost!=null?`<div class="product-cost" title="سعر الشراء">🛒 ${formatPrice(cost)}</div>`:'<div></div>'}
-      <div class="product-row-price" title="سعر البيع">💲 ${formatPrice(p.price)}</div>
+      <div class="product-row-price" title="سعر البيع">
+        ${p.salePrice!=null ? `<span style="text-decoration:line-through;color:var(--text-muted);font-size:.85rem;font-family:var(--font-display)">${formatPrice(p.price)}</span><br/><span style="color:var(--accent)">🔥 ${formatPrice(p.salePrice)}</span>` : `💲 ${formatPrice(p.price)}`}
+      </div>
       ${profit!=null?`<div class="product-profit" title="الربح">📈 ${formatPrice(profit)}</div>`:'<div></div>'}
       <button class="btn btn-secondary btn-sm" onclick='printProductBarcode(${JSON.stringify(p)})'>🔲 باركود</button>
       <button class="btn btn-secondary btn-sm" onclick='openEditProductModal(${JSON.stringify(p.id)}, ${JSON.stringify(p)})'>تعديل</button>
@@ -2359,7 +2802,7 @@ function generateSKU(){
 function openProductModal(){
   editingProductId=null;_extraImages=[];_videos=[];_variants=[];
   document.getElementById('product-modal-title').textContent='إضافة منتج جديد';
-  ['p-name','p-price','p-cost','p-qty','p-category','p-desc','p-image','p-warranty-period','p-installation-price','p-installation-desc','p-return-days','p-return-conditions'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['p-name','p-price','p-cost','p-sale-price','p-qty','p-category','p-desc','p-image','p-warranty-period','p-installation-price','p-installation-desc','p-return-days','p-return-conditions'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   generateSKU();
   document.getElementById('p-warranty').value='false';
   document.getElementById('p-active').value='true';
@@ -2388,6 +2831,7 @@ function openEditProductModal(id, p){
   document.getElementById('p-sku').value=p.sku||'';
   document.getElementById('p-price').value=p.price||'';
   document.getElementById('p-cost').value=p.costPrice!=null?p.costPrice:'';
+  document.getElementById('p-sale-price').value=p.salePrice!=null?p.salePrice:'';
   document.getElementById('p-qty').value=p.qty!=null?p.qty:(p.stock!=null?p.stock:'');
   document.getElementById('p-category').value=p.category||'';
   document.getElementById('p-desc').value=p.description||'';
@@ -2450,6 +2894,8 @@ async function saveProduct(){
   const price=parseFloat(document.getElementById('p-price').value);
   const costRaw=document.getElementById('p-cost').value.trim();
   const costPrice=costRaw===''?null:Number(costRaw);
+  const salePriceRaw=document.getElementById('p-sale-price').value.trim();
+  const salePrice=salePriceRaw===''?null:Number(salePriceRaw);
   const qtyRaw=document.getElementById('p-qty').value.trim();
   const qty=qtyRaw===''?null:Number(qtyRaw);
   const category=document.getElementById('p-category').value.trim();
@@ -2474,13 +2920,23 @@ async function saveProduct(){
   if(hasInstallation&&(isNaN(installationPrice)||installationPrice<0)){document.getElementById('fg-installation-price').classList.add('has-error');valid=false}else document.getElementById('fg-installation-price')?.classList.remove('has-error');
   if(!valid)return;
   const btn=document.getElementById('product-save-btn');btn.disabled=true;btn.textContent='جاري الحفظ...';
-  const data={name,sku,price,costPrice,qty,category,description:desc,imageUrl:image,extraImages:_extraImages,videos:_videos,warranty,warrantyPeriod,active,hasInstallation,installationPrice:hasInstallation?installationPrice:0,installationDesc:hasInstallation?installationDesc:'',returnable,returnDays:returnable?returnDays:0,returnConditions:returnable?returnConditions:'',
+  const data={name,price,salePrice,qty,stock:qty,category,description:desc,imageUrl:image,extraImages:_extraImages,videos:_videos,warranty,warrantyPeriod,active,hasInstallation,installationPrice:hasInstallation?installationPrice:0,installationDesc:hasInstallation?installationDesc:'',returnable,returnDays:returnable?returnDays:0,returnConditions:returnable?returnConditions:'',
     variantType: document.getElementById('p-variant-type').value,
     variants: _variants.length>0 ? _variants : [],
     updatedAt:Date.now()};
+  const privateData = {costPrice, sku};
   try{
-    if(editingProductId){await db.ref('products/'+editingProductId).update(data);showToast('تم تحديث المنتج ✓','success')}
-    else{data.createdAt=Date.now();await db.ref('products').push(data);showToast('تم إضافة المنتج ✓','success')}
+    if(editingProductId){
+      await db.ref('products/'+editingProductId).update(data);
+      await db.ref('products_private/'+editingProductId).set(privateData);
+      showToast('تم تحديث المنتج ✓','success')
+    }
+    else{
+      data.createdAt=Date.now();
+      const ref = await db.ref('products').push(data);
+      await db.ref('products_private/'+ref.key).set(privateData);
+      showToast('تم إضافة المنتج ✓','success')
+    }
     closeProductModal();await loadProductsPage();
   }catch(err){console.error(err);showToast('خطأ: '+err.message,'error')}
   finally{btn.disabled=false;btn.textContent='💾 حفظ المنتج'}
@@ -2495,11 +2951,14 @@ function onVariantTypeChange(){
   const inputLabel = document.getElementById('variant-input-label');
   builder.style.display = type==='none' ? 'none' : 'block';
   colorRow.style.display = type==='color' ? 'flex' : 'none';
-  const labels = {color:'اسم اللون (مثال: أحمر)', size:'المقاس (مثال: XL)', number:'الرقم (مثال: 42)', custom:'التنويع (مثال: بريميوم)'};
+  const labels = {color:'اسم اللون (مثال: أحمر)', size:'المقاس (مثال: XL)', scent:'اسم الريحة (مثال: ورد)', number:'الرقم (مثال: 42)', custom:'التنويع (مثال: بريميوم)'};
   if(inputLabel) inputLabel.textContent = labels[type] || 'الاسم / الكود';
   const inp = document.getElementById('new-variant-label');
-  const hints = {color:'مثال: أحمر، أسود، أبيض', size:'مثال: S, M, L, XL, XXL', number:'مثال: 40, 41, 42, 43', custom:'مثال: نسخة عادية، نسخة بريميوم'};
+  const hints = {color:'مثال: أحمر، أسود، أبيض', size:'مثال: S, M, L, XL, XXL', scent:'مثال: ورد، فانيليا، عود، لافندر', number:'مثال: 40, 41, 42, 43', custom:'مثال: نسخة عادية، نسخة بريميوم'};
   if(inp) inp.placeholder = hints[type] || 'اسم التنويع';
+  // Clear image input when switching away from color
+  const imgInp = document.getElementById('new-variant-image');
+  if(imgInp && type !== 'color') imgInp.value = '';
 }
 
 function addVariant(){
@@ -2512,19 +2971,22 @@ function addVariant(){
   if(!label){showToast('اكتب اسم التنويع أولاً','error');return;}
   // check duplicate
   if(_variants.find(v=>v.label.toLowerCase()===label.toLowerCase())){showToast('هذا التنويع موجود بالفعل','error');return;}
+  const varImgEl = document.getElementById('new-variant-image');
   const variant = {
     id: 'v_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
     label,
     price: priceRaw!=='' ? Number(priceRaw) : null,
     costPrice: costRaw!=='' ? Number(costRaw) : null,
     qty: qtyRaw!=='' ? Number(qtyRaw) : null,
-    color: (type==='color' && colorEl) ? colorEl.value : null
+    color: (type==='color' && colorEl) ? colorEl.value : null,
+    image: (type==='color' && varImgEl && varImgEl.value.trim()) ? varImgEl.value.trim() : null
   };
   _variants.push(variant);
   document.getElementById('new-variant-label').value='';
   document.getElementById('new-variant-price').value='';
   document.getElementById('new-variant-cost').value='';
   document.getElementById('new-variant-qty').value='';
+  if(varImgEl) varImgEl.value='';
   renderVariantsList();
   showToast('✓ تمت إضافة التنويع','success');
   document.getElementById('new-variant-label').focus();
@@ -2545,7 +3007,17 @@ function renderVariantsList(){
   const basePrice = parseFloat(document.getElementById('p-price').value)||0;
   wrap.innerHTML = _variants.map((v,i)=>{
     const displayPrice = v.price!=null ? v.price : basePrice;
-    const swatchHtml = v.color ? `<div class="variant-color-swatch" style="background:${esc(v.color)}"></div>` : `<div style="width:22px;height:22px;border-radius:4px;background:var(--bg-secondary);border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--text-muted)">${i+1}</div>`;
+    let swatchHtml;
+    if(v.color){
+      swatchHtml = `<div style="display:flex;align-items:center;gap:.35rem">
+        <div class="variant-color-swatch" style="background:${esc(v.color)}"></div>
+        ${v.image ? `<img src="${esc(v.image)}" style="width:28px;height:28px;border-radius:4px;object-fit:cover;border:1px solid var(--border)" title="صورة اللون" onerror="this.style.display='none'"/>` : ''}
+      </div>`;
+    } else {
+      const typeNow = document.getElementById('p-variant-type').value;
+      const icon = typeNow==='scent' ? '🌸' : (i+1);
+      swatchHtml = `<div style="width:22px;height:22px;border-radius:4px;background:var(--bg-secondary);border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:var(--text-muted)">${icon}</div>`;
+    }
     const priceBadge = v.price!=null
       ? `<span class="variant-price-tag">${Number(v.price).toLocaleString('ar-EG')} ج.م</span>`
       : `<span style="font-size:.72rem;color:var(--text-muted);font-family:var(--font-mono)">سعر أساسي</span>`;
@@ -3027,7 +3499,15 @@ async function executeDeleteCustomer(){
 let editingPromoId=null;
 function togglePromoType(){
   const t=document.getElementById('pm-type').value;
-  document.getElementById('fg-discount-wrap').style.display=(t==='freeship')?'none':'block';
+  const showDisc = t==='discount'||t==='fixed'||t==='both'||t==='fixedship';
+  document.getElementById('fg-discount-wrap').style.display=showDisc?'block':'none';
+  const lbl=document.getElementById('pm-discount-label');
+  if(lbl) lbl.textContent = (t==='fixed'||t==='fixedship') ? 'مبلغ الخصم ج.م *' : 'نسبة الخصم % *';
+  const inp=document.getElementById('pm-discount');
+  if(inp){
+    if(t==='fixed'||t==='fixedship'){inp.placeholder='50';inp.removeAttribute('max');}
+    else {inp.placeholder='20';inp.setAttribute('max','100');}
+  }
 }
 function openPromoModal(){
   editingPromoId=null;
@@ -3089,6 +3569,9 @@ async function savePromo(){
   if((type==='discount'||type==='both')&&(!discount||discount<1||discount>100)){
     showToast('أدخل نسبة خصم صحيحة (1-100)','error');valid=false;
   }
+  if((type==='fixed'||type==='fixedship')&&(!discount||discount<=0)){
+    showToast('أدخل مبلغ خصم صحيح','error');valid=false;
+  }
   if(!valid)return;
 
   const btn=document.getElementById('promo-save-btn');
@@ -3120,8 +3603,8 @@ async function savePromo(){
       updatedAt:Date.now()
     };
     // Only set discount if needed
-    if(type!=='freeship' && discount) data.discount=discount;
-    else data.discount=null; // clear if switched to freeship
+    if((type==='discount'||type==='fixed'||type==='both'||type==='fixedship') && discount) data.discount=discount;
+    else data.discount=null;
     // expiry: set or clear
     data.expiry=expiry||null;
     // maxUse: set or clear
@@ -3190,19 +3673,20 @@ function filterPromos(){
 }
 async function loadProductsData(){
   if(_allProducts.length) return;
-  const snap=await db.ref('products').get();
+  const snap=await getProductsSnap();
   _allProducts=objToArr(snap.val());
 }
 function renderPromos(promos){
   const list=document.getElementById('promos-list');
   if(!promos.length){list.innerHTML=`<div class="empty-state"><div class="empty-icon">🎟️</div><h3>لا توجد أكواد خصم</h3><p>اضغط "+ إضافة كود خصم" لإنشاء أول كود</p></div>`;return;}
-  const typeLabel={discount:'خصم %',freeship:'توصيل مجاني',both:'خصم + توصيل'};
-  const typeCls={discount:'promo-discount',freeship:'promo-freeship',both:'promo-both'};
+  const typeLabel={discount:'خصم %',fixed:'خصم ثابت',freeship:'توصيل مجاني',both:'خصم % + توصيل',fixedship:'خصم ثابت + توصيل'};
+  const typeCls={discount:'promo-discount',fixed:'promo-discount',freeship:'promo-freeship',both:'promo-both',fixedship:'promo-both'};
   const now=new Date().toISOString().slice(0,10);
   list.innerHTML=promos.map(p=>{
     const expired=p.expiry&&p.expiry<now;
     const inactive=p.active===false;
-    const discInfo=(p.type!=='freeship'&&p.discount)?` — ${p.discount}%`:'';
+    const discInfo=(p.type!=='freeship'&&p.discount)?` — ${p.discount}${(p.type==='fixed'||p.type==='fixedship')?' ج.م':'%'}`:'';
+
     const expiryHtml=p.expiry
       ?`<span class="promo-expiry ${expired?'promo-expired':''}">${expired?'❌ منتهي':'⏰ '+p.expiry}</span>`
       :`<span class="promo-expiry">∞ بلا تاريخ</span>`;
@@ -3251,7 +3735,7 @@ function starsHtml(n){
 async function loadReviews(){
   showSpinner('جاري تحميل التقييمات...');
   try{
-    const[revSnap,prodSnap]=await Promise.all([db.ref('reviews').get(),db.ref('products').get()]);
+    const[revSnap,prodSnap]=await Promise.all([db.ref('reviews').get(),getProductsSnap()]);
     _allProducts=objToArr(prodSnap.val());
     // flatten reviews/{productId}/{uid} => flat array
     _allReviews=[];
@@ -3448,7 +3932,85 @@ async function deleteReview(idx){
 }
 
 
-// ══ SOUND SETTINGS ══
+// ══ SHIPPING SETTINGS ══
+function toggleCodFeeType(){
+  const type = document.getElementById('ship-cod-type').value;
+  const label = document.getElementById('ship-cod-fee-label');
+  const input = document.getElementById('ship-cod-fee');
+  if(type==='percent'){
+    label.textContent = 'رسوم الدفع عند الاستلام (%)';
+    input.placeholder = 'مثال: 2';
+    input.max = '100';
+  } else {
+    label.textContent = 'رسوم الدفع عند الاستلام (جنيه)';
+    input.placeholder = 'مثال: 25';
+    input.removeAttribute('max');
+  }
+}
+
+async function loadShippingPage(){
+  const grid = document.getElementById('shipping-govs-grid');
+  grid.innerHTML = EGYPT_GOVS.map(g=>`
+    <div class="gov-card">
+      <span class="gov-name">${g.name}</span>
+      <div class="gov-input-wrap">
+        <input type="number" class="gov-input" id="ship-gov-${g.key}" min="0" step="1" placeholder="0"/>
+        <span style="font-size:.7rem;color:var(--text-muted)">ج.م</span>
+      </div>
+    </div>`).join('');
+  try{
+    const snap = await db.ref('settings/shipping').get();
+    const s = snap.val() || {};
+    document.getElementById('ship-cod-type').value = s.codFeeType || 'fixed';
+    toggleCodFeeType();
+    document.getElementById('ship-cod-fee').value = s.codFee ?? '';
+    document.getElementById('ship-tenth-ramadan').value = s.tenthRamadanFee ?? '';
+    const rates = s.rates || {};
+    EGYPT_GOVS.forEach(g=>{
+      const inp = document.getElementById('ship-gov-'+g.key);
+      if(inp && rates[g.key]!=null) inp.value = rates[g.key];
+    });
+  }catch(e){console.error(e)}
+  try{
+    await loadStoreSettings();
+    document.getElementById('store-name').value = _storeSettings.name || '';
+    document.getElementById('store-address').value = _storeSettings.address || '';
+    document.getElementById('store-slogan').value = _storeSettings.slogan || '';
+  }catch(e){console.error(e)}
+}
+
+async function saveStoreSettings(){
+  const name = document.getElementById('store-name').value.trim() || 'PIT HOUSE';
+  const address = document.getElementById('store-address').value.trim();
+  const slogan = document.getElementById('store-slogan').value.trim();
+  try{
+    await db.ref('settings/store').set({name, address, slogan});
+    _storeSettings = {name, address, slogan};
+    showToast('تم حفظ بيانات المتجر ✓','success');
+  }catch(e){
+    showToast('فشل الحفظ: '+e.message,'error');
+  }
+}
+
+async function saveShippingSettings(){
+  const rates = {};
+  EGYPT_GOVS.forEach(g=>{
+    const inp = document.getElementById('ship-gov-'+g.key);
+    rates[g.key] = Number(inp.value)||0;
+  });
+  const codFeeType = document.getElementById('ship-cod-type').value;
+  const codFee = Number(document.getElementById('ship-cod-fee').value)||0;
+  const tenthRamadanFee = Number(document.getElementById('ship-tenth-ramadan').value)||0;
+  try{
+    await db.ref('settings/shipping').set({rates, codFee, codFeeType, tenthRamadanFee});
+    showToast('تم حفظ إعدادات الشحن ✓','success');
+  }catch(e){
+    showToast('فشل الحفظ: '+e.message,'error');
+  }
+}
+
+
+
 async function loadSoundSettings(){
   try{
     const snap = await db.ref('settings/successSound').get();
@@ -3524,48 +4086,6 @@ async function deleteSound(){
   }catch(e){ showToast('فشل الحذف','error'); }
 }
 
-// ══ SHIPPING ══
-let _shippingRates={};
-async function loadShipping(){
-  showSpinner('جاري تحميل أسعار الشحن...');
-  try{
-    const snap=await db.ref('shippingRates').get();
-    _shippingRates=snap.val()||{};
-    renderShippingGrid();
-  }catch(err){console.error(err);showToast('خطأ في تحميل الشحن','error')}
-  finally{hideSpinner()}
-}
-function renderShippingGrid(){
-  document.getElementById('shipping-grid').innerHTML=EGYPT_GOVS.map(g=>{
-    const rate=_shippingRates[g.key]!=null?_shippingRates[g.key]:'';
-    return`<div class="gov-card">
-      <div class="gov-name">${g.name}</div>
-      <div class="gov-input-wrap">
-        <input type="number" class="gov-input" id="sr-${g.key}" value="${rate}" min="0" step="1" placeholder="0" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
-        <span style="font-size:.7rem;color:var(--text-muted)">ج.م</span>
-      </div>
-    </div>`;
-  }).join('');
-}
-async function saveShipping(){
-  const newRates={};
-  EGYPT_GOVS.forEach(g=>{const inp=document.getElementById('sr-'+g.key);if(inp){const v=inp.value.trim();newRates[g.key]=v===''?0:Number(v);}});
-  const msg=document.getElementById('shipping-save-msg');
-  msg.textContent='جاري الحفظ...';msg.style.color='var(--text-muted)';
-  try{
-    await db.ref('shippingRates').set(newRates);_shippingRates=newRates;
-    msg.textContent='✅ تم حفظ جميع أسعار الشحن!';msg.style.color='var(--success)';
-    showToast('تم حفظ الشحن ✓','success');
-  }catch(err){msg.textContent='❌ خطأ: '+err.message;msg.style.color='var(--danger)';showToast('خطأ في الحفظ','error')}
-}
-function setAllShipping(){
-  const val=prompt('أدخل سعر الشحن الموحد لجميع المحافظات (بالجنيه):');
-  if(val===null)return;
-  const num=Number(val);
-  if(isNaN(num)||num<0){showToast('سعر غير صحيح','error');return;}
-  EGYPT_GOVS.forEach(g=>{const inp=document.getElementById('sr-'+g.key);if(inp)inp.value=num;});
-  showToast(`تم ضبط الكل على ${num} ج.م — اضغط حفظ للتأكيد`,'info');
-}
 
 // ══ BARCODE ENGINE (Code39 subset) ══
 const _BC39 = {
@@ -3694,7 +4214,7 @@ function printWaybill(order){
       <!-- HEADER -->
       <div style="background:#111;color:#fff;display:flex;justify-content:space-between;align-items:center;padding:.75rem 1rem">
         <div>
-          <div style="font-size:1.3rem;font-weight:900;letter-spacing:.08em">PIT HOUSE</div>
+          <div style="font-size:1.3rem;font-weight:900;letter-spacing:.08em">${esc(_storeSettings.name||'PIT HOUSE')}</div>
           <div style="font-size:.65rem;opacity:.7;letter-spacing:.1em">SHIPPING WAYBILL — بوليصة شحن</div>
         </div>
         <div style="text-align:left;font-family:monospace;font-size:.72rem;opacity:.85">
@@ -3711,8 +4231,8 @@ function printWaybill(order){
       <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:2px dashed #bbb">
         <div style="padding:.9rem 1rem;border-left:1px solid #eee">
           <div style="font-size:.6rem;color:#999;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem">المرسِل</div>
-          <div style="font-weight:900;font-size:.95rem">PIT HOUSE</div>
-          <div style="color:#555;font-size:.75rem;margin-top:.2rem">القاهرة، مصر</div>
+          <div contenteditable="true" spellcheck="false" style="font-weight:900;font-size:.95rem;outline:none;border-radius:3px;padding:.05rem .15rem" onfocus="this.style.background='#fffbe6'" onblur="this.style.background='transparent'">${esc(_storeSettings.name||'PIT HOUSE')}</div>
+          <div contenteditable="true" spellcheck="false" style="color:#555;font-size:.75rem;margin-top:.2rem;outline:none;border-radius:3px;padding:.05rem .15rem" onfocus="this.style.background='#fffbe6'" onblur="this.style.background='transparent'">${esc(_storeSettings.address||'القاهرة، مصر')}</div>
         </div>
         <div style="padding:.9rem 1rem">
           <div style="font-size:.6rem;color:#999;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem">المُرسَل إليه</div>
@@ -3723,6 +4243,10 @@ function printWaybill(order){
             ${order.city&&order.address?`<br>🏙 ${esc(order.city)}`:''}
           </div>
         </div>
+      </div>
+      <!-- SLOGAN -->
+      <div style="border-bottom:1px solid #eee;padding:.5rem 1rem;text-align:center">
+        <div contenteditable="true" spellcheck="false" data-placeholder="اكتب سلوجان هنا..." style="font-size:.78rem;font-weight:700;color:#444;outline:none;border-radius:3px;padding:.1rem .3rem;min-height:1.2em" onfocus="this.style.background='#fffbe6'" onblur="this.style.background='transparent'">${esc(_storeSettings.slogan||'')}</div>
       </div>
       <!-- ITEMS -->
       <div style="padding:.75rem 1rem">
@@ -3744,7 +4268,7 @@ function printWaybill(order){
       </div>
       <!-- FOOTER -->
       <div style="background:#111;color:#fff;padding:.4rem 1rem;font-size:.62rem;display:flex;justify-content:space-between;opacity:.85">
-        <span>PIT HOUSE Admin System</span>
+        <span>${esc(_storeSettings.name||'PIT HOUSE')} Admin System</span>
         <span>${new Date().toLocaleDateString('ar-EG')} ${new Date().toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}</span>
       </div>
     </div>`;
@@ -3756,10 +4280,109 @@ function printWaybill(order){
   document.getElementById('btn-print-a4').style.display='inline-flex';
   document.getElementById('btn-print-label').style.display='none';
 }
+
+// ══ RETURN INVOICE ══
+function printReturnInvoice(order){
+  const ordId=String(order.id||'').toUpperCase().replace(/[^A-Z0-9\-]/g,'').slice(0,14)||'ORDER';
+  const items=(order.items||[]);
+  const itemsTotal=items.reduce((s,i)=>s+(i.price||0)*(i.qty||1),0);
+  const payLabel = order.paymentMethod==='cash_on_delivery'?'كاش عند الاستلام':order.paymentMethod==='vodafone_cash'?'فودافون كاش':order.paymentMethod==='instapay'?'إنستا باي':'—';
+  const itemsRows=items.map(i=>`
+    <tr style="border-bottom:1px solid #eee">
+      <td style="padding:.4rem .5rem">${esc(i.name)}</td>
+      <td style="padding:.4rem .5rem;text-align:center">${i.qty||1}</td>
+      <td style="padding:.4rem .5rem;text-align:center">${formatPrice(i.price)}</td>
+      <td style="padding:.4rem .5rem;text-align:center">${formatPrice((i.price||0)*(i.qty||1))}</td>
+    </tr>`).join('');
+  const reason = order.returnRequest && order.returnRequest.reason ? esc(order.returnRequest.reason) : '—';
+  const requestedAt = order.returnRequest && order.returnRequest.requestedAt ? formatDate(order.returnRequest.requestedAt) : '—';
+  const returnedAt = order.returnedAt ? formatDate(order.returnedAt) : formatDate(Date.now());
+  const html=`
+    <div style="border:2px solid #111;border-radius:6px;overflow:hidden;font-family:Arial,sans-serif;font-size:.82rem;color:#111">
+      <!-- HEADER -->
+      <div style="background:#111;color:#fff;display:flex;justify-content:space-between;align-items:center;padding:.75rem 1rem">
+        <div>
+          <div style="font-size:1.3rem;font-weight:900;letter-spacing:.08em">${esc(_storeSettings.name||'PIT HOUSE')}</div>
+          <div style="font-size:.65rem;opacity:.7;letter-spacing:.1em">RETURN INVOICE — فاتورة إرجاع</div>
+        </div>
+        <div style="text-align:left;font-family:monospace;font-size:.72rem;opacity:.85">
+          <div>${esc(ordId)}</div>
+          <div>${returnedAt}</div>
+        </div>
+      </div>
+      <!-- CUSTOMER -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:2px dashed #bbb">
+        <div style="padding:.9rem 1rem;border-left:1px solid #eee">
+          <div style="font-size:.6rem;color:#999;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem">المرسِل (المتجر)</div>
+          <div style="font-weight:900;font-size:.95rem">${esc(_storeSettings.name||'PIT HOUSE')}</div>
+          <div style="color:#555;font-size:.75rem;margin-top:.2rem">${esc(_storeSettings.address||'القاهرة، مصر')}</div>
+        </div>
+        <div style="padding:.9rem 1rem">
+          <div style="font-size:.6rem;color:#999;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem">العميل (المسترجع منه)</div>
+          <div style="font-weight:900;font-size:.95rem">${esc(order.customerName||'—')}</div>
+          <div style="color:#333;font-size:.78rem;margin-top:.2rem;line-height:1.5">
+            📞 ${esc(order.phone||'—')}<br>
+            📍 ${esc(order.address||order.city||'—')}
+          </div>
+        </div>
+      </div>
+      <!-- RETURN DETAILS -->
+      <div style="border-bottom:1px solid #eee;padding:.6rem 1rem;display:flex;flex-wrap:wrap;gap:1.5rem;font-size:.78rem;color:#555">
+        <div><span style="color:#999">تاريخ الطلب: </span>${formatDate(order.createdAt)}</div>
+        <div><span style="color:#999">طريقة الدفع: </span>${payLabel}</div>
+        <div><span style="color:#999">تاريخ الإرجاع: </span>${returnedAt}</div>
+        <div style="flex-basis:100%"><span style="color:#999">سبب الإرجاع: </span>${reason} ${order.returnRequest&&order.returnRequest.requestedAt?`<span style="color:#999">(طُلب في ${requestedAt})</span>`:''}</div>
+      </div>
+      <!-- ITEMS -->
+      <div style="padding:.75rem 1rem">
+        <div style="font-size:.65rem;color:#999;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem">المنتجات المرتجعة</div>
+        <table style="width:100%;border-collapse:collapse;font-size:.8rem">
+          <thead><tr style="background:#f5f5f5">
+            <th style="padding:.35rem .5rem;text-align:right;font-weight:600">المنتج</th>
+            <th style="padding:.35rem .5rem;text-align:center;font-weight:600">الكمية</th>
+            <th style="padding:.35rem .5rem;text-align:center;font-weight:600">سعر الوحدة</th>
+            <th style="padding:.35rem .5rem;text-align:center;font-weight:600">الإجمالي</th>
+          </tr></thead>
+          <tbody>${itemsRows}</tbody>
+        </table>
+      </div>
+      <!-- TOTALS -->
+      <div style="background:#f9f9f9;border-top:1px solid #ddd;padding:.6rem 1rem;display:flex;flex-direction:column;gap:.25rem;align-items:flex-end">
+        <span style="font-size:.78rem;color:#777">إجمالي المنتجات المرتجعة: ${formatPrice(itemsTotal)}</span>
+        ${order.shippingCost?`<span style="font-size:.78rem;color:#777">الشحن (غير مسترد): ${formatPrice(order.shippingCost)}</span>`:''}
+        ${order.codFee?`<span style="font-size:.78rem;color:#777">رسوم الدفع عند الاستلام (غير مستردة): ${formatPrice(order.codFee)}</span>`:''}
+        <span style="font-size:1rem;font-weight:900">إجمالي المبلغ المسترد: ${formatPrice(itemsTotal)}</span>
+      </div>
+      ${_storeSettings.slogan?`<div style="border-top:1px solid #eee;padding:.5rem 1rem;text-align:center;font-size:.78rem;font-weight:700;color:#444">
+        ${esc(_storeSettings.slogan)}
+      </div>`:''}
+      <div style="background:#111;color:#fff;padding:.4rem 1rem;font-size:.62rem;display:flex;justify-content:space-between;opacity:.85">
+        <span>${esc(_storeSettings.name||'PIT HOUSE')} Admin System</span>
+        <span>${new Date().toLocaleDateString('ar-EG')} ${new Date().toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}</span>
+      </div>
+    </div>`;
+  document.getElementById('shared-print-content').innerHTML=html;
+  document.getElementById('shared-print-overlay').style.display='block';
+  // Return invoice = A4 print
+  document.getElementById('btn-print-a4').style.display='inline-flex';
+  document.getElementById('btn-print-label').style.display='none';
+}
 // ══ INVOICES ══
 let _allInvoices=[];
 let _invItems=[];
 let _editingInvoiceId=null;
+let _invPaymentMethod=null;
+
+function selectInvPayment(val){
+  _invPaymentMethod=val;
+  document.querySelectorAll('.inv-pay-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.val===val);
+  });
+}
+
+function invPayLabel(v){
+  return v==='cash'?'💵 نقدي':v==='vodafone'?'📱 فودافون كاش':v==='instapay'?'⚡ إنستا باي':v==='deferred'?'📋 آجل':'—';
+}
 
 function genInvRef(){
   const d=new Date();const yy=String(d.getFullYear()).slice(2);
@@ -3771,12 +4394,19 @@ function genInvRef(){
 function openInvoiceModal(type='purchase'){
   _invItems=[];
   _editingInvoiceId=null;
+  _invPaymentMethod=null;
   document.getElementById('inv-type').value=type;
   document.getElementById('inv-ref').value='';
   document.getElementById('inv-party').value='';
   document.getElementById('inv-notes').value='';
   document.getElementById('inv-date').value=new Date().toISOString().slice(0,10);
   document.getElementById('inv-save-btn').textContent='💾 حفظ الفاتورة';
+  document.getElementById('inv-disc-type').value='none';
+  document.getElementById('inv-disc-val').value='';
+  document.getElementById('inv-disc-val-wrap').style.display='none';
+  document.getElementById('inv-subtotal-row').style.display='none';
+  document.getElementById('inv-discount-row').style.display='none';
+  document.querySelectorAll('.inv-pay-btn').forEach(b=>b.classList.remove('active'));
   updateInvoiceType();
   renderInvItems();
   // populate datalist from products
@@ -3852,7 +4482,7 @@ function removeInvItem(id){
 
 function renderInvItems(){
   const c=document.getElementById('inv-items-list');
-  const total=_invItems.reduce((s,i)=>s+i.qty*i.price,0);
+  const subtotal=_invItems.reduce((s,i)=>s+i.qty*i.price,0);
   if(!_invItems.length){
     c.innerHTML=`<div style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.82rem;border:1px dashed var(--border);border-radius:var(--radius-md)">لا توجد منتجات بعد — أضف من الأسفل</div>`;
   } else {
@@ -3877,7 +4507,33 @@ function renderInvItems(){
         </tr>`).join('')}</tbody>
       </table></div>`;
   }
-  document.getElementById('inv-grand-total').textContent=formatPrice(total)+' جنيه';
+  updateInvDiscount(subtotal);
+}
+
+function updateInvDiscount(subtotalOverride){
+  const subtotal = subtotalOverride !== undefined ? subtotalOverride : _invItems.reduce((s,i)=>s+i.qty*i.price,0);
+  const dtype = document.getElementById('inv-disc-type')?.value||'none';
+  const dvalWrap = document.getElementById('inv-disc-val-wrap');
+  const dvalLabel = document.getElementById('inv-disc-val-label');
+  if(dtype==='none'){
+    if(dvalWrap) dvalWrap.style.display='none';
+    document.getElementById('inv-subtotal-row').style.display='none';
+    document.getElementById('inv-discount-row').style.display='none';
+    document.getElementById('inv-grand-total').textContent=formatPrice(subtotal)+' جنيه';
+    return;
+  }
+  if(dvalWrap) dvalWrap.style.display='block';
+  if(dvalLabel) dvalLabel.textContent = dtype==='pct' ? 'نسبة الخصم %' : 'مبلغ الخصم ج.م';
+  const dval = parseFloat(document.getElementById('inv-disc-val')?.value)||0;
+  let discAmt = 0;
+  if(dtype==='pct') discAmt = Math.round(subtotal*(Math.min(dval,100)/100));
+  else discAmt = Math.min(dval, subtotal);
+  const finalTotal = Math.max(0, subtotal - discAmt);
+  document.getElementById('inv-subtotal-val').textContent=formatPrice(subtotal)+' جنيه';
+  document.getElementById('inv-subtotal-row').style.display = subtotal>0 ? 'block':'none';
+  document.getElementById('inv-discount-val').textContent='- '+formatPrice(discAmt)+' جنيه'+(dtype==='pct'&&dval>0?` (${dval}%)`:'');
+  document.getElementById('inv-discount-row').style.display = discAmt>0 ? 'block':'none';
+  document.getElementById('inv-grand-total').textContent=formatPrice(finalTotal)+' جنيه';
 }
 
 async function saveInvoice(){
@@ -3888,7 +4544,14 @@ async function saveInvoice(){
   const notes=document.getElementById('inv-notes').value.trim();
   if(!party){showToast('اكتب اسم التاجر / الجهة','error');return;}
   if(!_invItems.length){showToast('أضف منتج واحد على الأقل','error');return;}
-  const total=_invItems.reduce((s,i)=>s+i.qty*i.price,0);
+  const subtotal=_invItems.reduce((s,i)=>s+i.qty*i.price,0);
+  const discType=document.getElementById('inv-disc-type').value;
+  const discVal=parseFloat(document.getElementById('inv-disc-val').value)||0;
+  let discAmt=0;
+  if(discType==='pct') discAmt=Math.round(subtotal*(Math.min(discVal,100)/100));
+  else if(discType==='fixed') discAmt=Math.min(discVal,subtotal);
+  const total=Math.max(0,subtotal-discAmt);
+  const discountData=discAmt>0?{discountType:discType,discountValue:discVal,discountAmount:discAmt}:{discountType:null,discountValue:null,discountAmount:0};
   const btn=document.getElementById('inv-save-btn');
   const isEditing=!!_editingInvoiceId;
   btn.disabled=true;btn.textContent='جاري الحفظ...';
@@ -3896,17 +4559,54 @@ async function saveInvoice(){
     if(isEditing){
       // Edit mode — update existing invoice
       const editId=_editingInvoiceId;
-      const inv={ref,type,party,date,notes,items:_invItems,total};
+      const inv={ref,type,party,date,notes,paymentMethod:_invPaymentMethod||null,items:_invItems,subtotal,total,...discountData};
       await db.ref('invoices/'+editId).update(inv);
+      // إعادة ضبط حركة الحساب المرتبطة بالفاتورة
+      await removeAccountEntriesForInvoice(editId);
+      const accKeyEdit=mapInvoicePaymentToAccount(_invPaymentMethod);
+      if(accKeyEdit && total>0){
+        const accNoteEdit=`فاتورة ${type==='sale'?'بيع':'شراء'} ${ref} — ${party}`;
+        await pushAccountEntry(accKeyEdit, type==='purchase'?'withdraw':'deposit', total, accNoteEdit, {source:'invoice', invoiceId:editId});
+      }
       showToast(`✅ تم تعديل الفاتورة ${ref}`,'success');
       _editingInvoiceId=null;
       closeInvoiceModal();
       await loadInvoicesPage();
     } else {
       // New invoice
-      const inv={ref,type,party,date,notes,items:_invItems,total,createdAt:Date.now()};
-      await db.ref('invoices').push(inv);
-      showToast(`✅ تم حفظ الفاتورة ${ref}`,'success');
+      const inv={ref,type,party,date,notes,paymentMethod:_invPaymentMethod||null,items:_invItems,subtotal,total,...discountData,createdAt:Date.now()};
+      const invRef=await db.ref('invoices').push(inv);
+      const accKey=mapInvoicePaymentToAccount(_invPaymentMethod);
+      if(accKey && total>0){
+        const accNote=`فاتورة ${type==='sale'?'بيع':'شراء'} ${ref} — ${party}`;
+        await pushAccountEntry(accKey, type==='purchase'?'withdraw':'deposit', total, accNote, {source:'invoice', invoiceId:invRef.key});
+      }
+      // ── If purchase invoice: add quantities to inventory ──
+      if(type==='purchase'){
+        const invUpdates = {};
+        for(const item of _invItems){
+          if(!_cachedProducts.length){ const ps=await getProductsSnap(); _cachedProducts=objToArr(ps.val()); }
+          const prod = _cachedProducts.find(p=>p.name===item.name||(item.sku&&p.sku===item.sku));
+          if(!prod) continue;
+          const pSnap = await db.ref('products/'+prod.id).get();
+          if(!pSnap.exists()) continue;
+          const pData = pSnap.val();
+          const curQty = pData.qty!=null ? Number(pData.qty) : (pData.stock!=null ? Number(pData.stock) : 0);
+          const newQty = curQty + (Number(item.qty)||1);
+          invUpdates['products/'+prod.id+'/qty']   = newQty;
+          invUpdates['products/'+prod.id+'/stock'] = newQty;
+          // Update costPrice if provided
+          if(item.price && item.price>0) invUpdates['products/'+prod.id+'/costPrice'] = item.price;
+        }
+        if(Object.keys(invUpdates).length){
+          await db.ref().update(invUpdates);
+          showToast(`✅ تم حفظ الفاتورة ${ref} وتحديث الجرد تلقائياً`,'success');
+        } else {
+          showToast(`✅ تم حفظ الفاتورة ${ref}`,'success');
+        }
+      } else {
+        showToast(`✅ تم حفظ الفاتورة ${ref}`,'success');
+      }
       closeInvoiceModal();
       await loadInvoicesPage();
       // show print
@@ -3922,7 +4622,7 @@ async function loadInvoicesPage(){
     const snap=await db.ref('invoices').get();
     _allInvoices=objToArr(snap.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
     // also load products for datalist
-    if(!_cachedProducts.length){const ps=await db.ref('products').get();_cachedProducts=objToArr(ps.val());}
+    if(!_cachedProducts.length){const ps=await getProductsSnap();_cachedProducts=objToArr(ps.val());}
     // load merchants for datalist (always refresh)
     const mSnap=await db.ref('merchants').get();
     _allMerchants=objToArr(mSnap.val()).sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar'));
@@ -3976,7 +4676,7 @@ function renderInvoicesList(list){
           <span style="font-size:.72rem;color:var(--text-muted)">${inv.date||'—'}</span>
         </div>
         <div style="font-weight:700;margin-bottom:.25rem">${esc(inv.party||'—')}</div>
-        <div style="font-size:.78rem;color:var(--text-muted)">${(inv.items||[]).length} منتج ${inv.notes?'· '+esc(inv.notes):''}</div>
+        <div style="font-size:.78rem;color:var(--text-muted)">${(inv.items||[]).length} منتج ${inv.notes?'· '+esc(inv.notes):''}${inv.paymentMethod?` · <span style="color:var(--accent);font-weight:700">${invPayLabel(inv.paymentMethod)}</span>`:''}${inv.discountAmount>0?` · <span style="color:var(--danger)">خصم ${formatPrice(inv.discountAmount)}</span>`:''}</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.5rem">
         <div style="font-family:var(--font-display);font-size:1.4rem;color:${color}">${isPurchase?'-':'+'} ${formatPrice(inv.total)}</div>
@@ -3990,9 +4690,29 @@ function renderInvoicesList(list){
   }).join('');
 }
 
+async function removeAccountEntriesForInvoice(invoiceId){
+  for(const key of Object.keys(ACCOUNT_DEFS)){
+    try{
+      const snap=await db.ref('paymentAccounts/'+key).get();
+      if(!snap.exists())continue;
+      const updates={};
+      snap.forEach(s=>{
+        const v=s.val();
+        if(v && v.source==='invoice' && v.invoiceId===invoiceId) updates[s.key]=null;
+      });
+      if(Object.keys(updates).length) await db.ref('paymentAccounts/'+key).update(updates);
+    }catch(err){}
+  }
+}
+
 async function deleteInvoice(id){
   if(!confirm('حذف هذه الفاتورة؟'))return;
-  try{await db.ref('invoices/'+id).remove();showToast('تم الحذف','info');await loadInvoicesPage();}
+  try{
+    await removeAccountEntriesForInvoice(id);
+    await db.ref('invoices/'+id).remove();
+    showToast('تم الحذف','info');
+    await loadInvoicesPage();
+  }
   catch(err){showToast('خطأ في الحذف','error');}
 }
 
@@ -4001,7 +4721,7 @@ async function editInvoice(id){
   if(!inv){showToast('الفاتورة مش موجودة','error');return;}
   // Make sure products cached
   if(!_cachedProducts.length){
-    const ps=await db.ref('products').get();
+    const ps=await getProductsSnap();
     _cachedProducts=objToArr(ps.val());
   }
   _editingInvoiceId=id;
@@ -4012,6 +4732,15 @@ async function editInvoice(id){
   document.getElementById('inv-notes').value=inv.notes||'';
   document.getElementById('inv-date').value=inv.date||new Date().toISOString().slice(0,10);
   document.getElementById('inv-save-btn').textContent='💾 حفظ التعديلات';
+  // restore discount
+  const dType=inv.discountType||'none';
+  document.getElementById('inv-disc-type').value=dType;
+  document.getElementById('inv-disc-val').value=inv.discountValue||'';
+  document.getElementById('inv-disc-val-wrap').style.display=dType!=='none'?'block':'none';
+  _invPaymentMethod=inv.paymentMethod||null;
+  document.querySelectorAll('.inv-pay-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.val===_invPaymentMethod);
+  });
   updateInvoiceType();
   renderInvItems();
   // populate datalists
@@ -4277,6 +5006,183 @@ async function deleteLiquidityEntry(id){
   }catch(err){showToast('خطأ في الحذف','error');}
 }
 
+// ══════════════════════════════════════════
+//  ACCOUNTS — حسابات الدفع (كشف حساب)
+// ══════════════════════════════════════════
+const ACCOUNT_DEFS = {
+  cash:     {label:'💵 نقدي',        color:'var(--success)'},
+  vodafone: {label:'📱 فودافون كاش', color:'#E91E63'},
+  instapay: {label:'⚡ إنستا باي',   color:'#42A5F5'},
+  bank:     {label:'🏦 البنك',       color:'var(--accent-gold)'}
+};
+window._accActiveTab = window._accActiveTab || 'cash';
+window._accAllEntries = window._accAllEntries || {};
+
+// تحويل طريقة دفع الأوردر (تحصيل) لاسم الحساب
+// فودافون كاش -> فودافون | إنستا باي -> إنستا باي | الدفع عند الاستلام -> البنك
+function mapPaymentToAccount(pm){
+  if(!pm) return null;
+  if(pm==='vodafone_cash'||pm==='vodafone') return 'vodafone';
+  if(pm==='instapay') return 'instapay';
+  if(pm==='cash_on_delivery') return 'bank';
+  if(pm==='cash') return 'cash';
+  if(pm==='bank') return 'bank';
+  return null; // deferred أو غيره — مالوش تأثير على الكاش
+}
+
+// تحويل طريقة دفع الفاتورة لاسم الحساب
+// نقدي -> كاش | فودافون كاش -> فودافون | إنستا باي -> إنستا باي
+function mapInvoicePaymentToAccount(pm){
+  if(!pm) return null;
+  if(pm==='vodafone_cash'||pm==='vodafone') return 'vodafone';
+  if(pm==='instapay') return 'instapay';
+  if(pm==='cash_on_delivery'||pm==='cash') return 'cash';
+  if(pm==='bank') return 'bank';
+  return null; // deferred أو غيره — مالوش تأثير على الكاش
+}
+
+// إضافة حركة تلقائية لحساب معيّن (تستخدم من الأوردرات/الفواتير)
+async function pushAccountEntry(method, type, amount, note, extra){
+  if(!method || !ACCOUNT_DEFS[method] || !amount) return;
+  await db.ref('paymentAccounts/'+method).push({type, amount:Number(amount)||0, note, createdAt:Date.now(), ...extra});
+}
+
+async function loadAccountsPage(){
+  // تحميل كل الحسابات
+  for(const key of Object.keys(ACCOUNT_DEFS)){
+    try{
+      const snap=await db.ref('paymentAccounts/'+key).get();
+      const entries=[];
+      if(snap.exists()) snap.forEach(s=>entries.push({id:s.key,...s.val()}));
+      entries.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+      window._accAllEntries[key]=entries;
+    }catch(err){window._accAllEntries[key]=[];}
+  }
+  renderAccountStats();
+  renderAccountTabs();
+  renderAccountLog(window._accActiveTab);
+  // تعبية select الإيداع/السحب
+  const sel=document.getElementById('acc-tx-method');
+  if(sel && !sel.dataset.filled){
+    sel.innerHTML=Object.entries(ACCOUNT_DEFS).map(([k,d])=>`<option value="${k}">${d.label}</option>`).join('');
+    sel.dataset.filled='1';
+  }
+}
+
+function accBalance(key){
+  const entries=window._accAllEntries[key]||[];
+  let bal=0;
+  entries.forEach(e=>{ if(e.type==='deposit') bal+=Number(e.amount)||0; else if(e.type==='withdraw') bal-=Number(e.amount)||0; });
+  return bal;
+}
+
+function renderAccountStats(){
+  const el=document.getElementById('acc-stats');
+  if(!el)return;
+  el.innerHTML=Object.entries(ACCOUNT_DEFS).map(([key,def])=>{
+    const bal=accBalance(key);
+    return `<div class="stat-card" style="border-color:${def.color}33;cursor:pointer" onclick="setAccTab('${key}')">
+      <div class="stat-icon">${def.label.split(' ')[0]}</div>
+      <div class="stat-value" style="color:${bal>=0?'var(--success)':'var(--danger)'}">${formatPrice(bal)} ج.م</div>
+      <div class="stat-label">${def.label.split(' ').slice(1).join(' ')}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderAccountTabs(){
+  const el=document.getElementById('acc-log-tabs');
+  if(!el)return;
+  el.innerHTML=Object.entries(ACCOUNT_DEFS).map(([key,def])=>{
+    const active=key===window._accActiveTab;
+    return `<button onclick="setAccTab('${key}')" style="font-size:.68rem;padding:.28rem .65rem;border-radius:3px;border:none;cursor:pointer;font-family:var(--font-ar);font-weight:700;background:${active?'var(--accent)':'transparent'};color:${active?'#fff':'var(--text-muted)'};transition:all .15s">${def.label}</button>`;
+  }).join('');
+}
+
+function setAccTab(key){
+  window._accActiveTab=key;
+  renderAccountTabs();
+  renderAccountLog(key);
+}
+
+function renderAccountLog(key){
+  const logEl=document.getElementById('accounts-log');
+  if(!logEl)return;
+  const all=window._accAllEntries[key]||[];
+  if(!all.length){
+    logEl.innerHTML=`<div style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.82rem">لا توجد حركات في ${ACCOUNT_DEFS[key].label} بعد</div>`;
+    return;
+  }
+  // رصيد متراكم
+  const forBalance=[...all].sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+  const balanceMap={};
+  let running=0;
+  forBalance.forEach(e=>{
+    if(e.type==='deposit') running+=Number(e.amount)||0;
+    else if(e.type==='withdraw') running-=Number(e.amount)||0;
+    balanceMap[e.id]=running;
+  });
+  logEl.innerHTML=all.map(e=>{
+    const isDeposit=e.type==='deposit';
+    const color=isDeposit?'var(--success)':'var(--danger)';
+    const bgColor=isDeposit?'rgba(0,200,83,.05)':'rgba(255,23,68,.05)';
+    const borderColor=isDeposit?'rgba(0,200,83,.25)':'rgba(255,23,68,.25)';
+    const icon=isDeposit?'⬆️':'⬇️';
+    const typeLabel=isDeposit
+      ? `<span style="background:rgba(0,200,83,.15);color:var(--success);border:1px solid rgba(0,200,83,.3);font-family:var(--font-mono);font-size:.6rem;font-weight:700;padding:.15rem .45rem;border-radius:99px;letter-spacing:.05em">إيداع ✓</span>`
+      : `<span style="background:rgba(255,23,68,.12);color:var(--danger);border:1px solid rgba(255,23,68,.25);font-family:var(--font-mono);font-size:.6rem;font-weight:700;padding:.15rem .45rem;border-radius:99px;letter-spacing:.05em">سحب ✕</span>`;
+    const date=e.createdAt?new Date(e.createdAt).toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+    const balAfter=balanceMap[e.id]!==undefined?`<span style="font-family:var(--font-mono);font-size:.6rem;color:var(--text-muted)">رصيد بعدها: <span style="color:${(balanceMap[e.id]||0)>=0?'var(--success)':'var(--danger)'}">${formatPrice(balanceMap[e.id])}</span></span>`:'';
+    const sourceTag=e.source==='order'?`<span style="background:rgba(33,150,243,.1);color:#42A5F5;border:1px solid rgba(33,150,243,.2);font-family:var(--font-mono);font-size:.58rem;padding:.1rem .4rem;border-radius:99px">📦 أوردر</span>`:
+                    e.source==='invoice'?`<span style="background:rgba(255,179,0,.1);color:var(--accent-gold);border:1px solid rgba(255,179,0,.2);font-family:var(--font-mono);font-size:.58rem;padding:.1rem .4rem;border-radius:99px">🧾 فاتورة</span>`:'';
+    return`<div style="background:${bgColor};border:1px solid ${borderColor};border-right:3px solid ${color};border-radius:var(--radius-sm);padding:.65rem .9rem">
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">
+        <span style="font-size:1.1rem">${icon}</span>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin-bottom:.2rem">
+            ${typeLabel}
+            ${sourceTag}
+            <span style="font-weight:700;font-size:.85rem;color:var(--text-primary)">${esc(e.note||(isDeposit?'إيداع':'سحب'))}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+            <span style="font-family:var(--font-mono);font-size:.63rem;color:var(--text-muted)">🕐 ${date}</span>
+            ${balAfter}
+          </div>
+        </div>
+        <div style="font-family:var(--font-display);font-size:1.25rem;color:${color};white-space:nowrap;font-weight:700">${isDeposit?'+':'-'} ${formatPrice(e.amount)} ج.م</div>
+        <button class="btn btn-danger btn-sm" style="padding:.2rem .45rem;font-size:.68rem;flex-shrink:0" onclick="deleteAccountEntry('${key}','${e.id}')">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function addAccountTx(type){
+  const methodEl=document.getElementById('acc-tx-method');
+  const amountEl=document.getElementById('acc-tx-amount');
+  const noteEl=document.getElementById('acc-tx-note');
+  const method=methodEl.value;
+  const amount=parseFloat(amountEl.value);
+  const def=ACCOUNT_DEFS[method];
+  const note=noteEl.value.trim()||(type==='deposit'?`إيداع — ${def.label}`:`سحب — ${def.label}`);
+  if(!amount||amount<=0){showToast('أدخل مبلغاً صحيحاً','error');return;}
+  try{
+    await db.ref('paymentAccounts/'+method).push({type,amount,note,createdAt:Date.now()});
+    showToast(type==='deposit'?`✅ تم إيداع ${formatPrice(amount)} في ${def.label}`:`✅ تم سحب ${formatPrice(amount)} من ${def.label}`,'success');
+    amountEl.value='';noteEl.value='';
+    window._accActiveTab=method;
+    await loadAccountsPage();
+  }catch(err){showToast('خطأ: '+err.message,'error');}
+}
+
+async function deleteAccountEntry(key,id){
+  if(!confirm('حذف هذه الحركة من كشف الحساب؟'))return;
+  try{
+    await db.ref('paymentAccounts/'+key+'/'+id).remove();
+    showToast('تم الحذف','info');
+    await loadAccountsPage();
+  }catch(err){showToast('خطأ في الحذف','error');}
+}
+
+
 // ── PRINT INVOICE WITH BARCODES ──
 function printInvoiceA4(){
   setPageSize('@page{ size:A4 portrait; margin:10mm 12mm; }');
@@ -4308,18 +5214,23 @@ function printInvoice(inv){
     </tr>`;
   }).join('');
   const html=`<div dir="rtl" style="font-family:Arial,sans-serif;color:#111;padding:1rem">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #111;padding-bottom:1rem;margin-bottom:1rem">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #111;padding-bottom:1rem;margin-bottom:.5rem">
       <div>
-        <div style="font-size:1.6rem;font-weight:900;letter-spacing:.05em">PIT HOUSE</div>
-        <div style="font-size:.8rem;color:#555">${isPurchase?'فاتورة شراء':'فاتورة بيع'}</div>
+        <div contenteditable="true" spellcheck="false" style="font-size:1.6rem;font-weight:900;letter-spacing:.05em;outline:none;border-radius:3px;padding:.05rem .15rem" onfocus="this.style.background='#fffbe6'" onblur="this.style.background='transparent'">${esc(_storeSettings.name||'PIT HOUSE')}</div>
+        <div contenteditable="true" spellcheck="false" style="font-size:.8rem;color:#555;outline:none;border-radius:3px;padding:.05rem .15rem" onfocus="this.style.background='#fffbe6'" onblur="this.style.background='transparent'">${esc(_storeSettings.address||'')}</div>
+        <div style="font-size:.8rem;color:#555;margin-top:.15rem">${isPurchase?'فاتورة شراء':'فاتورة بيع'}</div>
       </div>
       <div style="text-align:left">
         <div style="font-size:1rem;font-weight:700;color:#333">${esc(inv.ref||'—')}</div>
         <div style="font-size:.78rem;color:#777">${inv.date||''}</div>
       </div>
     </div>
+    <div style="border-bottom:1px solid #eee;padding-bottom:.6rem;margin-bottom:1rem;text-align:center">
+      <div contenteditable="true" spellcheck="false" data-placeholder="اكتب سلوجان هنا..." style="font-size:.78rem;font-weight:700;color:#444;outline:none;border-radius:3px;padding:.1rem .3rem;min-height:1.2em" onfocus="this.style.background='#fffbe6'" onblur="this.style.background='transparent'">${esc(_storeSettings.slogan||'')}</div>
+    </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;font-size:.85rem">
       <div><span style="color:#777">${isPurchase?'المورد / التاجر:':'العميل:'}</span> <strong>${esc(inv.party||'—')}</strong></div>
+      ${inv.paymentMethod?`<div><span style="color:#777">طريقة الدفع:</span> <strong>${invPayLabel(inv.paymentMethod)}</strong></div>`:''}
       ${inv.notes?`<div><span style="color:#777">ملاحظات:</span> ${esc(inv.notes)}</div>`:''}
     </div>
     <table style="width:100%;border-collapse:collapse;font-size:.85rem;margin-bottom:1rem">
@@ -4332,12 +5243,23 @@ function printInvoice(inv){
       <tbody>${itemsHtml}</tbody>
     </table>
     <div style="display:flex;justify-content:flex-end">
-      <div style="background:#f9f9f9;border:2px solid #111;border-radius:6px;padding:.75rem 1.5rem;text-align:center">
-        <div style="font-size:.75rem;color:#777;margin-bottom:.2rem">الإجمالي</div>
-        <div style="font-size:1.6rem;font-weight:900">${Number(inv.total).toLocaleString('ar-EG')} ج.م</div>
+      <div style="background:#f9f9f9;border:2px solid #111;border-radius:6px;padding:.75rem 1.5rem;min-width:200px">
+        ${inv.discountAmount>0?`
+        <div style="display:flex;justify-content:space-between;gap:1.5rem;margin-bottom:.35rem;font-size:.82rem;color:#555">
+          <span>المجموع الفرعي</span><span>${Number(inv.subtotal||((inv.items||[]).reduce((s,i)=>s+i.qty*i.price,0))).toLocaleString('ar-EG')} ج.م</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;gap:1.5rem;margin-bottom:.5rem;font-size:.82rem;color:#c00">
+          <span>خصم${inv.discountType==='pct'?` (${inv.discountValue}%)`:(inv.discountType==='fixed'?' ثابت':'')}</span><span>- ${Number(inv.discountAmount).toLocaleString('ar-EG')} ج.م</span>
+        </div>
+        <div style="border-top:1px solid #ddd;padding-top:.5rem">`:``}
+        <div style="text-align:center">
+          <div style="font-size:.75rem;color:#777;margin-bottom:.2rem">الإجمالي</div>
+          <div style="font-size:1.6rem;font-weight:900">${Number(inv.total).toLocaleString('ar-EG')} ج.م</div>
+        </div>
+        ${inv.discountAmount>0?`</div>`:``}
       </div>
     </div>
-    <div style="margin-top:2rem;border-top:1px dashed #ccc;padding-top:.75rem;font-size:.7rem;color:#aaa;text-align:center">PIT HOUSE Admin System · ${new Date().toLocaleDateString('ar-EG')}</div>
+    <div style="margin-top:2rem;border-top:1px dashed #ccc;padding-top:.75rem;font-size:.7rem;color:#aaa;text-align:center">${esc(_storeSettings.name||'PIT HOUSE')} Admin System · ${new Date().toLocaleDateString('ar-EG')}</div>
   </div>`;
   document.getElementById('shared-print-content').innerHTML=html;
   document.getElementById('shared-print-overlay').style.display='block';
@@ -4361,7 +5283,7 @@ let _adEditingId = null;
 async function loadAds(){
   showSpinner('جاري تحميل الإعلانات...');
   try{
-    const [adsSnap, prodSnap] = await Promise.all([db.ref('ads').get(), db.ref('products').get()]);
+    const [adsSnap, prodSnap] = await Promise.all([db.ref('ads').get(), getProductsSnap()]);
     _allAds = adsSnap.val() ? Object.entries(adsSnap.val()).map(([id,v])=>({id,...v})) : [];
     _allAds.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
     const prods = prodSnap.val() ? Object.entries(prodSnap.val()).map(([id,v])=>({id,...v})) : [];
@@ -5165,6 +6087,106 @@ function printLedgerStatement(key){
   w.document.close();
 }
 </script>
+<div id="page-shipping" class="page">
+  <div class="app-layout">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+      <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
+      <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
+  <main class="page-container">
+    <div class="page-header">
+      <div class="page-header-title"><span class="label">إعدادات</span><h1>أسعار الشحن وبيانات المتجر</h1></div>
+      <button class="btn btn-primary" onclick="saveShippingSettings()">💾 حفظ إعدادات الشحن</button>
+    </div>
+
+    <!-- Store Info -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1.5rem;max-width:520px">
+      <div style="font-family:var(--font-display);font-size:1.3rem;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:.5rem">🏪 بيانات المتجر</div>
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:1.25rem">هذه البيانات بتظهر تلقائياً كـ"المرسِل" في بوليصة الشحن، وفي رأس الفاتورة</div>
+      <div class="form-group">
+        <label class="form-label">اسم المتجر</label>
+        <input type="text" class="form-control" id="store-name" placeholder="مثال: PIT HOUSE"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">عنوان المتجر</label>
+        <input type="text" class="form-control" id="store-address" placeholder="مثال: القاهرة، مصر"/>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">السلوجان</label>
+        <input type="text" class="form-control" id="store-slogan" placeholder="مثال: جودة تدوم.. وثقة تستمر"/>
+        <div class="form-hint">هيظهر في بوليصة الشحن والفاتورة — اتركه فاضي لو مش عايز سلوجان</div>
+      </div>
+      <button class="btn btn-secondary btn-sm" style="margin-top:1.25rem" onclick="saveStoreSettings()">💾 حفظ بيانات المتجر</button>
+    </div>
+
+    <!-- COD Fee -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1.5rem;max-width:520px">
+      <div style="font-family:var(--font-display);font-size:1.3rem;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:.5rem">💵 رسوم الدفع عند الاستلام</div>
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:1.25rem">لو العميل اختار "الدفع عند الاستلام" هتُضاف الرسوم دي على إجمالي الطلب — اتركها صفر لو مفيش رسوم</div>
+      <div class="two-col">
+        <div class="form-group">
+          <label class="form-label">نوع الرسوم</label>
+          <select class="form-control" id="ship-cod-type" onchange="toggleCodFeeType()">
+            <option value="fixed">مبلغ ثابت (جنيه)</option>
+            <option value="percent">نسبة % من قيمة الطلب</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" id="ship-cod-fee-label">رسوم الدفع عند الاستلام (جنيه)</label>
+          <input type="number" class="form-control" id="ship-cod-fee" placeholder="مثال: 25" min="0" step="1"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sharqia / 10th of Ramadan -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1.5rem;max-width:520px">
+      <div style="font-family:var(--font-display);font-size:1.3rem;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:.5rem">🏭 العاشر من رمضان</div>
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:1.25rem">سعر شحن مختلف خاص بمدينة العاشر من رمضان — لو العميل اختار محافظة "الشرقية" ومنطقته العاشر من رمضان هيُطبَّق هذا السعر بدل سعر الشرقية العادي</div>
+      <div class="form-group" style="margin-bottom:0">
+        <label class="form-label">سعر الشحن للعاشر من رمضان (جنيه)</label>
+        <input type="number" class="form-control" id="ship-tenth-ramadan" placeholder="مثال: 50" min="0" step="1"/>
+      </div>
+    </div>
+
+    <!-- Governorates grid -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem">
+      <div style="font-family:var(--font-display);font-size:1.3rem;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:.5rem">🗺️ أسعار الشحن حسب المحافظة</div>
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:1.25rem">حدد سعر الشحن (بالجنيه) لكل محافظة — اتركها صفر لو مفيش شحن لهذه المحافظة</div>
+      <div class="shipping-grid" id="shipping-govs-grid"></div>
+    </div>
+
+  </main>
+  </div>
+  </div>
+</div>
+
 <div id="page-sound" class="page">
   <div class="app-layout">
   <!-- ══ SIDEBAR ══ -->
@@ -5182,14 +6204,16 @@ function printLedgerStatement(key){
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
       <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
-      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
       <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -5262,14 +6286,16 @@ function printLedgerStatement(key){
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
       <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
-      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
       <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -5351,14 +6377,16 @@ function printLedgerStatement(key){
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
       <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
-      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
       <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -5507,14 +6535,16 @@ function printLedgerStatement(key){
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
       <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
-      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
       <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -5589,14 +6619,16 @@ function printLedgerStatement(key){
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
       <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
-      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
       <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -5719,14 +6751,16 @@ function printLedgerStatement(key){
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
       <div class="sidebar-section-label">الإعدادات</div>
       <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
-      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
       <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
       <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
     </nav>
     <div class="sidebar-footer">
       <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
@@ -5736,18 +6770,62 @@ function printLedgerStatement(key){
   <main class="page-container">
     <div class="page-header">
       <div class="page-header-title"><span class="label">الجدولة</span><h1>مواعيد التركيب</h1></div>
-      <button class="btn btn-primary" onclick="openAddSlotModal()">+ إضافة موعد جديد</button>
+      <button class="btn btn-primary" onclick="saveBookingSettings()">💾 حفظ الإعدادات</button>
     </div>
+
+    <!-- إعدادات الحجز -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:2rem">
+      <div style="font-family:var(--font-display);font-size:1.2rem;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:1.25rem">⚙️ إعدادات الحجز</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem">
+        <div class="form-group" style="margin:0">
+          <label class="form-label">وقت الفتح</label>
+          <input type="time" class="form-control" id="bs-open-time" value="09:00"/>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label class="form-label">وقت الإغلاق</label>
+          <input type="time" class="form-control" id="bs-close-time" value="17:00"/>
+        </div>
+      </div>
+      <div class="form-group" style="margin:0">
+        <label class="form-label">أيام العمل</label>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem" id="bs-workdays">
+          <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.45rem .85rem;transition:all .2s" id="wd-label-0">
+            <input type="checkbox" id="wd-0" value="0" style="accent-color:var(--accent)"> الأحد
+          </label>
+          <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.45rem .85rem;transition:all .2s" id="wd-label-1">
+            <input type="checkbox" id="wd-1" value="1" style="accent-color:var(--accent)"> الاثنين
+          </label>
+          <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.45rem .85rem;transition:all .2s" id="wd-label-2">
+            <input type="checkbox" id="wd-2" value="2" style="accent-color:var(--accent)"> الثلاثاء
+          </label>
+          <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.45rem .85rem;transition:all .2s" id="wd-label-3">
+            <input type="checkbox" id="wd-3" value="3" style="accent-color:var(--accent)"> الأربعاء
+          </label>
+          <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.45rem .85rem;transition:all .2s" id="wd-label-4">
+            <input type="checkbox" id="wd-4" value="4" style="accent-color:var(--accent)"> الخميس
+          </label>
+          <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.45rem .85rem;transition:all .2s" id="wd-label-5">
+            <input type="checkbox" id="wd-5" value="5" style="accent-color:var(--accent)"> الجمعة
+          </label>
+          <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.45rem .85rem;transition:all .2s" id="wd-label-6">
+            <input type="checkbox" id="wd-6" value="6" style="accent-color:var(--accent)"> السبت
+          </label>
+        </div>
+      </div>
+      <div style="margin-top:1rem;font-size:.78rem;color:var(--text-muted)">العميل هيشوف التواريخ المتاحة بناءً على أيام العمل دي، ومش هيقدر يحجز يوم محجوز فيه عميل تاني.</div>
+      <div id="bs-save-msg" style="margin-top:.75rem;font-size:.82rem"></div>
+    </div>
+
+    <!-- الحجوزات الحالية -->
     <div class="stats-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr));margin-bottom:2rem">
-      <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-value" id="slot-stat-total">—</div><div class="stat-label">إجمالي المواعيد</div></div>
-      <div class="stat-card" style="border-color:rgba(0,200,83,.25)"><div class="stat-icon">✅</div><div class="stat-value" id="slot-stat-available" style="color:var(--success)">—</div><div class="stat-label">متاح للحجز</div></div>
+      <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-value" id="slot-stat-total">—</div><div class="stat-label">إجمالي الحجوزات</div></div>
       <div class="stat-card" style="border-color:rgba(255,23,68,.2)"><div class="stat-icon">🔒</div><div class="stat-value" id="slot-stat-booked" style="color:var(--danger)">—</div><div class="stat-label">محجوز</div></div>
+      <div class="stat-card" style="border-color:rgba(0,200,83,.25)"><div class="stat-icon">✅</div><div class="stat-value" id="slot-stat-available" style="color:var(--success)">—</div><div class="stat-label">متاح</div></div>
     </div>
     <div class="section-header">
-      <h2 class="section-title">جميع المواعيد</h2>
+      <h2 class="section-title">الحجوزات</h2>
       <select class="form-control" id="slot-filter" onchange="renderAdminSlots()" style="font-size:.8rem;padding:.4rem .75rem;width:auto">
         <option value="all">الكل</option>
-        <option value="available">متاح فقط</option>
         <option value="booked">محجوز فقط</option>
       </select>
     </div>
@@ -5759,25 +6837,7 @@ function printLedgerStatement(key){
   </div>
 </div>
 
-<!-- ══ ADD SLOT MODAL ══ -->
-<div id="add-slot-modal" class="modal-backdrop" style="display:none" onclick="if(event.target===this)closeAddSlotModal()">
-  <div class="modal-box" style="max-width:440px">
-    <h2 style="margin-bottom:1.25rem">📅 إضافة موعد تركيب</h2>
-    <div class="form-group">
-      <label class="form-label">التاريخ والوقت *</label>
-      <input type="datetime-local" class="form-control" id="slot-datetime"/>
-      <span class="form-error" id="slot-dt-err" style="display:none">من فضلك اختار التاريخ والوقت</span>
-    </div>
-    <div class="form-group">
-      <label class="form-label">ملاحظة (اختياري)</label>
-      <input type="text" class="form-control" id="slot-note" placeholder="مثال: موعد صباحي — القاهرة الكبرى" maxlength="100"/>
-    </div>
-    <div style="display:flex;gap:.5rem;margin-top:1.5rem">
-      <button class="btn btn-secondary" onclick="closeAddSlotModal()">إلغاء</button>
-      <button class="btn btn-primary" id="slot-save-btn" onclick="saveNewSlot()">💾 حفظ الموعد</button>
-    </div>
-  </div>
-</div>
+<!-- add-slot modal removed — new booking system -->
 
 <!-- ══ RESET DATABASE MODAL ══ -->
 <div id="reset-db-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;align-items:center;justify-content:center;padding:1rem;overflow-y:auto">
@@ -5811,7 +6871,6 @@ function printLedgerStatement(key){
         <label class="reset-chk-item"><input type="checkbox" class="reset-chk" value="ads"            checked> 📢 الإعلانات</label>
         <label class="reset-chk-item"><input type="checkbox" class="reset-chk" value="reviews"        checked> ⭐ التقييمات</label>
         <label class="reset-chk-item" style="border-color:rgba(255,160,0,.25);background:rgba(255,160,0,.04)"><input type="checkbox" class="reset-chk" value="products"> 🛍️ المنتجات</label>
-        <label class="reset-chk-item" style="border-color:rgba(255,160,0,.25);background:rgba(255,160,0,.04)"><input type="checkbox" class="reset-chk" value="shippingRates"> 🚚 أسعار الشحن</label>
         <label class="reset-chk-item" style="border-color:rgba(255,160,0,.25);background:rgba(255,160,0,.04);grid-column:1/-1"><input type="checkbox" class="reset-chk" value="settings"> ⚙️ الإعدادات</label>
       </div>
       <div style="margin-top:.65rem;font-size:.7rem;color:rgba(255,160,0,.7);font-family:var(--font-mono)">⚠️ المنتجات والشحن والإعدادات غير محددة افتراضياً — حددها بنفسك لو عايز تمسحها</div>
@@ -5933,3 +6992,122 @@ async function executeResetDatabase(){
 }
 </script>
 
+
+<!-- ══ SUPPLIER RETURNS PAGE ══ -->
+<div id="page-sup-returns" class="page">
+  <div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+      <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
+      <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
+  <main class="page-container">
+    <div class="page-header">
+      <div class="page-header-title"><span class="label">المخزون</span><h1>↩️ مرتجعات التجار</h1></div>
+      <button class="btn btn-primary" onclick="openSupReturnModal()">+ تسجيل مرتجع</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem">
+      <div class="stat-card" style="border-color:rgba(255,152,0,.3)">
+        <div class="stat-icon">↩️</div>
+        <div class="stat-value" id="sr-stat-count" style="color:#FFB74D">—</div>
+        <div class="stat-label">عدد المرتجعات</div>
+      </div>
+      <div class="stat-card" style="border-color:rgba(255,23,68,.3)">
+        <div class="stat-icon">💸</div>
+        <div class="stat-value" id="sr-stat-value" style="color:var(--danger)">—</div>
+        <div class="stat-label">إجمالي قيمة المرتجعات</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-value" id="sr-stat-qty">—</div>
+        <div class="stat-label">إجمالي الكميات المرتجعة</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap">
+      <input class="search-input" id="sr-search" placeholder="🔍 ابحث باسم التاجر أو المنتج..." oninput="filterSupReturns()" style="flex:1;min-width:220px"/>
+    </div>
+    <div id="sup-returns-list">
+      <div class="empty-state"><div class="empty-icon">↩️</div><h3>لا توجد مرتجعات بعد</h3><p>سجّل مرتجعاتك من التجار هنا</p></div>
+    </div>
+  </main>
+  </div>
+  </div>
+</div>
+
+<!-- ══ SUPPLIER RETURN MODAL ══ -->
+<div class="modal-backdrop" id="sup-return-modal" style="display:none" onclick="if(event.target===this)closeSupReturnModal()">
+  <div class="modal-box" style="max-width:660px;max-height:90vh;overflow-y:auto">
+    <h2>↩️ تسجيل مرتجع للتاجر</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+      <div class="form-group">
+        <label class="form-label">اسم التاجر / المورد *</label>
+        <input type="text" class="form-control" id="sr-supplier" list="sr-suppliers-datalist" placeholder="اسم التاجر"/>
+        <datalist id="sr-suppliers-datalist"></datalist>
+      </div>
+      <div class="form-group">
+        <label class="form-label">تاريخ الإرجاع</label>
+        <input type="date" class="form-control" id="sr-date"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">السبب / الملاحظات</label>
+      <textarea class="form-control" id="sr-reason" rows="2" placeholder="مثال: منتج تالف، خطأ في الشحنة، عيب مصنعي..."></textarea>
+    </div>
+    <div style="font-family:var(--font-display);font-size:1rem;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:.75rem;margin-top:.25rem">📦 المنتجات المرتجعة</div>
+    <div id="sr-items-list" style="margin-bottom:.75rem"></div>
+    <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem">
+      <div style="font-size:.75rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.65rem">+ إضافة منتج مرتجع</div>
+      <div style="display:grid;grid-template-columns:1fr 90px 110px auto;gap:.5rem;align-items:end">
+        <div>
+          <label class="form-label" style="font-size:.7rem">المنتج</label>
+          <input type="text" class="form-control" id="sr-item-name" list="sr-products-datalist" placeholder="اسم المنتج..." style="font-size:.85rem" onkeydown="if(event.key==='Enter')addSupReturnItem()"/>
+          <datalist id="sr-products-datalist"></datalist>
+        </div>
+        <div>
+          <label class="form-label" style="font-size:.7rem">الكمية</label>
+          <input type="number" class="form-control" id="sr-item-qty" placeholder="1" min="1" value="1" style="font-size:.85rem" onkeydown="if(event.key==='Enter')addSupReturnItem()"/>
+        </div>
+        <div>
+          <label class="form-label" style="font-size:.7rem">سعر الشراء / قطعة</label>
+          <input type="number" class="form-control" id="sr-item-cost" placeholder="0" min="0" style="font-size:.85rem" onkeydown="if(event.key==='Enter')addSupReturnItem()"/>
+        </div>
+        <div style="padding-bottom:0">
+          <button class="btn btn-primary btn-sm" onclick="addSupReturnItem()" style="height:38px;padding:.4rem .9rem">+ إضافة</button>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.75rem 1rem;margin-bottom:1.25rem">
+      <span style="color:var(--text-muted);font-size:.85rem">إجمالي قيمة المرتجع:</span>
+      <span id="sr-grand-total" style="font-family:var(--font-display);font-size:1.3rem;color:#FFB74D;font-weight:700">0 جنيه</span>
+    </div>
+    <div style="display:flex;gap:.75rem;justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeSupReturnModal()">إلغاء</button>
+      <button class="btn btn-primary" id="sr-save-btn" onclick="saveSupplierReturn()">💾 حفظ المرتجع</button>
+    </div>
+  </div>
+</div>
