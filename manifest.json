@@ -1,0 +1,27 @@
+{
+  "name": "Pit House Admin",
+  "short_name": "Pit Admin",
+  "description": "لوحة تحكم Pit House",
+  "start_url": "/pit_house_admin/admin_panel_v31.html",
+  "scope": "/pit_house_admin/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0A0A0A",
+  "theme_color": "#FF3D00",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "https://api.dicebear.com/7.x/bottts/svg?seed=pithouse-admin&size=192",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://api.dicebear.com/7.x/bottts/svg?seed=pithouse-admin&size=512",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
