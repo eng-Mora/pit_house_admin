@@ -1733,6 +1733,19 @@ async function registerPushSW(){
   if(!('serviceWorker' in navigator) || !('Notification' in window)) return;
   try{
     window._pitSW = await navigator.serviceWorker.register('sw.js', {scope:'./'}).catch(()=>null);
+    if(!window._pitSW) return;
+    // Periodic Sync لو مدعوم
+    if('periodicSync' in window._pitSW){
+      navigator.permissions.query({name:'periodic-background-sync'}).then(s=>{
+        if(s.state==='granted'){
+          window._pitSW.periodicSync.register('check-orders', {minInterval:30000}).catch(()=>{});
+        }
+      }).catch(()=>{});
+    }
+    // Fallback: TICK كل 30 ثانية لما الصفحة مفتوحة
+    setInterval(()=>{
+      if(window._pitSW && window._pitSW.active) window._pitSW.active.postMessage({type:'TICK'});
+    }, 30000);
   }catch(e){}
 }
 
