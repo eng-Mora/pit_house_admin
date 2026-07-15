@@ -428,6 +428,7 @@
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -486,6 +487,7 @@
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -546,6 +548,7 @@
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -608,6 +611,7 @@
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -807,6 +811,87 @@
   </div>
 </div>
 
+<!-- ══ SALES REPORT ══ -->
+<div id="page-salesreport" class="page">
+  <div class="app-layout">
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+      <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
+      <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button id="notif-toggle-btn" class="btn btn-secondary btn-sm" onclick="togglePushNotif()" title="تفعيل الإشعارات">🔔</button><button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
+  <main class="page-container">
+    <div class="page-header">
+      <div class="page-header-title"><span class="label">التقارير</span><h1>📊 تقرير المبيعات</h1></div>
+      <button class="btn btn-secondary" onclick="printSalesReport()">🖨️ طباعة التقرير</button>
+    </div>
+
+    <!-- فلتر التاريخ -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.1rem;margin-bottom:1.5rem">
+      <div style="display:flex;gap:.85rem;flex-wrap:wrap;align-items:end">
+        <div class="form-group" style="margin:0">
+          <label class="form-label">من تاريخ</label>
+          <input type="date" class="form-control" id="sales-report-from" style="min-width:160px"/>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label class="form-label">إلى تاريخ</label>
+          <input type="date" class="form-control" id="sales-report-to" style="min-width:160px"/>
+        </div>
+        <div class="form-group" style="margin:0">
+          <label class="form-label">المصدر</label>
+          <select class="form-control" id="sales-report-source" style="min-width:190px" onchange="applySalesReportFilter()">
+            <option value="all">الكل (فواتير + طلبات الموقع)</option>
+            <option value="invoices">فواتير البيع فقط</option>
+            <option value="orders">طلبات الموقع فقط</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="applySalesReportFilter()">🔍 عرض التقرير</button>
+        <div style="display:flex;gap:.4rem;margin-right:auto">
+          <button class="btn btn-secondary btn-sm" onclick="setSalesReportPreset('today')">اليوم</button>
+          <button class="btn btn-secondary btn-sm" onclick="setSalesReportPreset('week')">آخر 7 أيام</button>
+          <button class="btn btn-secondary btn-sm" onclick="setSalesReportPreset('month')">هذا الشهر</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid" id="sales-report-stats" style="margin-bottom:2rem"></div>
+
+    <div class="section-header"><span class="section-title">🏆 الأكثر مبيعاً في الفترة</span></div>
+    <div id="sales-report-top" style="margin-bottom:2rem"></div>
+
+    <div class="section-header"><span class="section-title">📋 تفاصيل العمليات</span></div>
+    <div id="sales-report-list"></div>
+  </main>
+  </div>
+  </div>
+</div>
+
 <!-- ══ PRODUCTS ══ -->
 <div id="page-products" class="page">
   <div class="app-layout">
@@ -820,6 +905,7 @@
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -886,6 +972,7 @@
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -966,6 +1053,7 @@
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -1021,6 +1109,7 @@
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -1143,6 +1232,7 @@
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -1229,6 +1319,7 @@
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -1974,6 +2065,7 @@ function navigate(page){
   if(page==='orders')    { _allOrders=_globalOrders; filterOrders(); }
   if(page==='holding')   loadHoldingPage();
   if(page==='invoices')  loadInvoicesPage();
+  if(page==='salesreport') loadSalesReportPage();
   if(page==='products')  loadProductsPage();
   if(page==='customers') loadCustomers();
   if(page==='promos')    loadPromos();
@@ -2257,6 +2349,7 @@ function renderInventoryList(products){
         <div class="inv-qty-label">قطعة</div>
       </div>
       ${statusTag}
+      <button class="btn btn-secondary btn-sm" onclick="openProductMovement('${p.id}')">📊 الحركة</button>
       <button class="btn btn-secondary btn-sm" onclick="openInventoryAdjustModal('${p.id}')">✏️ تعديل</button>
     </div>`;
   }).join('');
@@ -2929,6 +3022,7 @@ function renderProductsList(products){
       </div>
       ${profit!=null?`<div class="product-profit" title="الربح">📈 ${formatPrice(profit)}</div>`:'<div></div>'}
       <button class="btn btn-secondary btn-sm" onclick='printProductBarcode(${JSON.stringify(p)})'>🔲 باركود</button>
+      <button class="btn btn-secondary btn-sm" onclick="openProductMovement('${p.id}')">📊 الحركة</button>
       <button class="btn btn-secondary btn-sm" onclick='openEditProductModal(${JSON.stringify(p.id)}, ${JSON.stringify(p)})'>تعديل</button>
       <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">حذف</button>
     </div>`;
@@ -4806,6 +4900,285 @@ function updateInvoiceStats(){
   if(balEl) balEl.style.color=balance>=0?'var(--success)':'var(--danger)';
 }
 
+// ══════════════════════════════════════════
+//  تقرير المبيعات — فواتير بيع + طلبات الموقع
+// ══════════════════════════════════════════
+let _salesReportRows = [];
+
+async function loadSalesReportPage(){
+  showSpinner('جاري تجهيز التقرير...');
+  try{
+    if(!_allInvoices.length){
+      const snap=await db.ref('invoices').get();
+      _allInvoices=objToArr(snap.val());
+    }
+    _allOrders=_globalOrders;
+    const fromEl=document.getElementById('sales-report-from');
+    const toEl=document.getElementById('sales-report-to');
+    if(!fromEl.value || !toEl.value){
+      setSalesReportPreset('month');
+    } else {
+      applySalesReportFilter();
+    }
+  }catch(err){console.error(err);showToast('خطأ في تحميل التقرير','error')}
+  finally{hideSpinner();}
+}
+
+function setSalesReportPreset(kind){
+  const now=new Date();
+  let from,to;
+  to = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  if(kind==='today'){ from=new Date(to); }
+  else if(kind==='week'){ from=new Date(to); from.setDate(from.getDate()-6); }
+  else { from=new Date(now.getFullYear(),now.getMonth(),1); }
+  const fmt=d=>{const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${dd}`;};
+  document.getElementById('sales-report-from').value=fmt(from);
+  document.getElementById('sales-report-to').value=fmt(to);
+  applySalesReportFilter();
+}
+
+function applySalesReportFilter(){
+  const fromStr=document.getElementById('sales-report-from').value;
+  const toStr=document.getElementById('sales-report-to').value;
+  const source=document.getElementById('sales-report-source').value;
+  if(!fromStr||!toStr){ showToast('اختار الفترة (من - إلى) الأول','error'); return; }
+  const fromTs = new Date(fromStr+'T00:00:00').getTime();
+  const toTs   = new Date(toStr+'T23:59:59').getTime();
+
+  let invRows=[];
+  if(source!=='orders'){
+    invRows=(_allInvoices||[]).filter(i=>i.type==='sale').filter(i=>{
+      const ts = i.date ? new Date(i.date+'T12:00:00').getTime() : (i.createdAt||0);
+      return ts>=fromTs && ts<=toTs;
+    });
+  }
+  let orderRows=[];
+  if(source!=='invoices'){
+    orderRows=(_globalOrders||[]).filter(o=>{
+      const ts=o.createdAt||0;
+      return ts>=fromTs && ts<=toTs;
+    });
+  }
+
+  const rows=[
+    ...invRows.map(i=>({
+      kind:'invoice',
+      date: i.date ? new Date(i.date+'T12:00:00').getTime() : (i.createdAt||0),
+      party: i.party, items: i.items||[], total: Number(i.total)||0, status:null, ref:i.ref
+    })),
+    ...orderRows.map(o=>({
+      kind:'order',
+      date: o.createdAt||0,
+      party: o.customerName, items: o.items||[], total: Number(o.totalPrice)||0, status:o.status, ref:o.id
+    }))
+  ].sort((a,b)=>(b.date||0)-(a.date||0));
+
+  renderSalesReport(rows);
+}
+
+function orderStatusBadge(status){
+  const map={
+    pending:['⏳ قيد الانتظار','s-pending'], confirmed:['✅ مؤكد','s-confirmed'],
+    shipped:['🚚 تم الشحن','s-shipped'], delivered:['📦 تم التسليم','s-confirmed'],
+    holding:['🔒 معلقة','s-pending'], collected:['💚 محصّل','s-confirmed'],
+    return_requested:['↩️ طلب إرجاع','s-pending'], returned:['🔄 مرتجع','s-pending']
+  };
+  const m=map[status]||['—',''];
+  return `<span class="status-badge ${m[1]}">${m[0]}</span>`;
+}
+
+function renderSalesReport(rows){
+  _salesReportRows = rows;
+  const invoiceRows = rows.filter(r=>r.kind==='invoice');
+  const orderRows    = rows.filter(r=>r.kind==='order');
+  const validOrders  = orderRows.filter(r=>r.status!=='returned');
+
+  const invTotal   = invoiceRows.reduce((s,r)=>s+r.total,0);
+  const orderTotal = validOrders.reduce((s,r)=>s+r.total,0);
+  const grandTotal = invTotal + orderTotal;
+  const totalPieces = [...invoiceRows,...validOrders].reduce((s,r)=>s+(r.items||[]).reduce((si,it)=>si+(Number(it.qty)||1),0),0);
+
+  document.getElementById('sales-report-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-icon">🧾</div><div class="stat-value">${invoiceRows.length}</div><div class="stat-label">فواتير البيع</div></div>
+    <div class="stat-card"><div class="stat-icon">💵</div><div class="stat-value" style="color:var(--accent-gold)">${formatPrice(invTotal)}</div><div class="stat-label">إجمالي الفواتير</div></div>
+    <div class="stat-card"><div class="stat-icon">🌐</div><div class="stat-value">${orderRows.length}</div><div class="stat-label">طلبات الموقع</div></div>
+    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-value" style="color:var(--success)">${formatPrice(orderTotal)}</div><div class="stat-label">إجمالي الطلبات (بدون المرتجع)</div></div>
+    <div class="stat-card" style="border-color:rgba(255,61,0,.4)"><div class="stat-icon">📊</div><div class="stat-value" style="color:var(--accent)">${formatPrice(grandTotal)}</div><div class="stat-label">إجمالي المبيعات الكلي</div></div>
+    <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-value">${totalPieces}</div><div class="stat-label">عدد القطع المباعة</div></div>
+  `;
+
+  const prodMap={};
+  [...invoiceRows,...validOrders].forEach(r=>{
+    (r.items||[]).forEach(it=>{
+      const key=it.name||'—';
+      if(!prodMap[key]) prodMap[key]={qty:0,revenue:0};
+      const q=Number(it.qty)||1;
+      const price=Number(it.price)||0;
+      prodMap[key].qty+=q;
+      prodMap[key].revenue+=q*price;
+    });
+  });
+  const top=Object.entries(prodMap).sort((a,b)=>b[1].qty-a[1].qty).slice(0,10);
+  document.getElementById('sales-report-top').innerHTML = top.length ? `
+    <div class="table-wrapper"><table class="data-table"><thead><tr><th>المنتج</th><th>الكمية المباعة</th><th>الإيراد</th></tr></thead><tbody>
+    ${top.map(([name,d])=>`<tr><td class="td-name">${esc(name)}</td><td class="td-mono">${d.qty}</td><td class="td-price">${formatPrice(d.revenue)}</td></tr>`).join('')}
+    </tbody></table></div>` : `<div class="empty-state"><div class="empty-icon">📊</div><h3>لا توجد بيانات في الفترة المختارة</h3></div>`;
+
+  const list=document.getElementById('sales-report-list');
+  if(!rows.length){
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon">📋</div><h3>لا توجد عمليات بيع في هذه الفترة</h3></div>`;
+    return;
+  }
+  list.innerHTML=`<div class="table-wrapper"><table class="data-table"><thead><tr>
+    <th>التاريخ</th><th>المصدر</th><th>العميل</th><th>المنتجات</th><th>الإجمالي</th><th>الحالة / رقم الفاتورة</th>
+  </tr></thead><tbody>${rows.map(r=>{
+    const src = r.kind==='invoice' ? '<span class="status-badge s-confirmed">🧾 فاتورة بيع</span>' : '<span class="status-badge s-shipped">🌐 طلب موقع</span>';
+    const statusCell = r.kind==='order' ? orderStatusBadge(r.status) : `<span class="td-mono">${esc(r.ref||'—')}</span>`;
+    const itemsTxt = (r.items||[]).map(it=>`${esc(it.name)} ×${it.qty||1}`).join('، ');
+    return `<tr><td style="white-space:nowrap;font-size:.78rem">${formatDate(r.date)}</td><td>${src}</td><td class="td-name">${esc(r.party||'—')}</td><td style="font-size:.78rem;max-width:240px">${itemsTxt}</td><td class="td-price">${formatPrice(r.total)}</td><td>${statusCell}</td></tr>`;
+  }).join('')}</tbody></table></div>`;
+}
+
+function printSalesReport(){
+  if(!_salesReportRows || !_salesReportRows.length){ showToast('مفيش بيانات لطباعتها — اعرض التقرير الأول','error'); return; }
+  const from=document.getElementById('sales-report-from').value;
+  const to=document.getElementById('sales-report-to').value;
+  const rows=_salesReportRows;
+  const total=rows.reduce((s,r)=> (r.kind==='order'&&r.status==='returned') ? s : s+r.total,0);
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>تقرير المبيعات</title>
+  <style>
+    body{font-family:Arial,sans-serif;padding:2rem;color:#111}
+    table{width:100%;border-collapse:collapse;margin-top:1rem}
+    th,td{border:1px solid #ccc;padding:.5rem .7rem;text-align:right;font-size:.85rem}
+    th{background:#f2f2f2}
+    h1{font-size:1.4rem;margin-bottom:.3rem}
+  </style>
+  </head><body>
+  <h1>📊 تقرير المبيعات — PIT HOUSE</h1>
+  <p>الفترة من ${esc(from)} إلى ${esc(to)}</p>
+  <p><strong>إجمالي المبيعات: ${formatPrice(total)}</strong> — عدد العمليات: ${rows.length}</p>
+  <table><thead><tr><th>التاريخ</th><th>المصدر</th><th>العميل</th><th>المنتجات</th><th>الإجمالي</th></tr></thead><tbody>
+  ${rows.map(r=>`<tr><td>${formatDate(r.date)}</td><td>${r.kind==='invoice'?'فاتورة بيع':'طلب موقع'}</td><td>${esc(r.party||'—')}</td><td>${(r.items||[]).map(it=>esc(it.name)+' ×'+(it.qty||1)).join('، ')}</td><td>${formatPrice(r.total)}</td></tr>`).join('')}
+  </tbody></table>
+  </body></html>`);
+  w.document.close();
+  setTimeout(()=>w.print(),400);
+}
+
+// ══════════════════════════════════════════
+//  حركة الصنف — سجل كل عمليات البيع والشراء لكل منتج
+// ══════════════════════════════════════════
+let _allSupReturnsForMovement = [];
+let _pmProduct = null;
+let _pmMovements = [];
+
+function _pmMatches(item, prod){
+  if(!item) return false;
+  if(item.productId && item.productId===prod.id) return true;
+  if(item.sku && prod.sku && item.sku===prod.sku) return true;
+  if(item.name && prod.name && item.name===prod.name) return true;
+  return false;
+}
+
+function _pmBuildMovements(prod){
+  const moves=[];
+  (_allInvoices||[]).forEach(inv=>{
+    (inv.items||[]).forEach(it=>{
+      if(!_pmMatches(it,prod)) return;
+      const ts = inv.date ? new Date(inv.date+'T12:00:00').getTime() : (inv.createdAt||0);
+      const qty = Number(it.qty)||1;
+      moves.push({
+        date: ts,
+        label: inv.type==='purchase' ? '📥 شراء (فاتورة)' : '📤 بيع (فاتورة)',
+        qtyChange: inv.type==='purchase' ? qty : -qty,
+        party: inv.party, unitPrice: it.price
+      });
+    });
+  });
+  (_globalOrders||[]).forEach(o=>{
+    (o.items||[]).forEach(it=>{
+      if(!_pmMatches(it,prod)) return;
+      const qty=Number(it.qty)||1;
+      if(o.status==='returned'){
+        moves.push({date:o.returnedAt||o.createdAt||0, label:'↩️ إرجاع طلب (موقع)', qtyChange:qty, party:o.customerName, unitPrice:it.price});
+      } else {
+        moves.push({date:o.createdAt||0, label:'🌐 بيع (طلب موقع)', qtyChange:-qty, party:o.customerName, unitPrice:it.price});
+      }
+    });
+  });
+  (_allSupReturnsForMovement||[]).forEach(r=>{
+    (r.items||[]).forEach(it=>{
+      if(!_pmMatches(it,prod)) return;
+      const ts = r.date ? new Date(r.date+'T12:00:00').getTime() : (r.createdAt||0);
+      const qty=Number(it.qty)||1;
+      moves.push({date: ts, label:'↩️ مرتجع للمورد', qtyChange:qty, party:r.supplier, unitPrice:it.cost});
+    });
+  });
+  moves.sort((a,b)=>(a.date||0)-(b.date||0));
+  let running=0;
+  moves.forEach(m=>{ running+=m.qtyChange; m.balanceAfter=running; });
+  return moves;
+}
+
+async function openProductMovement(pid){
+  const prod = (_allProducts||[]).find(p=>p.id===pid) || (_invProducts||[]).find(p=>p.id===pid) || (_cachedProducts||[]).find(p=>p.id===pid);
+  if(!prod){ showToast('المنتج غير موجود','error'); return; }
+  _pmProduct = prod;
+  document.getElementById('pm-title').textContent = `📊 حركة صنف: ${prod.name}`;
+  document.getElementById('pm-from').value='';
+  document.getElementById('pm-to').value='';
+  showSpinner('جاري تجميع حركة الصنف...');
+  try{
+    if(!_allInvoices.length){ const s=await db.ref('invoices').get(); _allInvoices=objToArr(s.val()); }
+    _allOrders=_globalOrders;
+    const srSnap=await db.ref('supplierReturns').get();
+    _allSupReturnsForMovement = objToArr(srSnap.val());
+    _pmMovements = _pmBuildMovements(prod);
+    renderProductMovement();
+    document.getElementById('prod-movement-modal').style.display='flex';
+  }catch(err){ showToast('خطأ في تحميل حركة الصنف: '+err.message,'error'); }
+  finally{ hideSpinner(); }
+}
+function closeProductMovement(){ document.getElementById('prod-movement-modal').style.display='none'; }
+function clearPmDates(){ document.getElementById('pm-from').value=''; document.getElementById('pm-to').value=''; renderProductMovement(); }
+
+function renderProductMovement(){
+  const fromStr=document.getElementById('pm-from').value;
+  const toStr=document.getElementById('pm-to').value;
+  const fromTs = fromStr? new Date(fromStr+'T00:00:00').getTime():null;
+  const toTs   = toStr? new Date(toStr+'T23:59:59').getTime():null;
+  let moves=_pmMovements;
+  if(fromTs!=null) moves=moves.filter(m=>(m.date||0)>=fromTs);
+  if(toTs!=null) moves=moves.filter(m=>(m.date||0)<=toTs);
+
+  const totalIn  = moves.filter(m=>m.qtyChange>0).reduce((s,m)=>s+m.qtyChange,0);
+  const totalOut = moves.filter(m=>m.qtyChange<0).reduce((s,m)=>s+(-m.qtyChange),0);
+  const currentQty = _pmProduct.qty!=null && _pmProduct.qty!=='' ? _pmProduct.qty : (_pmProduct.stock!=null && _pmProduct.stock!=='' ? _pmProduct.stock : '—');
+  document.getElementById('pm-summary').innerHTML = `
+    <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-value">${currentQty}</div><div class="stat-label">الرصيد الحالي بالمخزون</div></div>
+    <div class="stat-card"><div class="stat-icon">📥</div><div class="stat-value" style="color:var(--success)">${totalIn}</div><div class="stat-label">إجمالي الوارد (شراء)</div></div>
+    <div class="stat-card"><div class="stat-icon">📤</div><div class="stat-value" style="color:var(--danger)">${totalOut}</div><div class="stat-label">إجمالي المنصرف (بيع)</div></div>
+    <div class="stat-card"><div class="stat-icon">🔢</div><div class="stat-value">${moves.length}</div><div class="stat-label">عدد الحركات</div></div>
+  `;
+  const list=document.getElementById('pm-list');
+  if(!moves.length){
+    list.innerHTML=`<div class="empty-state"><div class="empty-icon">📊</div><h3>لا توجد حركات لهذا المنتج${fromStr||toStr?' في الفترة المختارة':''}</h3></div>`;
+    return;
+  }
+  list.innerHTML=`<div class="table-wrapper"><table class="data-table"><thead><tr>
+    <th>التاريخ</th><th>نوع الحركة</th><th>الجهة</th><th>الكمية</th><th>سعر الوحدة</th><th>الرصيد بعد الحركة</th>
+  </tr></thead><tbody>${moves.slice().reverse().map(m=>`
+    <tr>
+      <td style="white-space:nowrap;font-size:.78rem">${formatDate(m.date)}</td>
+      <td>${m.label}</td>
+      <td class="td-name">${esc(m.party||'—')}</td>
+      <td style="font-weight:700;color:${m.qtyChange>0?'var(--success)':'var(--danger)'}">${m.qtyChange>0?'+':''}${m.qtyChange}</td>
+      <td class="td-mono">${m.unitPrice!=null && m.unitPrice!==''?formatPrice(m.unitPrice):'—'}</td>
+      <td class="td-mono">${m.balanceAfter}</td>
+    </tr>`).join('')}</tbody></table></div>`;
+}
+
 function filterInvoices(){
   const q=(document.getElementById('inv-search')?.value||'').toLowerCase().trim();
   const tf=document.getElementById('inv-type-filter')?.value||'';
@@ -6229,6 +6602,7 @@ function printLedgerStatement(key){
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -6329,6 +6703,7 @@ function printLedgerStatement(key){
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -6411,6 +6786,7 @@ function printLedgerStatement(key){
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -6502,6 +6878,7 @@ function printLedgerStatement(key){
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -6666,6 +7043,7 @@ function printLedgerStatement(key){
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -6750,6 +7128,7 @@ function printLedgerStatement(key){
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -6882,6 +7261,7 @@ function printLedgerStatement(key){
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -7141,6 +7521,7 @@ async function executeResetDatabase(){
       <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
       <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
       <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
       <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
       <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
@@ -7244,6 +7625,29 @@ async function executeResetDatabase(){
     <div style="display:flex;gap:.75rem;justify-content:flex-end">
       <button class="btn btn-secondary" onclick="closeSupReturnModal()">إلغاء</button>
       <button class="btn btn-primary" id="sr-save-btn" onclick="saveSupplierReturn()">💾 حفظ المرتجع</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PRODUCT MOVEMENT MODAL — حركة الصنف ══ -->
+<div class="modal-backdrop" id="prod-movement-modal" style="display:none" onclick="if(event.target===this)closeProductMovement()">
+  <div class="modal-box" style="max-width:860px;max-height:90vh;overflow-y:auto">
+    <h2 id="pm-title">📊 حركة الصنف</h2>
+    <div id="pm-summary" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem;margin:1rem 0"></div>
+    <div style="display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;align-items:end">
+      <div class="form-group" style="margin:0">
+        <label class="form-label">من تاريخ</label>
+        <input type="date" class="form-control" id="pm-from" style="min-width:150px" onchange="renderProductMovement()"/>
+      </div>
+      <div class="form-group" style="margin:0">
+        <label class="form-label">إلى تاريخ</label>
+        <input type="date" class="form-control" id="pm-to" style="min-width:150px" onchange="renderProductMovement()"/>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="clearPmDates()">↺ كل الفترة</button>
+    </div>
+    <div id="pm-list"></div>
+    <div style="display:flex;justify-content:flex-end;margin-top:1.25rem">
+      <button class="btn btn-secondary" onclick="closeProductMovement()">إغلاق</button>
     </div>
   </div>
 </div>
