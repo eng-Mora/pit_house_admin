@@ -1548,10 +1548,12 @@
             <label class="form-label" style="font-size:.7rem;margin:0">لون اختياري:</label>
             <input type="color" id="new-variant-color" value="#FF3D00" style="width:36px;height:28px;border:1px solid var(--border);border-radius:4px;cursor:pointer;background:transparent"/>
             <span style="font-size:.72rem;color:var(--text-muted)">للعرض المرئي في الموقع</span>
-            <span style="font-size:.72rem;color:var(--text-muted);margin-right:.5rem">|</span>
-            <label class="form-label" style="font-size:.7rem;margin:0">صورة اللون:</label>
-            <input type="url" id="new-variant-image" placeholder="رابط صورة هذا اللون (اختياري)" style="font-size:.78rem;width:280px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:.35rem .65rem;font-family:var(--font-ar);outline:none"/>
-            <span style="font-size:.72rem;color:var(--text-muted)">عند اختيار هذا اللون ستتغير صورة المنتج</span>
+          </div>
+          <!-- Image row for ANY variant type -->
+          <div id="variant-image-row" style="display:none;margin-top:.6rem;align-items:center;gap:.5rem;flex-wrap:wrap">
+            <label class="form-label" style="font-size:.7rem;margin:0">صورة هذا التنويع:</label>
+            <input type="url" id="new-variant-image" placeholder="رابط صورة هذا التنويع (اختياري)" style="font-size:.78rem;width:280px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);padding:.35rem .65rem;font-family:var(--font-ar);outline:none"/>
+            <span style="font-size:.72rem;color:var(--text-muted)">عند اختيار هذا التنويع ستتغير صورة المنتج للعميل</span>
           </div>
         </div>
         <!-- Variants List -->
@@ -3196,17 +3198,19 @@ function onVariantTypeChange(){
   const type = document.getElementById('p-variant-type').value;
   const builder = document.getElementById('variants-builder');
   const colorRow = document.getElementById('variant-color-preview-row');
+  const imageRow = document.getElementById('variant-image-row');
   const inputLabel = document.getElementById('variant-input-label');
   builder.style.display = type==='none' ? 'none' : 'block';
   colorRow.style.display = type==='color' ? 'flex' : 'none';
+  imageRow.style.display = type!=='none' ? 'flex' : 'none';
   const labels = {color:'اسم اللون (مثال: أحمر)', size:'المقاس (مثال: XL)', scent:'اسم الريحة (مثال: ورد)', number:'الرقم (مثال: 42)', custom:'التنويع (مثال: بريميوم)'};
   if(inputLabel) inputLabel.textContent = labels[type] || 'الاسم / الكود';
   const inp = document.getElementById('new-variant-label');
   const hints = {color:'مثال: أحمر، أسود، أبيض', size:'مثال: S, M, L, XL, XXL', scent:'مثال: ورد، فانيليا، عود، لافندر', number:'مثال: 40, 41, 42, 43', custom:'مثال: نسخة عادية، نسخة بريميوم'};
   if(inp) inp.placeholder = hints[type] || 'اسم التنويع';
-  // Clear image input when switching away from color
+  // Clear image input when switching to "none"
   const imgInp = document.getElementById('new-variant-image');
-  if(imgInp && type !== 'color') imgInp.value = '';
+  if(imgInp && type === 'none') imgInp.value = '';
 }
 
 function addVariant(){
@@ -3227,7 +3231,7 @@ function addVariant(){
     costPrice: costRaw!=='' ? Number(costRaw) : null,
     qty: qtyRaw!=='' ? Number(qtyRaw) : null,
     color: (type==='color' && colorEl) ? colorEl.value : null,
-    image: (type==='color' && varImgEl && varImgEl.value.trim()) ? varImgEl.value.trim() : null
+    image: (varImgEl && varImgEl.value.trim()) ? varImgEl.value.trim() : null
   };
   _variants.push(variant);
   document.getElementById('new-variant-label').value='';
@@ -3259,8 +3263,10 @@ function renderVariantsList(){
     if(v.color){
       swatchHtml = `<div style="display:flex;align-items:center;gap:.35rem">
         <div class="variant-color-swatch" style="background:${esc(v.color)}"></div>
-        ${v.image ? `<img src="${esc(v.image)}" style="width:28px;height:28px;border-radius:4px;object-fit:cover;border:1px solid var(--border)" title="صورة اللون" onerror="this.style.display='none'"/>` : ''}
+        ${v.image ? `<img src="${esc(v.image)}" style="width:28px;height:28px;border-radius:4px;object-fit:cover;border:1px solid var(--border)" title="صورة التنويع" onerror="this.style.display='none'"/>` : ''}
       </div>`;
+    } else if(v.image){
+      swatchHtml = `<img src="${esc(v.image)}" style="width:28px;height:28px;border-radius:4px;object-fit:cover;border:1px solid var(--border)" title="صورة التنويع" onerror="this.style.display='none'"/>`;
     } else {
       const typeNow = document.getElementById('p-variant-type').value;
       const icon = typeNow==='scent' ? '🌸' : (i+1);
