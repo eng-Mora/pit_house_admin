@@ -438,6 +438,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -497,6 +498,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -558,6 +560,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -621,6 +624,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -697,6 +701,7 @@
         <label class="form-label" id="inv-party-label">اسم التاجر / المورد</label>
         <input type="text" class="form-control" id="inv-party" placeholder="مثال: شركة الخليج للسيارات" list="inv-merchants-datalist" autocomplete="off"/>
         <datalist id="inv-merchants-datalist"></datalist>
+        <datalist id="inv-customers-datalist"></datalist>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
@@ -721,6 +726,10 @@
           <button type="button" class="inv-pay-btn" data-val="vodafone" onclick="selectInvPayment('vodafone')">📱 فودافون كاش</button>
           <button type="button" class="inv-pay-btn" data-val="instapay" onclick="selectInvPayment('instapay')">⚡ إنستا باي</button>
           <button type="button" class="inv-pay-btn" data-val="deferred" onclick="selectInvPayment('deferred')">📋 آجل</button>
+        </div>
+        <div id="inv-due-days-wrap" style="display:none;margin-top:.6rem;align-items:center;gap:.5rem">
+          <label class="form-label" style="font-size:.7rem;margin:0;white-space:nowrap">التحصيل خلال (يوم):</label>
+          <input type="number" class="form-control" id="inv-due-days" value="7" min="1" style="width:80px"/>
         </div>
       </div>
     </div>
@@ -834,6 +843,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -915,6 +925,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -982,6 +993,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -1063,6 +1075,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -1119,6 +1132,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -1242,6 +1256,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -1329,6 +1344,7 @@
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -1973,8 +1989,9 @@ function calcCashierBalance(){
   });
   const liqBalance   = liqDeposits - liqWithdraws;
   const collected    = (_globalOrders||[]).filter(o=>o.status==='collected').reduce((s,o)=>s+(Number(o.totalPrice)||0),0);
-  const invSale      = _invoicesCache.filter(i=>i.type==='sale').reduce((s,i)=>s+(Number(i.total)||0),0);
-  const invPurchase  = _invoicesCache.filter(i=>i.type==='purchase').reduce((s,i)=>s+(Number(i.total)||0),0);
+  // فواتير الآجل مالهاش تأثير على الكاشير غير بعد ما تتحصّل فعلياً (بترجع كإيداع في سجل السيولة وقتها)
+  const invSale      = _invoicesCache.filter(i=>i.type==='sale' && i.paymentMethod!=='deferred').reduce((s,i)=>s+(Number(i.total)||0),0);
+  const invPurchase  = _invoicesCache.filter(i=>i.type==='purchase' && i.paymentMethod!=='deferred').reduce((s,i)=>s+(Number(i.total)||0),0);
   return { liqBalance, liqDeposits, liqWithdraws, collected, invSale, invPurchase,
            total: liqBalance + collected + invSale - invPurchase };
 }
@@ -2022,12 +2039,46 @@ function startInvoicesListener(){
     _invoicesCache = snap.exists() ? objToArr(snap.val()) : [];
     _allInvoices   = _invoicesCache; // sync مع المتغير القديم
     refreshCashierUI();
+    checkOverdueDeferredInvoices();
     const activePage = [...document.querySelectorAll('.page.active')].map(p=>p.id)[0];
     if(activePage==='page-invoices') updateInvoiceStats();
   }, err=>{console.error('invoices listener error:',err)});
 }
 function stopInvoicesListener(){
   if(_invoicesListener){db.ref('invoices').off('value',_invoicesListener);_invoicesListener=null;}
+}
+
+// ── تنبيه فواتير الآجل اللي فات معادها ──
+let _prevOverdueInvIds = null; // null = أول تشغيل (لسه ما اتحسبتش)
+function checkOverdueDeferredInvoices(){
+  const now = Date.now();
+  const overdue = (_invoicesCache||[]).filter(i=>
+    i.type==='sale' && i.paymentMethod==='deferred' && !i.collectedAt && i.dueDate && i.dueDate < now
+  );
+  // بادج العدد في الشريط الجانبي
+  document.querySelectorAll('[id="overdue-badge-sb"]').forEach(el=>{
+    if(overdue.length>0){ el.textContent=overdue.length; el.style.display='inline-flex'; }
+    else { el.style.display='none'; }
+  });
+  const currentIds = new Set(overdue.map(i=>i.id));
+  if(_prevOverdueInvIds===null){
+    // أول تشغيل بعد فتح الأدمن — لو في متأخرين وقتها، نبّه على طول
+    if(overdue.length>0) showOverdueWarning(overdue);
+  } else {
+    // نبّه بس على اللي بقى متأخر جديد من ساعة آخر تشيك
+    const newlyOverdue = overdue.filter(i=>!_prevOverdueInvIds.has(i.id));
+    if(newlyOverdue.length>0) showOverdueWarning(newlyOverdue);
+  }
+  _prevOverdueInvIds = currentIds;
+}
+
+function showOverdueWarning(list){
+  const names = [...new Set(list.map(i=>i.party||'عميل'))];
+  const totalAmt = list.reduce((s,i)=>s+(Number(i.total)||0),0);
+  const namesStr = names.length<=3 ? names.join('، ') : `${names.slice(0,3).join('، ')} و${names.length-3} تاني`;
+  showToast(`⚠️ فات معاد تحصيل ${formatPrice(totalAmt)} من: ${namesStr} — روح "عملاء المحل" وحصّل منهم`, 'warning');
+  playNotifSound();
+  sendPushNotif('⚠️ PIT HOUSE — فلوس آجل متأخرة!', `فات معاد تحصيل من: ${namesStr}`, 'overdue-invoice');
 }
 
 function stopGlobalListener(){
@@ -2076,6 +2127,7 @@ function navigate(page){
   if(page==='sound')     loadSoundSettings();
   if(page==='ads')       loadAds();
   if(page==='merchants') loadMerchants();
+  if(page==='store-customers') loadStoreCustomers();
   if(page==='liquidity') loadLiquidityPage();
   if(page==='ledger')    loadLedgerPage();
   if(page==='inventory') loadInventoryPage();
@@ -2435,6 +2487,10 @@ auth.onAuthStateChanged(user=>{
     loadStoreSettings();
     requestPushPermission();
     navigate('dashboard');
+    // فحص دوري كل 5 دقائق — عشان يمسك الفواتير اللي بتبقى متأخرة بمرور الوقت من غير أي تغيير في البيانات
+    if(!window._overdueCheckInterval){
+      window._overdueCheckInterval = setInterval(checkOverdueDeferredInvoices, 5*60*1000);
+    }
   } else {
     stopGlobalListener();
     stopLiquidityListener();
@@ -4442,38 +4498,53 @@ function drawBarcode(svgEl, text, opts={}){
 }
 
 // ── PRODUCT BARCODE PRINT (Zebra GK420t label = 40mm × 30mm) ──
+// نافذة طباعة منفصلة ومعزولة تماماً عن باقي الصفحة — أضمن مع طابعات الليبل
+function buildBarcodeSVGString(text, opts={}){
+  const {h=45,qz=10,barW=1}=opts;
+  const enc='*'+text.toUpperCase().replace(/[^0-9A-Z\-. *\/+%$]/g,'')+'*';
+  let bits='';
+  for(const ch of enc){bits+=(bits?'0':'')+(_BC39[ch]||'');}
+  if(!bits) return '';
+  const totalBars=bits.length;
+  const svgW=totalBars*barW+qz*2;
+  let rects='';
+  for(let i=0;i<bits.length;i++){
+    if(bits[i]==='1') rects+=`<rect x="${qz+i*barW}" y="0" width="${barW}" height="${h}" fill="#000"/>`;
+  }
+  return `<svg viewBox="0 0 ${svgW} ${h}" width="${svgW}" height="${h}" style="display:block;margin:0 auto 0.5mm;max-width:37mm">${rects}</svg>`;
+}
+
 function printProductBarcode(p){
   const val=(p.sku||p.name.replace(/[^A-Z0-9\-\.]/gi,'').slice(0,14)).toUpperCase();
-  const svgId='pbc_'+Math.random().toString(36).slice(2,8);
-  const html=`
-    <div class="barcode-label-wrap" style="
-      width:40mm;
-      height:30mm;
-      box-sizing:border-box;
-      padding:3.5mm 1.5mm .8mm;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      font-family:Arial,sans-serif;
-      background:#fff;
-      color:#000;
-      overflow:hidden;
-      line-height:1.1;
+  const barcodeSvg = buildBarcodeSVGString(val,{h:45,barW:1});
+  const labelHtml = `
+    <div class="lbl" style="
+      width:40mm;height:30mm;box-sizing:border-box;padding:3.5mm 1.5mm .8mm;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      font-family:Arial,sans-serif;background:#fff;color:#000;overflow:hidden;line-height:1.1;
     ">
       <div style="font-size:4.5pt;letter-spacing:.12em;text-transform:uppercase;color:#555;margin-bottom:.4mm">PIT HOUSE</div>
       <div style="font-size:6pt;font-weight:900;text-align:center;margin-bottom:.5mm;max-width:37mm;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${esc(p.name)}</div>
-      <svg id="${svgId}" style="display:block;margin:0 auto .5mm;max-width:37mm"></svg>
+      ${barcodeSvg}
       <div style="font-family:monospace;font-size:4.5pt;letter-spacing:.08em;color:#333;margin-bottom:.4mm">${esc(val)}</div>
       ${p.price?`<div style="font-size:7.5pt;font-weight:900;border-top:.3mm solid #ddd;padding-top:.4mm;width:100%;text-align:center">${formatPrice(p.price)} ج.م</div>`:''}
     </div>`;
-  document.getElementById('shared-print-content').innerHTML=html;
-  document.getElementById('shared-print-overlay').style.display='block';
-  const svgEl=document.getElementById(svgId);
-  if(svgEl) drawBarcode(svgEl,val,{h:45,barW:1});
-  // Show label-specific buttons
-  document.getElementById('btn-print-label').style.display='inline-flex';
-  document.getElementById('btn-print-a4').style.display='none';
+  const doc = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>طباعة ليبل</title>
+    <style>
+      @page{ size:40mm 30mm; margin:0; }
+      *{margin:0;padding:0;box-sizing:border-box}
+      html,body{width:40mm;height:30mm}
+      body{display:flex}
+    </style></head>
+    <body onload="window.focus();window.print();">${labelHtml}</body></html>`;
+  const win = window.open('', '_blank', 'width=400,height=350');
+  if(!win){ showToast('المتصفح منع فتح نافذة الطباعة — اسمح بالنوافذ المنبثقة','error'); return; }
+  win.document.open();
+  win.document.write(doc);
+  win.document.close();
+  // اقفل النافذة تلقائياً بعد الطباعة أو بعد الإلغاء
+  win.onafterprint = ()=>win.close();
+  setTimeout(()=>{ if(!win.closed) win.close(); }, 8000);
 }
 
 // ── SHARED PRINT HELPERS ──
@@ -4701,6 +4772,8 @@ function selectInvPayment(val){
   document.querySelectorAll('.inv-pay-btn').forEach(b=>{
     b.classList.toggle('active', b.dataset.val===val);
   });
+  const wrap = document.getElementById('inv-due-days-wrap');
+  if(wrap) wrap.style.display = (val==='deferred') ? 'flex' : 'none';
 }
 
 function invPayLabel(v){
@@ -4714,13 +4787,13 @@ function genInvRef(){
   return `INV-${yy}${mm}-${rand}`;
 }
 
-function openInvoiceModal(type='purchase'){
+function openInvoiceModal(type='purchase', prefillParty=null){
   _invItems=[];
   _editingInvoiceId=null;
   _invPaymentMethod=null;
   document.getElementById('inv-type').value=type;
   document.getElementById('inv-ref').value='';
-  document.getElementById('inv-party').value='';
+  document.getElementById('inv-party').value=prefillParty||'';
   document.getElementById('inv-notes').value='';
   document.getElementById('inv-date').value=new Date().toISOString().slice(0,10);
   document.getElementById('inv-save-btn').textContent='💾 حفظ الفاتورة';
@@ -4730,6 +4803,8 @@ function openInvoiceModal(type='purchase'){
   document.getElementById('inv-subtotal-row').style.display='none';
   document.getElementById('inv-discount-row').style.display='none';
   document.querySelectorAll('.inv-pay-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('inv-due-days-wrap').style.display='none';
+  document.getElementById('inv-due-days').value='7';
   updateInvoiceType();
   renderInvItems();
   // populate datalist from products
@@ -4764,6 +4839,14 @@ function openInvoiceModal(type='purchase'){
   invItemNameInput.addEventListener('blur', autoFillInvPrice);
   // populate merchants datalist
   populateMerchantsDatalist();
+  if(!_allStoreCustomers.length){
+    db.ref('storeCustomers').get().then(snap=>{
+      _allStoreCustomers = objToArr(snap.val());
+      populateStoreCustomersDatalist();
+    }).catch(()=>{});
+  } else {
+    populateStoreCustomersDatalist();
+  }
   document.getElementById('invoice-modal').style.display='flex';
 }
 function closeInvoiceModal(){document.getElementById('invoice-modal').style.display='none';}
@@ -4772,6 +4855,14 @@ function updateInvoiceType(){
   const t=document.getElementById('inv-type').value;
   document.getElementById('invoice-modal-title').textContent=t==='purchase'?'📥 فاتورة شراء':'📤 فاتورة بيع';
   document.getElementById('inv-party-label').textContent=t==='purchase'?'اسم التاجر / المورد':'اسم العميل / الجهة';
+  document.getElementById('inv-party').setAttribute('list', t==='purchase'?'inv-merchants-datalist':'inv-customers-datalist');
+  populateStoreCustomersDatalist();
+}
+
+function populateStoreCustomersDatalist(){
+  const dl = document.getElementById('inv-customers-datalist');
+  if(!dl || typeof _allStoreCustomers==='undefined') return;
+  dl.innerHTML = _allStoreCustomers.map(c=>`<option value="${esc(c.name)}">${c.phone?'📞 '+esc(c.phone):''}</option>`).join('');
 }
 
 function addInvoiceItem(){
@@ -4875,6 +4966,14 @@ async function saveInvoice(){
   else if(discType==='fixed') discAmt=Math.min(discVal,subtotal);
   const total=Math.max(0,subtotal-discAmt);
   const discountData=discAmt>0?{discountType:discType,discountValue:discVal,discountAmount:discAmt}:{discountType:null,discountValue:null,discountAmount:0};
+  // معاد استحقاق التحصيل للفواتير الآجلة
+  let dueDate=null;
+  if(_invPaymentMethod==='deferred'){
+    const dueDays=parseInt(document.getElementById('inv-due-days').value)||7;
+    const baseDate=new Date(date);
+    baseDate.setDate(baseDate.getDate()+dueDays);
+    dueDate=baseDate.getTime();
+  }
   const btn=document.getElementById('inv-save-btn');
   const isEditing=!!_editingInvoiceId;
   btn.disabled=true;btn.textContent='جاري الحفظ...';
@@ -4882,7 +4981,7 @@ async function saveInvoice(){
     if(isEditing){
       // Edit mode — update existing invoice
       const editId=_editingInvoiceId;
-      const inv={ref,type,party,date,notes,paymentMethod:_invPaymentMethod||null,items:_invItems,subtotal,total,...discountData};
+      const inv={ref,type,party,date,notes,paymentMethod:_invPaymentMethod||null,dueDate,items:_invItems,subtotal,total,...discountData};
       await db.ref('invoices/'+editId).update(inv);
       // إعادة ضبط حركة الحساب المرتبطة بالفاتورة
       await removeAccountEntriesForInvoice(editId);
@@ -4897,7 +4996,7 @@ async function saveInvoice(){
       await loadInvoicesPage();
     } else {
       // New invoice
-      const inv={ref,type,party,date,notes,paymentMethod:_invPaymentMethod||null,items:_invItems,subtotal,total,...discountData,createdAt:Date.now()};
+      const inv={ref,type,party,date,notes,paymentMethod:_invPaymentMethod||null,dueDate,items:_invItems,subtotal,total,...discountData,createdAt:Date.now()};
       const invRef=await db.ref('invoices').push(inv);
       const accKey=mapInvoicePaymentToAccount(_invPaymentMethod);
       if(accKey && total>0){
@@ -5271,19 +5370,25 @@ function renderInvoicesList(list){
     const color=isPurchase?'var(--danger)':'var(--success)';
     const icon=isPurchase?'📥':'📤';
     const label=isPurchase?'شراء':'بيع';
-    return`<div style="background:var(--bg-card);border:1px solid var(--border);border-right:4px solid ${color};border-radius:var(--radius-md);padding:1rem 1.25rem;margin-bottom:.7rem;display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center">
+    const isUnpaidDeferred = !isPurchase && inv.paymentMethod==='deferred' && !inv.collectedAt;
+    const isOverdue = isUnpaidDeferred && inv.dueDate && inv.dueDate < Date.now();
+    return`<div style="background:var(--bg-card);border:1px solid var(--border);border-right:4px solid ${isOverdue?'var(--danger)':(isUnpaidDeferred?'var(--accent-gold)':color)};border-radius:var(--radius-md);padding:1rem 1.25rem;margin-bottom:.7rem;display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center">
       <div>
         <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.4rem">
           <span style="font-family:var(--font-mono);font-size:.78rem;color:var(--accent-gold);font-weight:700">${esc(inv.ref||'—')}</span>
           <span style="background:${isPurchase?'rgba(255,61,0,.1)':'rgba(0,200,83,.1)'};color:${color};border:1px solid ${isPurchase?'rgba(255,61,0,.2)':'rgba(0,200,83,.2)'};border-radius:4px;font-size:.68rem;padding:.15rem .5rem">${icon} ${label}</span>
           <span style="font-size:.72rem;color:var(--text-muted)">${inv.date||'—'}</span>
+          ${isOverdue?`<span style="background:rgba(255,23,68,.12);color:var(--danger);border:1px solid rgba(255,23,68,.3);border-radius:4px;font-size:.68rem;padding:.15rem .5rem;font-weight:700">🔴 متأخر ${Math.floor((Date.now()-inv.dueDate)/86400000)} يوم</span>`
+            :(isUnpaidDeferred?`<span style="background:rgba(255,180,0,.12);color:var(--accent-gold);border:1px solid rgba(255,180,0,.3);border-radius:4px;font-size:.68rem;padding:.15rem .5rem">⏳ لسه ماتحصلش${inv.dueDate?' — معادها '+formatDate(inv.dueDate):''}</span>`:'')}
+          ${(!isPurchase && inv.paymentMethod==='deferred' && inv.collectedAt)?`<span style="background:rgba(0,200,83,.1);color:var(--success);border:1px solid rgba(0,200,83,.2);border-radius:4px;font-size:.68rem;padding:.15rem .5rem">✅ اتحصّلت</span>`:''}
         </div>
         <div style="font-weight:700;margin-bottom:.25rem">${esc(inv.party||'—')}</div>
         <div style="font-size:.78rem;color:var(--text-muted)">${(inv.items||[]).length} منتج ${inv.notes?'· '+esc(inv.notes):''}${inv.paymentMethod?` · <span style="color:var(--accent);font-weight:700">${invPayLabel(inv.paymentMethod)}</span>`:''}${inv.discountAmount>0?` · <span style="color:var(--danger)">خصم ${formatPrice(inv.discountAmount)}</span>`:''}</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.5rem">
         <div style="font-family:var(--font-display);font-size:1.4rem;color:${color}">${isPurchase?'-':'+'} ${formatPrice(inv.total)}</div>
-        <div style="display:flex;gap:.4rem">
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;justify-content:flex-end">
+          ${isUnpaidDeferred?`<button class="btn btn-primary btn-sm" onclick="collectInvoice('${inv.id}')">💰 تحصيل</button>`:''}
           <button class="btn btn-secondary btn-sm" onclick='printInvoice(${JSON.stringify(inv)})'>🖨️ طباعة</button>
           <button class="btn btn-success btn-sm" onclick="editInvoice('${inv.id}')">✏️ تعديل</button>
           <button class="btn btn-danger btn-sm" onclick="deleteInvoice('${inv.id}')">حذف</button>
@@ -5291,6 +5396,22 @@ function renderInvoicesList(list){
       </div>
     </div>`;
   }).join('');
+}
+
+// تحصيل فاتورة آجل — بتتسجل كإيداع في سجل السيولة وقت التحصيل بس، مش وقت إنشاء الفاتورة
+async function collectInvoice(id){
+  const inv = _allInvoices.find(i=>i.id===id);
+  if(!inv){showToast('الفاتورة مش موجودة','error');return;}
+  if(!confirm(`تأكيد تحصيل ${formatPrice(inv.total)} من ${inv.party||'العميل'}؟`))return;
+  try{
+    const collectedAt = Date.now();
+    await db.ref('invoices/'+id).update({collectedAt});
+    const note = `تحصيل فاتورة آجل ${inv.ref||''} — ${inv.party||''}`;
+    await db.ref('liquidityLog').push({type:'deposit', amount:Number(inv.total)||0, note, createdAt:collectedAt, source:'invoice', invoiceId:id});
+    showToast(`✅ تم تحصيل ${formatPrice(inv.total)} وإضافتها للكاشير`,'success');
+    refreshCashierUI();
+    await loadInvoicesPage();
+  }catch(err){showToast('فشل التحصيل: '+err.message,'error')}
 }
 
 async function removeAccountEntriesForInvoice(invoiceId){
@@ -5344,6 +5465,18 @@ async function editInvoice(id){
   document.querySelectorAll('.inv-pay-btn').forEach(b=>{
     b.classList.toggle('active', b.dataset.val===_invPaymentMethod);
   });
+  const dueDaysWrap=document.getElementById('inv-due-days-wrap');
+  if(_invPaymentMethod==='deferred'){
+    dueDaysWrap.style.display='flex';
+    if(inv.dueDate && inv.date){
+      const daysDiff=Math.round((inv.dueDate - new Date(inv.date).getTime())/86400000);
+      document.getElementById('inv-due-days').value = daysDiff>0 ? daysDiff : 7;
+    } else {
+      document.getElementById('inv-due-days').value='7';
+    }
+  } else {
+    dueDaysWrap.style.display='none';
+  }
   updateInvoiceType();
   renderInvItems();
   // populate datalists
@@ -6144,6 +6277,146 @@ async function deleteMerchant(id, name){
 }
 
 // ══════════════════════════════════════════════════════
+// ══ عملاء المحل (آجل) — دفتر عملاء منفصل عن عملاء الموقع ══
+// ══════════════════════════════════════════════════════
+let _allStoreCustomers = [];
+let _editingStoreCustomerId = null;
+
+async function loadStoreCustomers(){
+  showSpinner('جاري تحميل العملاء...');
+  try{
+    const [custSnap, invSnap] = await Promise.all([
+      db.ref('storeCustomers').get(),
+      db.ref('invoices').get()
+    ]);
+    _allStoreCustomers = objToArr(custSnap.val()).sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar'));
+    _allInvoices = objToArr(invSnap.val()); // تأكد إنها محدّثة
+    const setEl=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+    setEl('scstat-total', _allStoreCustomers.length);
+    const deferredInvoices = _allInvoices.filter(i=>i.type==='sale' && i.paymentMethod==='deferred' && !i.collectedAt);
+    const custNamesWithDebt = new Set(deferredInvoices.map(i=>i.party));
+    setEl('scstat-deferred', custNamesWithDebt.size);
+    setEl('scstat-owed', Number(deferredInvoices.reduce((s,i)=>s+(Number(i.total)||0),0)).toLocaleString('ar-EG'));
+    filterStoreCustomers();
+  }catch(err){ console.error(err); showToast('خطأ في تحميل العملاء','error'); }
+  finally{ hideSpinner(); }
+}
+
+function filterStoreCustomers(){
+  const q = (document.getElementById('store-customer-search')?.value||'').toLowerCase().trim();
+  let list = _allStoreCustomers;
+  if(q) list = list.filter(c=>(c.name||'').toLowerCase().includes(q)||(c.phone||'').includes(q));
+  renderStoreCustomers(list);
+}
+
+function renderStoreCustomers(list){
+  const c = document.getElementById('store-customers-list');
+  if(!list.length){
+    c.innerHTML=`<div class="empty-state"><div class="empty-icon">🧑‍💼</div><h3>لا يوجد عملاء بعد</h3><p>اضغط "+ إضافة عميل" لإضافة أول عميل</p></div>`;
+    return;
+  }
+  c.innerHTML = list.map(cust=>{
+    const custInvoices = _allInvoices.filter(i=>i.type==='sale' && i.party===cust.name);
+    const deferredUnpaid = custInvoices.filter(i=>i.paymentMethod==='deferred' && !i.collectedAt);
+    const owed = deferredUnpaid.reduce((s,i)=>s+(Number(i.total)||0),0);
+    const overdueInvoices = deferredUnpaid.filter(i=>i.dueDate && i.dueDate < Date.now());
+    const isOverdue = overdueInvoices.length>0;
+    const totalSpent = custInvoices.reduce((s,i)=>s+(Number(i.total)||0),0);
+    return`<div style="background:var(--bg-card);border:1px solid var(--border);border-right:4px solid ${isOverdue?'var(--danger)':(owed>0?'var(--accent-gold)':'var(--border)')};border-radius:var(--radius-md);padding:1.25rem;margin-bottom:.7rem;display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:start">
+      <div>
+        <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.5rem">
+          <span style="font-size:1.5rem">🧑‍💼</span>
+          <span style="font-weight:800;font-size:1rem;color:var(--text-primary)">${esc(cust.name||'—')}</span>
+          ${isOverdue?`<span style="background:rgba(255,23,68,.12);color:var(--danger);border:1px solid rgba(255,23,68,.3);border-radius:99px;font-size:.68rem;padding:.15rem .55rem;font-weight:700">🔴 متأخر — عليه ${Number(owed).toLocaleString('ar-EG')} ج.م</span>`
+            :(owed>0?`<span style="background:rgba(255,180,0,.12);color:var(--accent-gold);border:1px solid rgba(255,180,0,.3);border-radius:99px;font-size:.68rem;padding:.15rem .55rem">📋 عليه ${Number(owed).toLocaleString('ar-EG')} ج.م آجل</span>`:'')}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.25rem;margin-bottom:.65rem">
+          ${cust.phone?`<div style="font-size:.8rem;color:var(--text-muted)">📱 <span style="color:var(--text-secondary);font-family:var(--font-mono)">${esc(cust.phone)}</span></div>`:''}
+          ${cust.whatsapp?`<div style="font-size:.8rem;color:var(--text-muted)">💬 <span style="color:var(--text-secondary);font-family:var(--font-mono)">${esc(cust.whatsapp)}</span></div>`:''}
+          ${cust.address?`<div style="font-size:.8rem;color:var(--text-muted)">📍 <span style="color:var(--text-secondary)">${esc(cust.address)}</span></div>`:''}
+          ${cust.notes?`<div style="font-size:.78rem;color:var(--text-muted);font-style:italic">📝 ${esc(cust.notes)}</div>`:''}
+        </div>
+        <div style="display:flex;gap:1.5rem;padding-top:.65rem;border-top:1px solid var(--border)">
+          <div style="text-align:center">
+            <div style="font-family:var(--font-display);font-size:1.15rem;color:var(--accent)">${custInvoices.length}</div>
+            <div style="font-size:.62rem;color:var(--text-muted);font-family:var(--font-mono)">فاتورة</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-family:var(--font-display);font-size:1.15rem;color:var(--success)">${Number(totalSpent).toLocaleString('ar-EG')}</div>
+            <div style="font-size:.62rem;color:var(--text-muted);font-family:var(--font-mono)">إجمالي مشترياته</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-family:var(--font-display);font-size:1.15rem;color:${owed>0?'var(--danger)':'var(--text-muted)'}">${Number(owed).toLocaleString('ar-EG')}</div>
+            <div style="font-size:.62rem;color:var(--text-muted);font-family:var(--font-mono)">آجل لسه ماحصلش</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.45rem">
+        <button class="btn btn-primary btn-sm" onclick="openInvoiceModal('sale','${esc(cust.name).replace(/'/g,"\\'")}')">🧾 عمل فاتورة</button>
+        <button class="btn btn-secondary btn-sm" onclick='openStoreCustomerModal(${JSON.stringify(cust)})'>✏️ تعديل</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteStoreCustomer('${cust.id}', '${esc(cust.name)}')">🗑 حذف</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openStoreCustomerModal(c=null){
+  _editingStoreCustomerId = c ? c.id : null;
+  document.getElementById('store-customer-modal-title').textContent = c ? '✏️ تعديل بيانات العميل' : '🧑‍💼 إضافة عميل';
+  document.getElementById('sc-name').value     = c?.name    || '';
+  document.getElementById('sc-phone').value    = c?.phone   || '';
+  document.getElementById('sc-whatsapp').value = c?.whatsapp|| '';
+  document.getElementById('sc-address').value  = c?.address || '';
+  document.getElementById('sc-notes').value    = c?.notes   || '';
+  document.getElementById('fg-sc-name').classList.remove('has-error');
+  document.getElementById('store-customer-modal').style.display = 'flex';
+}
+
+function closeStoreCustomerModal(){
+  document.getElementById('store-customer-modal').style.display = 'none';
+  _editingStoreCustomerId = null;
+}
+
+async function saveStoreCustomer(){
+  const name     = document.getElementById('sc-name').value.trim();
+  const phone    = document.getElementById('sc-phone').value.trim();
+  const whatsapp = document.getElementById('sc-whatsapp').value.trim();
+  const address  = document.getElementById('sc-address').value.trim();
+  const notes    = document.getElementById('sc-notes').value.trim();
+
+  if(!name){ document.getElementById('fg-sc-name').classList.add('has-error'); return; }
+  document.getElementById('fg-sc-name').classList.remove('has-error');
+
+  const btn = document.getElementById('store-customer-save-btn');
+  btn.disabled = true; btn.textContent = 'جاري الحفظ...';
+
+  const data = { name, phone, whatsapp, address, notes, updatedAt: Date.now() };
+
+  try{
+    if(_editingStoreCustomerId){
+      await db.ref('storeCustomers/' + _editingStoreCustomerId).update(data);
+      showToast('تم تحديث بيانات العميل ✅','success');
+    } else {
+      data.createdAt = Date.now();
+      await db.ref('storeCustomers').push(data);
+      showToast('تم إضافة العميل بنجاح ✅','success');
+    }
+    closeStoreCustomerModal();
+    await loadStoreCustomers();
+  }catch(err){ showToast('خطأ في الحفظ: '+err.message,'error'); }
+  finally{ btn.disabled=false; btn.textContent='💾 حفظ العميل'; }
+}
+
+async function deleteStoreCustomer(id, name){
+  if(!confirm(`هل تريد حذف العميل "${name}"؟ (الفواتير القديمة هتفضل موجودة)`)) return;
+  try{
+    await db.ref('storeCustomers/'+id).remove();
+    showToast('تم حذف العميل','info');
+    await loadStoreCustomers();
+  }catch(err){ showToast('خطأ في الحذف','error'); }
+}
+
+// ══════════════════════════════════════════════════════
 // ══ LEDGER — كشف الحساب ══
 // ══════════════════════════════════════════════════════
 let _ledgerAllEntities = []; // [{type:'customer'|'merchant', name, phone?, ...}]
@@ -6187,27 +6460,28 @@ async function loadLedgerPage(){
       };
     });
 
-    // أي party في الفواتير مش موجود كتاجر → ضيفه كـ unknown merchant
+    // أي party في الفواتير مش موجود كعميل/تاجر → صنّفه حسب نوع الفاتورة
     invoices.forEach(inv => {
       const partyName = (inv.party||'').trim();
       if(!partyName) return;
-      // حاول تلاقيه في التجار
-      const found = Object.values(entityMap).find(e=>e.type==='merchant' && e.name===partyName);
-      if(found){
+      if(inv.type==='sale'){
+        // فاتورة بيع = دايماً عميل
+        let found = Object.values(entityMap).find(e=>e.type==='customer' && e.name===partyName);
+        if(!found){
+          const key = 'uc:' + partyName;
+          if(!entityMap[key]) entityMap[key] = { type:'customer', name:partyName, phone:'—', key, orders:[], invoices:[] };
+          found = entityMap[key];
+        }
         found.invoices.push(inv);
       } else {
-        // ممكن يكون عميل في فاتورة بيع
-        const custFound = Object.values(entityMap).find(e=>e.type==='customer' && e.name===partyName);
-        if(custFound){
-          custFound.invoices.push(inv);
-        } else {
-          // إنشاء كيان مجهول
+        // فاتورة شراء = دايماً تاجر
+        let found = Object.values(entityMap).find(e=>e.type==='merchant' && e.name===partyName);
+        if(!found){
           const key = 'u:' + partyName;
-          if(!entityMap[key]) entityMap[key] = {
-            type:'merchant', name:partyName, phone:'—', key, orders:[], invoices:[]
-          };
-          entityMap[key].invoices.push(inv);
+          if(!entityMap[key]) entityMap[key] = { type:'merchant', name:partyName, phone:'—', key, orders:[], invoices:[] };
+          found = entityMap[key];
         }
+        found.invoices.push(inv);
       }
     });
 
@@ -6248,6 +6522,7 @@ function filterLedger(){
   let list = _ledgerAllEntities;
   if(type==='customer') list = list.filter(e=>e.type==='customer');
   if(type==='merchant') list = list.filter(e=>e.type==='merchant');
+  if(type==='deferred') list = list.filter(e=>e.type==='customer' && (e.invoices||[]).some(i=>i.type==='sale' && i.paymentMethod==='deferred' && !i.collectedAt));
   if(q) list = list.filter(e=>(e.name||'').toLowerCase().includes(q)||(e.phone||'').includes(q));
   renderLedgerList(list);
 }
@@ -6301,7 +6576,12 @@ function calcLedgerBalance(entity){
       totalDebit += amt;
       if(o.status==='collected' || o.status==='delivered') totalCredit += amt;
     });
-    entity.invoices.filter(i=>i.type==='sale').forEach(i=>{ totalCredit += Number(i.total)||0; });
+    entity.invoices.filter(i=>i.type==='sale').forEach(i=>{
+      const amt = Number(i.total)||0;
+      const isUnpaidDeferred = i.paymentMethod==='deferred' && !i.collectedAt;
+      if(isUnpaidDeferred) totalDebit += amt;   // آجل لسه محصلش = دين على العميل
+      else totalCredit += amt;                    // اتدفع (كاش/فودافون/إنستا) أو آجل اتحصّل
+    });
     entity.invoices.filter(i=>i.type==='purchase').forEach(i=>{ totalDebit += Number(i.total)||0; });
   } else {
     entity.invoices.filter(i=>i.type==='purchase').forEach(i=>{ totalDebit += Number(i.total)||0; });
@@ -6350,17 +6630,30 @@ function buildLedgerTransactions(entity){
   entity.invoices.forEach(inv=>{
     const amt = Number(inv.total)||0;
     const isPurchase = inv.type==='purchase';
+    const isUnpaidDeferred = !isPurchase && inv.paymentMethod==='deferred' && !inv.collectedAt;
     txs.push({
       date: inv.createdAt||0,
       dateStr: inv.date || formatDate(inv.createdAt),
       ref: inv.ref||'—',
       desc: `فاتورة ${isPurchase?'شراء':'بيع'} — ${(inv.items||[]).map(i=>i.name+'×'+(i.qty||1)).join('، ')||inv.notes||'—'}`,
-      debit: isPurchase ? amt : 0,
-      credit: isPurchase ? 0 : amt,
+      debit: (isPurchase || isUnpaidDeferred) ? amt : 0,
+      credit: (isPurchase || isUnpaidDeferred) ? 0 : amt,
       type:'invoice', invoiceType:inv.type, rawId:inv.id,
-      badge: isPurchase?'شراء':'بيع',
-      badgeClass: isPurchase?'s-pending':'s-collected'
+      badge: isPurchase ? 'شراء' : (isUnpaidDeferred ? '📋 آجل — لسه ماتحصلش' : (inv.paymentMethod==='deferred' ? '✅ آجل اتحصّل' : 'بيع')),
+      badgeClass: isPurchase ? 's-pending' : (isUnpaidDeferred ? 's-pending' : 's-collected')
     });
+    // لو آجل واتحصّل → سجّل حركة تحصيل منفصلة
+    if(!isPurchase && inv.paymentMethod==='deferred' && inv.collectedAt){
+      txs.push({
+        date: inv.collectedAt,
+        dateStr: formatDate(inv.collectedAt),
+        ref: inv.ref||'—',
+        desc: `تحصيل فاتورة آجل ${inv.ref||''}`,
+        debit:0, credit:amt,
+        type:'collection', rawId:inv.id,
+        badge:'تحصيل آجل', badgeClass:'s-collected'
+      });
+    }
   });
   // الحركات النقدية اليدوية
   (entity.payments||[]).forEach(p=>{
@@ -6692,6 +6985,7 @@ function printLedgerStatement(key){
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -6793,6 +7087,7 @@ function printLedgerStatement(key){
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -6876,6 +7171,7 @@ function printLedgerStatement(key){
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -6946,6 +7242,97 @@ function printLedgerStatement(key){
   </div>
 </div>
 
+<div id="page-store-customers" class="page">
+  <div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text" onclick="navigate('dashboard')">PIT <span>HOUSE</span><small>ADMIN</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a id="snav-dashboard" onclick="navigate('dashboard')"><span class="nav-icon">🏠</span><span>الرئيسية</span></a>
+      <a id="snav-orders" onclick="navigate('orders')"><span class="nav-icon">📦</span><span>الطلبات</span></a>
+      <a id="snav-holding" onclick="navigate('holding')" style="position:relative"><span class="nav-icon">🔒</span><span>معلقة</span><span id="holding-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.58rem;padding:.1rem .38rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-invoices" onclick="navigate('invoices')"><span class="nav-icon">🧾</span><span>الفواتير</span></a>
+      <a id="snav-salesreport" onclick="navigate('salesreport')"><span class="nav-icon">📊</span><span>تقرير المبيعات</span></a>
+      <a id="snav-products" onclick="navigate('products')"><span class="nav-icon">🛍️</span><span>المنتجات</span></a>
+      <a id="snav-customers" onclick="navigate('customers')"><span class="nav-icon">👥</span><span>العملاء</span></a>
+      <a id="snav-promos" onclick="navigate('promos')"><span class="nav-icon">🎟️</span><span>أكواد الخصم</span></a>
+      <div class="sidebar-section-label">الإعدادات</div>
+      <a id="snav-slots" onclick="navigate('slots')"><span class="nav-icon">📅</span><span>مواعيد التركيب</span></a>
+      <a id="snav-reviews" onclick="navigate('reviews')"><span class="nav-icon">⭐</span><span>التقييمات</span></a>
+      <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
+      <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
+      <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
+      <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
+      <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
+      <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
+      <a id="snav-inventory" onclick="navigate('inventory')"><span class="nav-icon">📦</span><span>الجرد</span></a>
+      <a id="snav-sup-returns" onclick="navigate('sup-returns')"><span class="nav-icon">↩️</span><span>مرتجعات التجار</span></a>
+      <a id="snav-shipping" onclick="navigate('shipping')"><span class="nav-icon">🚚</span><span>الشحن</span></a>
+    </nav>
+    <div class="sidebar-footer">
+      <button id="notif-toggle-btn" class="btn btn-secondary btn-sm" onclick="togglePushNotif()" title="تفعيل الإشعارات">🔔</button><button class="btn btn-secondary btn-sm" onclick="doLogout()"><span>خروج</span></button>
+    </div>
+  </aside>
+  <div class="page-content">
+  <main class="page-container">
+    <div class="page-header">
+      <div class="page-header-title"><span class="label">قاعدة بيانات</span><h1>🧾 عملاء المحل (آجل)</h1></div>
+      <button class="btn btn-primary" onclick="openStoreCustomerModal()">+ إضافة عميل</button>
+    </div>
+    <p style="color:var(--text-muted);font-size:.85rem;margin:-.75rem 0 1.25rem">
+      دفتر عملاء منفصل عن عملاء الموقع — استخدمه لعمل فواتير للعملاء اللي بييجوا المحل مباشرة، وتقدر تحدد الفاتورة مدفوعة ولا آجل، وتتابع اللي عليهم فلوس.
+    </p>
+    <!-- Stats -->
+    <div class="stats-grid" style="margin-bottom:1.5rem">
+      <div class="stat-card"><div class="stat-icon">🧑‍💼</div><div class="stat-value" id="scstat-total">—</div><div class="stat-label">إجمالي العملاء</div></div>
+      <div class="stat-card" style="border-color:rgba(255,180,0,.25)"><div class="stat-icon">📋</div><div class="stat-value" id="scstat-deferred" style="color:var(--accent-gold)">—</div><div class="stat-label">عندهم آجل لسه ماتحصلش</div></div>
+      <div class="stat-card" style="border-color:rgba(255,23,68,.25)"><div class="stat-icon">💸</div><div class="stat-value" id="scstat-owed" style="color:var(--danger)">—</div><div class="stat-label">إجمالي المبالغ الآجلة</div></div>
+    </div>
+    <!-- Search -->
+    <div style="margin-bottom:1.25rem">
+      <input type="text" class="form-control" id="store-customer-search" placeholder="ابحث باسم العميل أو رقم التليفون..." oninput="filterStoreCustomers()" style="max-width:420px"/>
+    </div>
+    <div id="store-customers-list"></div>
+  </main>
+  </div>
+</div>
+</div>
+
+<div id="store-customer-modal" class="modal-backdrop" style="display:none" onclick="if(event.target===this)closeStoreCustomerModal()">
+  <div class="modal-box" style="max-width:500px">
+    <h2 id="store-customer-modal-title">🧑‍💼 إضافة عميل</h2>
+    <div class="form-group" id="fg-sc-name">
+      <label class="form-label">اسم العميل *</label>
+      <input type="text" class="form-control" id="sc-name" placeholder="مثال: أحمد محمد"/>
+      <span class="form-error">الاسم مطلوب</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+      <div class="form-group">
+        <label class="form-label">رقم التليفون</label>
+        <input type="text" class="form-control" id="sc-phone" placeholder="01xxxxxxxxx" style="font-family:var(--font-mono)"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">واتساب</label>
+        <input type="text" class="form-control" id="sc-whatsapp" placeholder="01xxxxxxxxx" style="font-family:var(--font-mono)"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">العنوان</label>
+      <input type="text" class="form-control" id="sc-address" placeholder="اختياري"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">ملاحظات</label>
+      <textarea class="form-control" id="sc-notes" placeholder="أي ملاحظات إضافية..." rows="2"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeStoreCustomerModal()">إلغاء</button>
+      <button class="btn btn-primary" id="store-customer-save-btn" onclick="saveStoreCustomer()">💾 حفظ العميل</button>
+    </div>
+  </div>
+</div>
+
 <div id="page-ads" class="page">
   <div class="app-layout">
   <!-- ══ SIDEBAR ══ -->
@@ -6968,6 +7355,7 @@ function printLedgerStatement(key){
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -7133,6 +7521,7 @@ function printLedgerStatement(key){
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -7184,6 +7573,7 @@ function printLedgerStatement(key){
         <option value="all">الكل</option>
         <option value="customer">👤 العملاء فقط</option>
         <option value="merchant">🏪 التجار فقط</option>
+        <option value="deferred">📋 عملاء آجل (لسه ماحصلتش)</option>
       </select>
     </div>
 
@@ -7218,6 +7608,7 @@ function printLedgerStatement(key){
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -7351,6 +7742,7 @@ function printLedgerStatement(key){
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
@@ -7611,6 +8003,7 @@ async function executeResetDatabase(){
       <a id="snav-sound" onclick="navigate('sound')"><span class="nav-icon">🔊</span><span>الصوت</span></a>
       <a id="snav-ads" onclick="navigate('ads')"><span class="nav-icon">📢</span><span>الإعلانات</span></a>
       <a id="snav-merchants" onclick="navigate('merchants')"><span class="nav-icon">🏪</span><span>التجار</span></a>
+      <a id="snav-store-customers" onclick="navigate('store-customers')" style="position:relative"><span class="nav-icon">🧾</span><span>عملاء المحل (آجل)</span><span id="overdue-badge-sb" style="display:none;background:var(--danger);color:#fff;border-radius:99px;font-size:.62rem;padding:.1rem .4rem;font-family:var(--font-mono);margin-right:auto"></span></a>
       <a id="snav-liquidity" onclick="navigate('liquidity')"><span class="nav-icon">💰</span><span>السيولة</span></a>
       <a id="snav-accounts" onclick="navigate('accounts')"><span class="nav-icon">🏦</span><span>حسابات الدفع</span></a>
       <a id="snav-ledger" onclick="navigate('ledger')"><span class="nav-icon">📒</span><span>كشف الحساب</span></a>
