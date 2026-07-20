@@ -5146,14 +5146,34 @@ function renderInvItems(){
             <div style="font-weight:600">${esc(i.name)}</div>
             ${i.sku?`<div style="font-family:var(--font-mono);font-size:.68rem;color:var(--accent-gold)">${esc(i.sku)}</div>`:''}
           </td>
-          <td style="padding:.5rem .75rem;text-align:center">${i.qty}</td>
-          <td style="padding:.5rem .75rem;text-align:center">${formatPrice(i.price)}</td>
+          <td style="padding:.5rem .75rem;text-align:center">
+            <input type="number" class="form-control" value="${i.qty}" min="1" style="width:64px;padding:.3rem .4rem;font-size:.8rem;text-align:center" onchange="updateInvItemField('${i.id}','qty',this.value)"/>
+          </td>
+          <td style="padding:.5rem .75rem;text-align:center">
+            <input type="number" class="form-control" value="${i.price}" min="0" style="width:90px;padding:.3rem .4rem;font-size:.8rem;text-align:center" onchange="updateInvItemField('${i.id}','price',this.value)"/>
+          </td>
           <td style="padding:.5rem .75rem;text-align:center;font-weight:700;color:var(--accent-gold)">${formatPrice(i.qty*i.price)}</td>
           <td style="padding:.5rem .75rem;text-align:center"><button class="btn btn-danger btn-sm" style="padding:.2rem .5rem;font-size:.7rem" onclick="removeInvItem('${i.id}')">✕</button></td>
         </tr>`).join('')}</tbody>
       </table></div>`;
   }
   updateInvDiscount(subtotal);
+}
+
+// تعديل الكمية أو السعر لبند موجود بالفعل في الفاتورة (بعد ما اتضاف)
+function updateInvItemField(id, field, value){
+  const item = _invItems.find(i=>i.id===id);
+  if(!item) return;
+  if(field==='qty'){
+    let v = parseInt(value)||1;
+    if(v<1) v=1;
+    item.qty = v;
+  } else if(field==='price'){
+    let v = parseFloat(value)||0;
+    if(v<0) v=0;
+    item.price = v;
+  }
+  renderInvItems();
 }
 
 function updateInvDiscount(subtotalOverride){
