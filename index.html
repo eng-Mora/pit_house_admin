@@ -3144,6 +3144,7 @@ function openOrderDrawer(order){
       <div class="od-val">${esc(order.customerName||'—')}</div>
       <div style="font-size:.85rem;color:var(--text-muted);margin-top:.3rem">${esc(order.phone||'—')}</div>
       <div style="font-size:.82rem;color:var(--text-muted);margin-top:.2rem">${esc(order.address||order.city||'—')}</div>
+      ${order.location&&order.location.address?`<div style="font-size:.74rem;color:var(--text-muted);margin-top:.15rem">📍 ${esc(order.location.address)}</div>`:''}
       ${order.location&&order.location.lat?`<a href="https://www.google.com/maps?q=${order.location.lat},${order.location.lng}" target="_blank" class="btn btn-secondary btn-sm" style="margin-top:.5rem;display:inline-flex">📍 فتح الموقع على الخريطة</a>`:''}
     </div>
     <div class="order-detail-section">
@@ -5032,6 +5033,8 @@ function printReturnInvoice(order){
 let _allInvoices=[];
 let _invItems=[];
 let _editingInvoiceId=null;
+let _editingInvoiceOriginalItems=[];
+let _editingInvoiceOriginalType=null;
 let _invPaymentMethod=null;
 
 function selectInvPayment(val){
@@ -5057,6 +5060,8 @@ function genInvRef(){
 function openInvoiceModal(type='purchase', prefillParty=null){
   _invItems=[];
   _editingInvoiceId=null;
+  _editingInvoiceOriginalItems=[];
+  _editingInvoiceOriginalType=null;
   _invPaymentMethod=null;
   document.getElementById('inv-type').value=type;
   document.getElementById('inv-ref').value='';
@@ -5257,8 +5262,43 @@ async function saveInvoice(){
         const accNoteEdit=`فاتورة ${type==='sale'?'بيع':'شراء'} ${ref} — ${party}`;
         await pushAccountEntry(accKeyEdit, type==='purchase'?'withdraw':'deposit', total, accNoteEdit, {source:'invoice', invoiceId:editId});
       }
-      showToast(`✅ تم تعديل الفاتورة ${ref}`,'success');
+      // ── تصحيح كميات الجرد بالفرق بين الفاتورة قبل وبعد التعديل ──
+      // (لو كانت شراء قبل التعديل و/أو بقت شراء بعد التعديل)
+      const oldType = _editingInvoiceOriginalType || type;
+      const oldItems = _editingInvoiceOriginalItems || [];
+      if(type==='purchase' || oldType==='purchase'){
+        if(!_cachedProducts.length){ const ps=await getProductsSnap(); _cachedProducts=objToArr(ps.val()); }
+        const oldMap={}, newMap={};
+        if(oldType==='purchase') oldItems.forEach(it=>{ const k=it.sku||it.name; oldMap[k]=(oldMap[k]||0)+(Number(it.qty)||0); });
+        if(type==='purchase') _invItems.forEach(it=>{ const k=it.sku||it.name; newMap[k]=(newMap[k]||0)+(Number(it.qty)||0); });
+        const allKeys=new Set([...Object.keys(oldMap),...Object.keys(newMap)]);
+        const invUpdates={};
+        for(const k of allKeys){
+          const delta=(newMap[k]||0)-(oldMap[k]||0);
+          if(!delta) continue;
+          const prod=_cachedProducts.find(p=>p.sku===k||p.name===k);
+          if(!prod) continue;
+          const pSnap=await db.ref('products/'+prod.id).get();
+          if(!pSnap.exists()) continue;
+          const pData=pSnap.val();
+          const curQty=pData.qty!=null?Number(pData.qty):(pData.stock!=null?Number(pData.stock):0);
+          const newQty=Math.max(0, curQty+delta);
+          invUpdates['products/'+prod.id+'/qty']=newQty;
+          invUpdates['products/'+prod.id+'/stock']=newQty;
+        }
+        // تحديث سعر التكلفة لأحدث سعر في الفاتورة (لو لسه شراء)
+        if(type==='purchase'){
+          _invItems.forEach(it=>{
+            const prod=_cachedProducts.find(p=>p.sku===it.sku||p.name===it.name);
+            if(prod && it.price>0) invUpdates['products/'+prod.id+'/costPrice']=it.price;
+          });
+        }
+        if(Object.keys(invUpdates).length) await db.ref().update(invUpdates);
+      }
+      showToast(`✅ تم تعديل الفاتورة ${ref} وتحديث الجرد حسب الفرق`,'success');
       _editingInvoiceId=null;
+      _editingInvoiceOriginalItems=[];
+      _editingInvoiceOriginalType=null;
       closeInvoiceModal();
       await loadInvoicesPage();
     } else {
@@ -5991,6 +6031,8 @@ async function editInvoice(id){
     _cachedProducts=objToArr(ps.val());
   }
   _editingInvoiceId=id;
+  _editingInvoiceOriginalType=inv.type||'purchase';
+  _editingInvoiceOriginalItems=(inv.items||[]).map(i=>({name:i.name||'',sku:i.sku||'',qty:Number(i.qty)||0,price:Number(i.price)||0}));
   _invItems=(inv.items||[]).map(i=>({...i, id: i.id||Date.now()+'_'+Math.random().toString(36).slice(2,6)}));
   document.getElementById('inv-type').value=inv.type||'purchase';
   document.getElementById('inv-ref').value=inv.ref||'';
