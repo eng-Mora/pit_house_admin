@@ -1818,6 +1818,24 @@
           </div>
         </div>
       </div>
+      <!-- ══ CAR TYPE SECTION ══ -->
+      <div style="border-top:1px solid var(--border);margin:1.25rem 0 1rem;padding-top:1.25rem">
+        <div style="font-family:var(--font-display);font-size:1rem;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:1rem">🚗 نوع السيارة</div>
+        <div class="form-group">
+          <label class="form-label">هل يجب على العميل تحديد نوع عربيته قبل الشراء؟</label>
+          <select class="form-control" id="p-requires-car-type" onchange="toggleCarTypeFields()">
+            <option value="false">❌ لا — غير مطلوب</option>
+            <option value="true">✅ نعم — إجباري</option>
+          </select>
+          <div class="form-hint">لو اخترت "نعم"، هيظهر للعميل حقل إجباري يكتب فيه نوع عربيته (الماركة والموديل) قبل ما يقدر يضيف المنتج للسلة</div>
+        </div>
+        <div id="p-car-type-wrap" style="display:none">
+          <div class="form-group">
+            <label class="form-label">نص توضيحي للعميل (اختياري)</label>
+            <input type="text" class="form-control" id="p-car-type-hint" placeholder="مثال: اكتب ماركة وموديل وسنة العربية"/>
+          </div>
+        </div>
+      </div>
       <!-- ══ INSTALLATION SECTION ══ -->
       <div style="border-top:1px solid var(--border);margin:1.25rem 0 1rem;padding-top:1.25rem">
         <div style="font-family:var(--font-display);font-size:1rem;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:1rem">🔧 خدمة التركيب</div>
@@ -3101,7 +3119,7 @@ function renderOrders(orders){
   if(!orders.length){c.innerHTML=`<div class="empty-state"><div class="empty-icon">📦</div><h3>لا توجد طلبات</h3></div>`;return;}
   c.innerHTML=`<div class="table-wrapper"><table class="data-table"><thead><tr><th>رقم الطلب</th><th>العميل</th><th>التليفون</th><th>المنطقة</th><th>المنتجات</th><th>الإجمالي</th><th>الكود</th><th>الحالة</th><th>التاريخ</th><th>إجراءات</th></tr></thead><tbody>${orders.map(o=>{
     const collectBtn = (o.status==='holding') ? `<button class="btn btn-collect btn-sm" onclick="collectOrder('${o.id}',${o.totalPrice||0})">💚 Collect</button>` : '';
-    return`<tr><td class="td-mono" style="cursor:pointer" onclick='openOrderDrawer(${JSON.stringify(o)})'>${esc(o.id)}</td><td class="td-name">${esc(o.customerName||'—')}</td><td style="white-space:nowrap;font-family:var(--font-mono);font-size:.8rem">${esc(o.phone||'—')}</td><td style="font-size:.78rem;max-width:140px;color:var(--text-muted)">${esc(o.address||o.city||'—')}${o.location&&o.location.lat?` <a href="https://www.google.com/maps?q=${o.location.lat},${o.location.lng}" target="_blank" title="فتح على الخريطة" onclick="event.stopPropagation()">📍</a>`:''}</td><td style="font-size:.78rem;max-width:160px">${(o.items||[]).map(i=>`<div>${esc(i.name)} × ${i.qty}</div>`).join('')}</td><td class="td-price">${formatPrice(o.totalPrice)}</td><td style="font-family:var(--font-mono);font-size:.75rem;color:var(--accent-gold)">${o.promoCode?esc(o.promoCode):'—'}</td><td><select class="status-select" data-id="${o.id}" onchange="updateOrderStatus(this)"><option value="pending" ${o.status==='pending'?'selected':''}>⏳ قيد الانتظار</option><option value="confirmed" ${o.status==='confirmed'?'selected':''}>✅ مؤكد</option><option value="shipped" ${o.status==='shipped'?'selected':''}>🚚 تم الشحن</option><option value="delivered" ${o.status==='delivered'?'selected':''}>📦 تم التسليم</option><option value="holding" ${o.status==='holding'?'selected':''}>🔒 معلقة</option><option value="collected" ${o.status==='collected'?'selected':''}>💚 تم التحصيل</option><option value="return_requested" ${o.status==='return_requested'?'selected':''}>↩️ طلب إيرجاع</option><option value="returned" ${o.status==='returned'?'selected':''}>🔄 تم الإيرجاع</option></select></td><td style="white-space:nowrap;font-size:.75rem">${formatDate(o.createdAt)}</td><td style="display:flex;gap:.4rem;flex-wrap:wrap">${collectBtn}<button class="btn btn-secondary btn-sm" onclick='printWaybill(${JSON.stringify(o)})' title="بوليصة شحن">🚚 بوليصة</button>${o.status==='returned'?`<button class="btn btn-secondary btn-sm" onclick='printReturnInvoice(${JSON.stringify(o)})' title="فاتورة إرجاع">🧾 إرجاع</button>`:''}<button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.id}')">حذف</button></td></tr>`;
+    return`<tr><td class="td-mono" style="cursor:pointer" onclick='openOrderDrawer(${JSON.stringify(o)})'>${esc(o.id)}</td><td class="td-name">${esc(o.customerName||'—')}</td><td style="white-space:nowrap;font-family:var(--font-mono);font-size:.8rem">${esc(o.phone||'—')}</td><td style="font-size:.78rem;max-width:140px;color:var(--text-muted)">${esc(o.address||o.city||'—')}${o.location&&o.location.lat?` <a href="https://www.google.com/maps?q=${o.location.lat},${o.location.lng}" target="_blank" title="فتح على الخريطة" onclick="event.stopPropagation()">📍</a>`:''}</td><td style="font-size:.78rem;max-width:160px">${(o.items||[]).map(i=>`<div>${esc(i.name)} × ${i.qty}${i.carType?`<br/><span style="color:#A78BFA;font-size:.7rem">🚗 ${esc(i.carType)}</span>`:''}</div>`).join('')}</td><td class="td-price">${formatPrice(o.totalPrice)}</td><td style="font-family:var(--font-mono);font-size:.75rem;color:var(--accent-gold)">${o.promoCode?esc(o.promoCode):'—'}</td><td><select class="status-select" data-id="${o.id}" onchange="updateOrderStatus(this)"><option value="pending" ${o.status==='pending'?'selected':''}>⏳ قيد الانتظار</option><option value="confirmed" ${o.status==='confirmed'?'selected':''}>✅ مؤكد</option><option value="shipped" ${o.status==='shipped'?'selected':''}>🚚 تم الشحن</option><option value="delivered" ${o.status==='delivered'?'selected':''}>📦 تم التسليم</option><option value="holding" ${o.status==='holding'?'selected':''}>🔒 معلقة</option><option value="collected" ${o.status==='collected'?'selected':''}>💚 تم التحصيل</option><option value="return_requested" ${o.status==='return_requested'?'selected':''}>↩️ طلب إيرجاع</option><option value="returned" ${o.status==='returned'?'selected':''}>🔄 تم الإيرجاع</option></select></td><td style="white-space:nowrap;font-size:.75rem">${formatDate(o.createdAt)}</td><td style="display:flex;gap:.4rem;flex-wrap:wrap">${collectBtn}<button class="btn btn-secondary btn-sm" onclick='printWaybill(${JSON.stringify(o)})' title="بوليصة شحن">🚚 بوليصة</button>${o.status==='returned'?`<button class="btn btn-secondary btn-sm" onclick='printReturnInvoice(${JSON.stringify(o)})' title="فاتورة إرجاع">🧾 إرجاع</button>`:''}<button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.id}')">حذف</button></td></tr>`;
   }).join('')}</tbody></table></div>`;
 }
 async function updateOrderStatus(sel){
@@ -3276,7 +3294,7 @@ function openOrderDrawer(order){
     </div>
     <div class="order-detail-section">
       <div class="od-label">المنتجات</div>
-      <div class="od-items">${(order.items||[]).map(i=>`<div class="od-item"><span>${esc(i.name)}${i.withInstallation?` <span style="font-size:.7rem;background:rgba(33,150,243,.15);color:#42A5F5;border:1px solid rgba(33,150,243,.25);border-radius:99px;padding:.12rem .45rem;font-family:var(--font-mono)">🔧 تركيب</span>`:''}</span><span style="font-family:var(--font-mono)">${i.qty} × ${formatPrice(i.price)}${i.withInstallation&&i.installationPrice?`<br/><span style="font-size:.7rem;color:#42A5F5">+${formatPrice(i.installationPrice)} تركيب</span>`:''}</span></div>`).join('')}</div>
+      <div class="od-items">${(order.items||[]).map(i=>`<div class="od-item"><span>${esc(i.name)}${i.withInstallation?` <span style="font-size:.7rem;background:rgba(33,150,243,.15);color:#42A5F5;border:1px solid rgba(33,150,243,.25);border-radius:99px;padding:.12rem .45rem;font-family:var(--font-mono)">🔧 تركيب</span>`:''}${i.carType?` <span style="font-size:.7rem;background:rgba(167,139,250,.15);color:#A78BFA;border:1px solid rgba(167,139,250,.25);border-radius:99px;padding:.12rem .45rem;font-family:var(--font-ar)">🚗 ${esc(i.carType)}</span>`:''}</span><span style="font-family:var(--font-mono)">${i.qty} × ${formatPrice(i.price)}${i.withInstallation&&i.installationPrice?`<br/><span style="font-size:.7rem;color:#42A5F5">+${formatPrice(i.installationPrice)} تركيب</span>`:''}</span></div>`).join('')}</div>
       ${order.installationSlot?`<div class="install-slot-badge-order">📅 <span><strong>موعد التركيب:</strong> ${esc(order.installationSlot.dateLabel||'—')}${order.installationSlot.timeLabel?' — '+esc(order.installationSlot.timeLabel):''}</span></div>`:''}
     </div>
     <div class="order-detail-section">
@@ -3413,6 +3431,7 @@ function renderProductsList(products){
       </div>
       <span class="product-warranty-badge ${warr?'warranty-yes':'warranty-no'}">${warr?'✅ ضمان':'❌ لا ضمان'}</span>
       ${(p.hasInstallation===true||p.hasInstallation==='true')?`<span class="product-warranty-badge" style="background:rgba(33,150,243,.1);color:#42A5F5;border:1px solid rgba(33,150,243,.2)">🔧 +${formatPrice(p.installationPrice||0)}</span>`:`<span class="product-warranty-badge" style="opacity:.35">🔧 بدون تركيب</span>`}
+      ${(p.requiresCarType===true||p.requiresCarType==='true')?`<span class="product-warranty-badge" style="background:rgba(255,179,0,.1);color:var(--accent-gold);border:1px solid rgba(255,179,0,.2)">🚗 نوع العربية إجباري</span>`:''}
       ${cost!=null?`<div class="product-cost" title="سعر الشراء">🛒 ${formatPrice(cost)}</div>`:'<div></div>'}
       <div class="product-row-price" title="سعر البيع">
         ${p.salePrice!=null ? `<span style="text-decoration:line-through;color:var(--text-muted);font-size:.85rem;font-family:var(--font-display)">${formatPrice(p.price)}</span><br/><span style="color:var(--accent)">🔥 ${formatPrice(p.salePrice)}</span>` : `💲 ${formatPrice(p.price)}`}
@@ -3434,6 +3453,10 @@ function toggleInstallationFields(){
   const has = document.getElementById('p-has-installation').value==='true';
   document.getElementById('p-installation-wrap').style.display = has ? 'block' : 'none';
 }
+function toggleCarTypeFields(){
+  const val = document.getElementById('p-requires-car-type').value==='true';
+  document.getElementById('p-car-type-wrap').style.display = val ? 'block' : 'none';
+}
 function generateSKU(){
   const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   const part=()=>Array.from({length:3},()=>chars[Math.floor(Math.random()*chars.length)]).join('');
@@ -3447,12 +3470,14 @@ function generateSKU(){
 function openProductModal(){
   editingProductId=null;_extraImages=[];_videos=[];_variants=[];
   document.getElementById('product-modal-title').textContent='إضافة منتج جديد';
-  ['p-name','p-price','p-cost','p-sale-price','p-qty','p-category','p-desc','p-image','p-warranty-period','p-installation-price','p-installation-desc','p-return-days','p-return-conditions'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['p-name','p-price','p-cost','p-sale-price','p-qty','p-category','p-desc','p-image','p-warranty-period','p-installation-price','p-installation-desc','p-return-days','p-return-conditions','p-car-type-hint'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   generateSKU();
   document.getElementById('p-warranty').value='false';
   document.getElementById('p-active').value='true';
   document.getElementById('p-has-installation').value='false';
   document.getElementById('p-installation-wrap').style.display='none';
+  document.getElementById('p-requires-car-type').value='false';
+  document.getElementById('p-car-type-wrap').style.display='none';
   document.getElementById('p-returnable').value='false';
   document.getElementById('p-return-wrap').style.display='none';
   document.getElementById('new-image-url').value='';
@@ -3490,6 +3515,11 @@ function openEditProductModal(id, p){
   document.getElementById('p-installation-price').value=p.installationPrice||'';
   document.getElementById('p-installation-desc').value=p.installationDesc||'';
   document.getElementById('p-installation-wrap').style.display=hasInst?'block':'none';
+  // Car type requirement
+  const reqCarType = p.requiresCarType===true||p.requiresCarType==='true';
+  document.getElementById('p-requires-car-type').value=String(reqCarType);
+  document.getElementById('p-car-type-hint').value=p.carTypeHint||'';
+  document.getElementById('p-car-type-wrap').style.display=reqCarType?'block':'none';
   // Return policy
   const returnable = p.returnable===true||p.returnable==='true';
   document.getElementById('p-returnable').value=String(returnable);
@@ -3554,6 +3584,9 @@ async function saveProduct(){
   const installationPriceRaw=document.getElementById('p-installation-price').value.trim();
   const installationPrice=installationPriceRaw===''?0:Number(installationPriceRaw);
   const installationDesc=document.getElementById('p-installation-desc').value.trim();
+  // Car type requirement
+  const requiresCarType=document.getElementById('p-requires-car-type').value==='true';
+  const carTypeHint=document.getElementById('p-car-type-hint').value.trim();
   // Return policy
   const returnable=document.getElementById('p-returnable').value==='true';
   const returnDaysRaw=document.getElementById('p-return-days').value.trim();
@@ -3565,7 +3598,7 @@ async function saveProduct(){
   if(hasInstallation&&(isNaN(installationPrice)||installationPrice<0)){document.getElementById('fg-installation-price').classList.add('has-error');valid=false}else document.getElementById('fg-installation-price')?.classList.remove('has-error');
   if(!valid)return;
   const btn=document.getElementById('product-save-btn');btn.disabled=true;btn.textContent='جاري الحفظ...';
-  const data={name,price,salePrice,qty,stock:qty,category,description:desc,imageUrl:image,extraImages:_extraImages,videos:_videos,warranty,warrantyPeriod,active,hasInstallation,installationPrice:hasInstallation?installationPrice:0,installationDesc:hasInstallation?installationDesc:'',returnable,returnDays:returnable?returnDays:0,returnConditions:returnable?returnConditions:'',
+  const data={name,price,salePrice,qty,stock:qty,category,description:desc,imageUrl:image,extraImages:_extraImages,videos:_videos,warranty,warrantyPeriod,active,hasInstallation,installationPrice:hasInstallation?installationPrice:0,installationDesc:hasInstallation?installationDesc:'',requiresCarType,carTypeHint:requiresCarType?carTypeHint:'',returnable,returnDays:returnable?returnDays:0,returnConditions:returnable?returnConditions:'',
     variantType: document.getElementById('p-variant-type').value,
     variants: _variants.length>0 ? _variants : [],
     updatedAt:Date.now()};
@@ -4991,7 +5024,7 @@ function printWaybill(order){
   const items=(order.items||[]);
   const itemsRows=items.map(i=>`
     <tr style="border-bottom:1px solid #eee">
-      <td style="padding:.4rem .5rem">${esc(i.name)}</td>
+      <td style="padding:.4rem .5rem">${esc(i.name)}${i.carType?`<br><span style="font-size:.68rem;color:#7c3aed">🚗 ${esc(i.carType)}</span>`:''}</td>
       <td style="padding:.4rem .5rem;text-align:center">${i.qty||1}</td>
       <td style="padding:.4rem .5rem;text-align:center">${formatPrice((i.price||0)*(i.qty||1))}</td>
     </tr>`).join('');
