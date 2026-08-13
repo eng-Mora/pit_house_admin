@@ -1705,11 +1705,11 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">فيديوهات (Google Drive Embed)</label>
-        <div class="form-hint" style="margin-bottom:.6rem">الصق رابط المشاركة من Google Drive — سيتحول تلقائياً لرابط embed</div>
+        <label class="form-label">فيديوهات</label>
+        <div class="form-hint" style="margin-bottom:.6rem">الصق رابط الفيديو من Google Drive أو Streamtape أو VdoHide أو Media.cm أو أي رابط embed مباشر — هيتحول تلقائياً لصيغة embed لو أمكن</div>
         <div class="media-list" id="videos-list"></div>
         <div style="display:flex;gap:.5rem;margin-top:.6rem">
-          <input type="text" class="form-control" id="new-video-url" placeholder="https://drive.google.com/file/d/.../view"/>
+          <input type="text" class="form-control" id="new-video-url" placeholder="رابط الفيديو (Drive / Streamtape / VdoHide / Media.cm / ...)"/>
           <button class="btn btn-secondary btn-sm" onclick="addVideo()" style="white-space:nowrap">+ إضافة</button>
         </div>
       </div>
@@ -3554,12 +3554,40 @@ function addExtraImage(){
   _extraImages.push(url);document.getElementById('new-image-url').value='';renderMediaLists();
 }
 function removeExtraImage(i){_extraImages.splice(i,1);renderMediaLists()}
+// بيحاول يحول أي رابط فيديو (Drive / YouTube / Streamtape / VdoHide / Media.cm / ...) لصيغة embed قابلة للعرض في iframe
+function normalizeVideoUrl(rawUrl){
+  let url = rawUrl;
+  let host = '';
+  try{ host = new URL(url).hostname.replace(/^www\./,'').toLowerCase(); }catch(e){ return url; }
+
+  // Google Drive: /file/d/{id}/... → /file/d/{id}/preview
+  if(host.includes('drive.google.com')){
+    const m = url.match(/\/file\/d\/([^/?]+)/);
+    return m ? `https://drive.google.com/file/d/${m[1]}/preview` : url;
+  }
+  // YouTube: youtu.be/{id} أو watch?v={id} → embed/{id}
+  if(host.includes('youtube.com') || host.includes('youtu.be')){
+    const m = url.match(/(?:v=|youtu\.be\/|embed\/)([^&?/]+)/);
+    return m ? `https://www.youtube.com/embed/${m[1]}` : url;
+  }
+  // Streamtape وأخواتها: صفحة المشاهدة /v/{id}/... → /e/{id}
+  if(host.includes('streamtape') || host.includes('streamta.pe')){
+    const m = url.match(/\/v\/([^/?]+)/);
+    return m ? `https://${host}/e/${m[1]}` : url;
+  }
+  // VdoHide / Media.cm وأي هوست شبيه (بيدي رابط embed جاهز غالباً بعد الرفع)
+  // لو الرابط لسه بصيغة صفحة المشاهدة (/v/ أو /d/ أو /f/) نحوله لـ /e/، غير كده نسيبه زي ما هو
+  if(host.includes('vdohide') || host.includes('media.cm') || host.includes('vidhide')){
+    const m = url.match(/\/(?:v|d|f)\/([^/?]+)/);
+    return m ? `https://${host}/e/${m[1]}` : url;
+  }
+  // أي هوست تاني: نسيب الرابط زي ما هو (المفروض يكون رابط embed جاهز)
+  return url;
+}
 function addVideo(){
   let url=document.getElementById('new-video-url').value.trim();
   if(!url){showToast('أدخل رابط الفيديو أولاً','error');return;}
-  // convert Drive share link to embed
-  const m=url.match(/\/file\/d\/([^/]+)/);
-  if(m) url=`https://drive.google.com/file/d/${m[1]}/preview`;
+  url = normalizeVideoUrl(url);
   _videos.push(url);document.getElementById('new-video-url').value='';renderMediaLists();
 }
 function removeVideo(i){_videos.splice(i,1);renderMediaLists()}
