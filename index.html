@@ -4759,6 +4759,7 @@ async function loadShippingPage(){
     toggleCodFeeType();
     document.getElementById('ship-cod-fee').value = s.codFee ?? '';
     document.getElementById('ship-tenth-ramadan').value = s.tenthRamadanFee ?? '';
+    document.getElementById('ship-deposit-enabled').checked = s.depositEnabled !== false;
     const rates = s.rates || {};
     EGYPT_GOVS.forEach(g=>{
       const inp = document.getElementById('ship-gov-'+g.key);
@@ -4795,8 +4796,9 @@ async function saveShippingSettings(){
   const codFeeType = document.getElementById('ship-cod-type').value;
   const codFee = Number(document.getElementById('ship-cod-fee').value)||0;
   const tenthRamadanFee = Number(document.getElementById('ship-tenth-ramadan').value)||0;
+  const depositEnabled = document.getElementById('ship-deposit-enabled').checked;
   try{
-    await db.ref('settings/shipping').set({rates, codFee, codFeeType, tenthRamadanFee});
+    await db.ref('settings/shipping').set({rates, codFee, codFeeType, tenthRamadanFee, depositEnabled});
     showToast('تم حفظ إعدادات الشحن ✓','success');
   }catch(e){
     showToast('فشل الحفظ: '+e.message,'error');
@@ -7810,6 +7812,16 @@ function printLedgerStatement(key){
         <div class="form-hint">هيظهر في بوليصة الشحن والفاتورة — اتركه فاضي لو مش عايز سلوجان</div>
       </div>
       <button class="btn btn-secondary btn-sm" style="margin-top:1.25rem" onclick="saveStoreSettings()">💾 حفظ بيانات المتجر</button>
+    </div>
+
+    <!-- COD Deposit (Mandatory Shipping Transfer) -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1.5rem;max-width:520px">
+      <div style="font-family:var(--font-display);font-size:1.3rem;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:.5rem">🔒 عربون الشحن الإجباري</div>
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:1.25rem">لو مفعّل، العميل اللي بيختار "الدفع عند الاستلام" هيُطلب منه تحويل عربون بقيمة الشحن (فودافون كاش / إنستاباي) قبل تفعيل الطلب. لو معطّل، الدفع عند الاستلام هيشتغل عادي من غير أي عربون</div>
+      <label style="display:flex;align-items:center;gap:.6rem;cursor:pointer;font-size:.92rem;font-weight:700;color:var(--text-primary)">
+        <input type="checkbox" id="ship-deposit-enabled" style="width:18px;height:18px;accent-color:var(--accent)"/>
+        تفعيل عربون الشحن الإجباري
+      </label>
     </div>
 
     <!-- COD Fee -->
