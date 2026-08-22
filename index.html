@@ -1114,7 +1114,10 @@
   <main class="page-container">
     <div class="page-header">
       <div class="page-header-title"><span class="label">إدارة</span><h1>المنتجات</h1></div>
-      <button class="btn btn-primary" onclick="openProductModal()">+ إضافة منتج</button>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="openCategoriesModal()">🏷️ الفئات</button>
+        <button class="btn btn-primary" onclick="openProductModal()">+ إضافة منتج</button>
+      </div>
     </div>
     <div style="display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center">
       <!-- بحث عادي -->
@@ -1122,6 +1125,10 @@
         <span style="position:absolute;right:.85rem;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:.9rem;pointer-events:none">🔍</span>
         <input class="search-input" id="product-search" placeholder="ابحث بالاسم أو الفئة أو الكود SKU..." oninput="filterProducts()" style="padding-right:2.4rem;width:100%"/>
       </div>
+      <!-- فلتر الفئة -->
+      <select class="search-input" id="product-cat-filter" style="min-width:180px;width:auto" onchange="filterProducts()">
+        <option value="">كل الفئات</option>
+      </select>
       <!-- سكان الباركود -->
       <div style="position:relative;min-width:220px">
         <span style="position:absolute;right:.85rem;top:50%;transform:translateY(-50%);color:var(--accent-gold);font-size:.9rem;pointer-events:none">🔲</span>
@@ -1681,8 +1688,13 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">الفئة</label>
-        <input type="text" class="form-control" id="p-category" placeholder="مثال: إكسسوارات خارجية"/>
+        <label class="form-label" style="display:flex;align-items:center;justify-content:space-between">
+          <span>الفئة</span>
+          <span style="color:var(--accent);cursor:pointer;font-size:.75rem;font-weight:700" onclick="openCategoriesModal()">🏷️ إدارة الفئات</span>
+        </label>
+        <select class="form-control" id="p-category">
+          <option value="">— اختر فئة —</option>
+        </select>
       </div>
       <div class="form-group">
         <label class="form-label">الوصف</label>
@@ -1865,6 +1877,28 @@
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeProductModal()">إلغاء</button>
       <button class="btn btn-primary" id="product-save-btn" onclick="saveProduct()">💾 حفظ المنتج</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CATEGORIES MODAL ══ -->
+<div class="modal-backdrop" id="categories-modal" style="display:none" onclick="if(event.target===this)closeCategoriesModal()">
+  <div class="modal-box" style="max-width:480px">
+    <h2>🏷️ إدارة الفئات</h2>
+    <div class="form-group">
+      <label class="form-label">إضافة فئة جديدة</label>
+      <div style="display:flex;gap:.5rem">
+        <input type="text" class="form-control" id="new-category-name" placeholder="مثال: إكسسوارات خارجية"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();addCategory();}" style="flex:1"/>
+        <button class="btn btn-primary" onclick="addCategory()">+ إضافة</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">الفئات الحالية</label>
+      <div id="categories-list" style="display:flex;flex-direction:column;gap:.5rem;max-height:320px;overflow-y:auto"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeCategoriesModal()">إغلاق</button>
     </div>
   </div>
 </div>
@@ -3348,19 +3382,115 @@ async function loadProductsPage(){
     const snap=await getProductsSnap();
     _allProducts=objToArr(snap.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
     renderProductsList(_allProducts);
+    await loadCategories();
+    renderCategoryFilterDropdown();
   }catch(err){console.error(err);showToast('خطأ في تحميل المنتجات','error')}
   finally{hideSpinner()}
 }
 function filterProducts(){
   const q=(document.getElementById('product-search')?.value||'').toLowerCase().trim();
-  if(!q){renderProductsList(_allProducts);return;}
-  renderProductsList(_allProducts.filter(p=>
+  const cat=(document.getElementById('product-cat-filter')?.value||'');
+  let list=_allProducts;
+  if(cat) list=list.filter(p=>(p.category||'')===cat);
+  if(q) list=list.filter(p=>
     (p.name||'').toLowerCase().includes(q)||
     (p.category||'').toLowerCase().includes(q)||
     (p.sku||'').toLowerCase().includes(q)||
     (p.description||'').toLowerCase().includes(q)
-  ));
+  );
+  renderProductsList(list);
 }
+
+// ── Categories management ──────────────────────────────────
+let _categories=[]; // [{id,name}]
+
+async function loadCategories(){
+  try{
+    const snap=await db.ref('categories').get();
+    _categories=objToArr(snap.val()).sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar'));
+  }catch(err){ console.error('loadCategories error',err); _categories=[]; }
+}
+
+function renderCategorySelect(selectedName){
+  const sel=document.getElementById('p-category');
+  if(!sel) return;
+  const current = selectedName!=null ? selectedName : sel.value;
+  sel.innerHTML = `<option value="">— اختر فئة —</option>` +
+    _categories.map(c=>`<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('');
+  // لو المنتج بيه فئة قديمة (نص حر) مش موجودة في قايمة الفئات المُدارة، ضيفها كخيار مؤقت عشان منفقدش البيانات
+  if(current && !_categories.some(c=>c.name===current)){
+    sel.innerHTML += `<option value="${esc(current)}">${esc(current)} (قديمة)</option>`;
+  }
+  sel.value = current || '';
+}
+
+function renderCategoryFilterDropdown(){
+  const sel=document.getElementById('product-cat-filter');
+  if(!sel) return;
+  const current = sel.value;
+  const namesFromProducts = Array.from(new Set(_allProducts.map(p=>(p.category||'').trim()).filter(Boolean)));
+  const namesFromCats = _categories.map(c=>c.name);
+  const allNames = Array.from(new Set([...namesFromCats, ...namesFromProducts])).sort((a,b)=>a.localeCompare(b,'ar'));
+  sel.innerHTML = `<option value="">كل الفئات</option>` + allNames.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');
+  sel.value = allNames.includes(current) ? current : '';
+}
+
+function openCategoriesModal(){
+  loadCategories().then(()=>{
+    renderCategoriesList();
+    document.getElementById('categories-modal').style.display='flex';
+  });
+}
+function closeCategoriesModal(){
+  document.getElementById('categories-modal').style.display='none';
+  // حدّث القوائم المنسدلة اللي بتعتمد على الفئات
+  renderCategorySelect();
+  renderCategoryFilterDropdown();
+}
+
+function renderCategoriesList(){
+  const wrap=document.getElementById('categories-list');
+  if(!wrap) return;
+  if(!_categories.length){
+    wrap.innerHTML=`<div style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:.85rem">مفيش فئات لسه — ضيف أول فئة من فوق</div>`;
+    return;
+  }
+  wrap.innerHTML=_categories.map(c=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:.6rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.6rem .85rem">
+      <span style="font-weight:700;font-size:.88rem">🏷️ ${esc(c.name)}</span>
+      <button class="btn btn-danger btn-sm" onclick="deleteCategory('${c.id}')">🗑️ حذف</button>
+    </div>`).join('');
+}
+
+async function addCategory(){
+  const inp=document.getElementById('new-category-name');
+  const name=(inp?.value||'').trim();
+  if(!name){ showToast('اكتب اسم الفئة أولاً','error'); return; }
+  if(_categories.some(c=>c.name.toLowerCase()===name.toLowerCase())){
+    showToast('الفئة دي موجودة بالفعل','error'); return;
+  }
+  try{
+    await db.ref('categories').push({name, createdAt:Date.now()});
+    inp.value='';
+    await loadCategories();
+    renderCategoriesList();
+    showToast('تمت إضافة الفئة ✅','success');
+  }catch(err){ console.error(err); showToast('حصل خطأ أثناء الإضافة','error'); }
+}
+
+async function deleteCategory(id){
+  const cat=_categories.find(c=>c.id===id);
+  if(!cat) return;
+  const inUse = _allProducts.some(p=>(p.category||'')===cat.name);
+  if(inUse && !confirm(`الفئة "${cat.name}" مستخدمة في منتجات حالية. هل تريد حذفها؟ (المنتجات هتفضل زي ما هي بدون فئة محذوفة)`)) return;
+  try{
+    await db.ref('categories/'+id).remove();
+    await loadCategories();
+    renderCategoriesList();
+    showToast('تم حذف الفئة','success');
+  }catch(err){ console.error(err); showToast('حصل خطأ أثناء الحذف','error'); }
+}
+
 
 let _scanTimer=null;
 function handleProductScan(val){
@@ -3467,11 +3597,13 @@ function generateSKU(){
   return sku;
 }
 
-function openProductModal(){
+async function openProductModal(){
   editingProductId=null;_extraImages=[];_videos=[];_variants=[];
   document.getElementById('product-modal-title').textContent='إضافة منتج جديد';
   ['p-name','p-price','p-cost','p-sale-price','p-qty','p-category','p-desc','p-image','p-warranty-period','p-installation-price','p-installation-desc','p-return-days','p-return-conditions','p-car-type-hint'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   generateSKU();
+  if(!_categories.length) await loadCategories();
+  renderCategorySelect('');
   document.getElementById('p-warranty').value='false';
   document.getElementById('p-active').value='true';
   document.getElementById('p-has-installation').value='false';
@@ -3491,7 +3623,7 @@ function openProductModal(){
   switchTab('tab-basic','product-modal');
   document.getElementById('product-modal').style.display='flex';
 }
-function openEditProductModal(id, p){
+async function openEditProductModal(id, p){
   editingProductId=id;
   _extraImages=p.extraImages||[];
   _videos=p.videos||[];
@@ -3503,7 +3635,8 @@ function openEditProductModal(id, p){
   document.getElementById('p-cost').value=p.costPrice!=null?p.costPrice:'';
   document.getElementById('p-sale-price').value=p.salePrice!=null?p.salePrice:'';
   document.getElementById('p-qty').value=p.qty!=null?p.qty:(p.stock!=null?p.stock:'');
-  document.getElementById('p-category').value=p.category||'';
+  if(!_categories.length) await loadCategories();
+  renderCategorySelect(p.category||'');
   document.getElementById('p-desc').value=p.description||'';
   document.getElementById('p-image').value=p.imageUrl||'';
   document.getElementById('p-warranty').value=String(p.warranty==='true'||p.warranty===true);
