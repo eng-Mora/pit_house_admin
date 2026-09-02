@@ -2101,6 +2101,41 @@ const EGYPT_GOVS = [
   {key:'qena',name:'قنا'},{key:'luxor',name:'الأقصر'},{key:'aswan',name:'أسوان'}
 ];
 
+// ══ DEFAULT CITIES PER GOVERNORATE (fallback — يُستبدل بأي تعديل محفوظ في settings/govCities) ══
+const DEFAULT_GOV_CITIES = {
+  cairo: ['مدينة نصر','المعادي','مصر الجديدة','عين شمس','شبرا','الزيتون','حلوان','المطرية','التبين','العباسية','الدرب الأحمر','الموسكي','الأزهر','باب الشعرية','عابدين','بولاق','الأميرية','المرج','النزهة','وادي حوف','الخليفة','السيدة زينب','روض الفرج','شبرا الخيمة القاهرة','مدينة بدر','الرحاب','مدينتي','القطامية','التجمع الخامس','15 مايو','حلوان','أوسيم','العبور','أخرى'],
+  giza: ['الجيزة','الدقي','العجوزة','المهندسين','إمبابة','بولاق الدكرور','الشيخ زايد','6 أكتوبر','أوسيم','الصف','العياط','أطفيح','الواحات البحرية','الحوامدية','البدرشين','الجيزة الجديدة','أخرى'],
+  alex: ['المنتزه','العجمي','البيطاش','الإسكندرية','سيدي بشر','المعمورة','أبو قير','الرمل','اللبان','كرموز','العامرية','برج العرب','الدخيلة','ميناء البصل','أخرى'],
+  dakahlia: ['المنصورة','طلخا','شربين','ميت غمر','دكرنس','بلقاس','أجا','السنبلاوين','منية النصر','تمي الأمديد','نبروه','الجمالية','المطرية','بني عبيد','أخرى'],
+  sharqia: ['الزقازيق','بلبيس','ميت أبو الكوم','أبو حماد','القنايات','العاشر من رمضان','ههيا','فاقوس','أبو كبير','كفر صقر','الحسينية','منيا القمح','ديرب نجم','الإبراهيمية','صان الحجر','أخرى'],
+  beheira: ['دمنهور','كفر الدوار','رشيد','إيتاي البارود','أبو المطامير','أبو حمص','الدلنجات','المحمودية','الرحمانية','حوش عيسى','شبراخيت','كوم حمادة','بدر','وادي النطرون','النوبارية','أخرى'],
+  gharbiya: ['طنطا','المحلة الكبرى','كفر الزيات','زفتى','سمنود','بسيون','قطور','أخرى'],
+  kafr_el_sheikh: ['كفر الشيخ','دسوق','فوه','قلين','بلطيم','مطوبس','الحامول','برج البرلس','سيدي سالم','أخرى'],
+  monufia: ['شبين الكوم','مينوف','أشمون','السادات','قويسنا','تلا','الشهداء','بركة السبع','سرس الليان','أخرى'],
+  qalyubia: ['بنها','قليوب','شبين القناطر','القناطر الخيرية','طوخ','الخانكة','كفر شكر','الخصوص','العبور','شبرا الخيمة','أخرى'],
+  damietta: ['دمياط','رأس البر','الزرقا','فارسكور','كفر سعد','السرو','عزبة البرج','دمياط الجديدة','أخرى'],
+  port_said: ['بورسعيد','بورفؤاد','أخرى'],
+  ismailia: ['الإسماعيلية','القنطرة شرق','القنطرة غرب','فايد','أبو صوير','التل الكبير','أخرى'],
+  suez: ['السويس','عتاقة','الجناين','أخرى'],
+  north_sinai: ['العريش','الشيخ زويد','رفح','بئر العبد','نخل','أخرى'],
+  south_sinai: ['شرم الشيخ','دهب','طابا','نويبع','سانت كاترين','أبو رديس','الطور','أخرى'],
+  red_sea: ['الغردقة','سفاجا','القصير','مرسى علم','رأس غارب','أخرى'],
+  matrouh: ['مرسى مطروح','سيدي براني','الضبعة','السلوم','الحمام','العلمين','أخرى'],
+  new_valley: ['الخارجة','الداخلة','الفرافرة','باريس','أخرى'],
+  fayoum: ['الفيوم','طامية','سنورس','إطسا','يوسف الصديق','أبشواي','أخرى'],
+  beni_suef: ['بني سويف','الواسطى','ناصر','الفشن','إهناسيا','ببا','سمسطا','أخرى'],
+  minya: ['المنيا','ملوي','العدوة','سمالوط','المنيا الجديدة','بني مزار','مطاي','أبو قرقاص','دير مواس','أخرى'],
+  asyut: ['أسيوط','ديروط','منفلوط','القوصية','أبنوب','الغنايم','ساحل سليم','أبو تيج','البداري','أخرى'],
+  sohag: ['سوهاج','أخميم','جرجا','المراغة','المنشاة','دار السلام','جهينة','البلينا','طهطا','طما','أخرى'],
+  qena: ['قنا','نجع حمادي','دشنا','أبو تشت','الوقف','فرشوط','قفط','قوص','نقادة','أخرى'],
+  luxor: ['الأقصر','إسنا','أرمنت','القرنة','الزينية','أخرى'],
+  aswan: ['أسوان','كوم أمبو','إدفو','أبو سمبل','دراو','نصر النوبة','أخرى']
+};
+
+// حالة إدارة المدن — govKey -> array من المدن (لو معدّلة عن الافتراضي)
+let _govCities = {};
+function citiesForGov(key){ return (_govCities[key] && _govCities[key].length) ? _govCities[key] : (DEFAULT_GOV_CITIES[key]||[]); }
+
 // ══ UTILS ══
 const esc = s => {const d=document.createElement('div');d.appendChild(document.createTextNode(s||''));return d.innerHTML};
 const objToArr = obj => obj ? Object.entries(obj).map(([id,v])=>({id,...v})) : [];
@@ -4905,6 +4940,81 @@ async function loadShippingPage(){
     document.getElementById('store-address').value = _storeSettings.address || '';
     document.getElementById('store-slogan').value = _storeSettings.slogan || '';
   }catch(e){console.error(e)}
+  await loadGovCities();
+}
+
+// ══ CITY MANAGEMENT (settings/govCities/{govKey} = [city1, city2, ...]) ══
+async function loadGovCities(){
+  try{
+    const snap = await db.ref('settings/govCities').get();
+    _govCities = snap.val() || {};
+  }catch(e){ console.error(e); _govCities = {}; }
+  const sel = document.getElementById('city-mgmt-gov-select');
+  if(sel && !sel.dataset.filled){
+    sel.innerHTML = EGYPT_GOVS.map(g=>`<option value="${g.key}">${g.name}</option>`).join('');
+    sel.dataset.filled = '1';
+  }
+  renderCityMgmtList();
+}
+
+function renderCityMgmtList(){
+  const sel = document.getElementById('city-mgmt-gov-select');
+  const wrap = document.getElementById('city-mgmt-list');
+  if(!sel || !wrap) return;
+  const key = sel.value;
+  const cities = citiesForGov(key);
+  if(!cities.length){ wrap.innerHTML = '<span style="font-size:.78rem;color:var(--text-muted)">لا يوجد مدن مسجلة لهذه المحافظة</span>'; return; }
+  wrap.innerHTML = cities.map(c=>`
+    <span style="display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:99px;padding:.3rem .4rem .3rem .7rem;font-family:var(--font-ar);color:var(--text-secondary)">
+      ${esc(c)}
+      <button onclick="removeCityFromGov('${esc(c).replace(/'/g,"\\'")}')" title="حذف" style="all:unset;cursor:pointer;width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.65rem;line-height:1;color:var(--text-muted)">✕</button>
+    </span>`).join('');
+}
+
+async function addCityToGov(){
+  const sel = document.getElementById('city-mgmt-gov-select');
+  const input = document.getElementById('city-mgmt-new-city');
+  const key = sel.value;
+  const city = input.value.trim();
+  if(!city){ showToast('اكتب اسم المدينة الأول','error'); return; }
+  const current = citiesForGov(key).slice();
+  if(current.includes(city)){ showToast('المدينة دي موجودة بالفعل','error'); return; }
+  // نضيف المدينة الجديدة قبل "أخرى" لو موجودة، وإلا في الآخر
+  const otherIdx = current.indexOf('أخرى');
+  if(otherIdx > -1) current.splice(otherIdx, 0, city); else current.push(city);
+  try{
+    await db.ref('settings/govCities/'+key).set(current);
+    _govCities[key] = current;
+    input.value = '';
+    renderCityMgmtList();
+    showToast('تم إضافة المدينة ✓','success');
+  }catch(e){ showToast('فشل الحفظ: '+e.message,'error'); }
+}
+
+async function removeCityFromGov(city){
+  const sel = document.getElementById('city-mgmt-gov-select');
+  const key = sel.value;
+  if(!confirm(`هل تريد حذف "${city}"؟`)) return;
+  const current = citiesForGov(key).filter(c=>c!==city);
+  try{
+    await db.ref('settings/govCities/'+key).set(current);
+    _govCities[key] = current;
+    renderCityMgmtList();
+    showToast('تم الحذف ✓','info');
+  }catch(e){ showToast('فشل الحذف: '+e.message,'error'); }
+}
+
+async function resetGovCities(){
+  const sel = document.getElementById('city-mgmt-gov-select');
+  const key = sel.value;
+  const gov = EGYPT_GOVS.find(g=>g.key===key);
+  if(!confirm(`هل تريد استعادة القائمة الافتراضية لمدن "${gov?gov.name:key}"؟ هيتم فقدان أي تعديلات محفوظة`)) return;
+  try{
+    await db.ref('settings/govCities/'+key).remove();
+    delete _govCities[key];
+    renderCityMgmtList();
+    showToast('تم استعادة القائمة الافتراضية ✓','info');
+  }catch(e){ showToast('فشل: '+e.message,'error'); }
 }
 
 async function saveStoreSettings(){
@@ -7991,6 +8101,22 @@ function printLedgerStatement(key){
       <div style="font-family:var(--font-display);font-size:1.3rem;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:.5rem">🗺️ أسعار الشحن حسب المحافظة</div>
       <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:1.25rem">حدد سعر الشحن (بالجنيه) لكل محافظة — اتركها صفر لو مفيش شحن لهذه المحافظة</div>
       <div class="shipping-grid" id="shipping-govs-grid"></div>
+    </div>
+
+    <!-- City management per governorate -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;margin-top:1.5rem;max-width:640px">
+      <div style="font-family:var(--font-display);font-size:1.3rem;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:.5rem">🏙️ إدارة المدن حسب المحافظة</div>
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:1.25rem">اختار محافظة لتعديل قائمة المدن/المناطق اللي بتظهر للعميل في صفحة الشحن — تقدر تضيف مدينة جديدة أو تحذف موجودة</div>
+      <div class="form-group" style="margin-bottom:1rem">
+        <label class="form-label">المحافظة</label>
+        <select class="form-control" id="city-mgmt-gov-select" onchange="renderCityMgmtList()"></select>
+      </div>
+      <div id="city-mgmt-list" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem"></div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center">
+        <input type="text" class="form-control" id="city-mgmt-new-city" placeholder="اسم المدينة/المنطقة الجديدة" style="flex:1;min-width:200px" onkeydown="if(event.key==='Enter'){event.preventDefault();addCityToGov();}"/>
+        <button class="btn btn-secondary btn-sm" onclick="addCityToGov()">➕ إضافة مدينة</button>
+        <button class="btn btn-secondary btn-sm" onclick="resetGovCities()" style="opacity:.75">↺ استعادة الافتراضي</button>
+      </div>
     </div>
 
   </main>
