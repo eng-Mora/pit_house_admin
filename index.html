@@ -758,11 +758,15 @@
     <!-- إضافة بند -->
     <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem">
       <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.6rem;font-weight:600">+ إضافة منتج للفاتورة</div>
-      <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:.5rem;align-items:end">
+      <div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:.5rem;align-items:end">
         <div>
           <label class="form-label" style="font-size:.72rem">اسم المنتج</label>
           <input type="text" class="form-control" id="inv-item-name" placeholder="اسم المنتج أو SKU..." list="inv-products-datalist"/>
           <datalist id="inv-products-datalist"></datalist>
+        </div>
+        <div id="inv-item-variant-wrap" style="display:none">
+          <label class="form-label" style="font-size:.72rem">اللون / التنويع</label>
+          <select class="form-control" id="inv-item-variant" style="min-width:120px"></select>
         </div>
         <div>
           <label class="form-label" style="font-size:.72rem">الكمية</label>
@@ -5354,11 +5358,24 @@ function printWaybill(order){
         </table>
       </div>
       <!-- TOTALS -->
-      <div style="background:#f9f9f9;border-top:1px solid #ddd;padding:.6rem 1rem;display:flex;justify-content:flex-end;gap:2rem;align-items:center">
-        ${order.shippingCost?`<span style="font-size:.78rem;color:#777">شحن: ${formatPrice(order.shippingCost)}</span>`:''}
-        <span style="font-size:.78rem;color:#777">إجمالي المنتجات: ${formatPrice((items).reduce((s,i)=>s+(i.price||0)*(i.qty||1),0))}</span>
-        <span style="font-size:1rem;font-weight:900">الإجمالي: ${formatPrice(order.totalPrice||0)}</span>
-      </div>
+      ${(()=>{
+        const productsTotal = (items).reduce((s,i)=>s+(i.price||0)*(i.qty||1),0);
+        const shippingCost = Number(order.shippingCost)||0;
+        const codFee = Number(order.codFee)||0;
+        const discount = Number(order.discount)||0;
+        // بنحسب الإجمالي فعليًا من مكوناته (بدل ما نثق في totalPrice المخزّن لو كان قديم/فيه خطأ)
+        const computedTotal = Math.max(0, productsTotal - discount + shippingCost + codFee);
+        const storedTotal = order.totalPrice!=null ? Number(order.totalPrice) : null;
+        const mismatch = storedTotal!=null && Math.abs(storedTotal-computedTotal) > 0.5;
+        return `<div style="background:#f9f9f9;border-top:1px solid #ddd;padding:.6rem 1rem;display:flex;justify-content:flex-end;gap:2rem;align-items:center;flex-wrap:wrap">
+          <span style="font-size:.78rem;color:#777">إجمالي المنتجات: ${formatPrice(productsTotal)}</span>
+          ${discount>0?`<span style="font-size:.78rem;color:#c00">الخصم: -${formatPrice(discount)}</span>`:''}
+          ${codFee>0?`<span style="font-size:.78rem;color:#777">رسوم الاستلام: ${formatPrice(codFee)}</span>`:''}
+          <span style="font-size:.78rem;color:#777">شحن: ${shippingCost>0?formatPrice(shippingCost):'مجاني'}</span>
+          <span style="font-size:1rem;font-weight:900">الإجمالي: ${formatPrice(computedTotal)}</span>
+        </div>
+        ${mismatch?`<div style="background:#fff3cd;color:#856404;font-size:.7rem;padding:.4rem 1rem;text-align:center">⚠️ ملحوظة: الإجمالي المحسوب هنا (${formatPrice(computedTotal)}) مختلف عن الإجمالي المخزّن مع الطلب (${formatPrice(storedTotal)}) — راجع الطلب</div>`:''}`;
+      })()}
       <!-- FOOTER -->
       <div style="background:#111;color:#fff;padding:.4rem 1rem;font-size:.62rem;display:flex;justify-content:space-between;opacity:.85">
         <span>${esc(_storeSettings.name||'PIT HOUSE')} Admin System</span>
@@ -5536,12 +5553,16 @@ function openInvoiceModal(type='purchase', prefillParty=null){
       setTimeout(()=>{ priceField.style.borderColor=''; priceField.style.background=''; }, 1200);
       priceField.focus();
       priceField.select();
+      populateInvVariantSelect(prod);
+    } else {
+      populateInvVariantSelect(null);
     }
   }
   invItemNameInput.oninput  = autoFillInvPrice;
   invItemNameInput.onchange = autoFillInvPrice;
   // datalist selection fires 'input' late on some browsers — catch blur too
   invItemNameInput.addEventListener('blur', autoFillInvPrice);
+  populateInvVariantSelect(null);
   // populate merchants datalist
   populateMerchantsDatalist();
   if(!_allStoreCustomers.length){
@@ -5570,6 +5591,20 @@ function populateStoreCustomersDatalist(){
   dl.innerHTML = _allStoreCustomers.map(c=>`<option value="${esc(c.name)}">${c.phone?'📞 '+esc(c.phone):''}</option>`).join('');
 }
 
+// ── اللون / التنويع في بند الفاتورة ──
+function populateInvVariantSelect(prod){
+  const wrap = document.getElementById('inv-item-variant-wrap');
+  const sel = document.getElementById('inv-item-variant');
+  if(!wrap || !sel) return;
+  if(prod && Array.isArray(prod.variants) && prod.variants.length){
+    sel.innerHTML = prod.variants.map(v=>`<option value="${esc(v.id)}">${esc(v.label)}${v.qty!=null?' — متاح: '+v.qty:''}</option>`).join('');
+    wrap.style.display='block';
+  } else {
+    sel.innerHTML='';
+    wrap.style.display='none';
+  }
+}
+
 function addInvoiceItem(){
   const name=document.getElementById('inv-item-name').value.trim();
   const qty=parseInt(document.getElementById('inv-item-qty').value)||1;
@@ -5587,10 +5622,21 @@ function addInvoiceItem(){
       price = Number(prod.price||0);
     }
   }
-  _invItems.push({name,qty,price,sku,id:Date.now()+'_'+Math.random().toString(36).slice(2,6)});
+  // لو المنتج له ألوان/تنويعات — لازم يتم اختيار واحد قبل الإضافة عشان الخصم من الجرد يبقى صح
+  let variantId=null, variantLabel=null;
+  const variantWrap = document.getElementById('inv-item-variant-wrap');
+  if(prod && Array.isArray(prod.variants) && prod.variants.length && variantWrap && variantWrap.style.display!=='none'){
+    const vSel = document.getElementById('inv-item-variant');
+    variantId = vSel ? vSel.value : null;
+    if(!variantId){ showToast('اختار اللون / التنويع الأول','error'); return; }
+    const v = prod.variants.find(x=>x.id===variantId);
+    variantLabel = v ? v.label : null;
+  }
+  _invItems.push({name,qty,price,sku,productId:prod?prod.id:null,variantId,variantLabel,id:Date.now()+'_'+Math.random().toString(36).slice(2,6)});
   document.getElementById('inv-item-name').value='';
   document.getElementById('inv-item-qty').value='1';
   document.getElementById('inv-item-price').value='';
+  populateInvVariantSelect(null);
   renderInvItems();
 }
 
@@ -5616,7 +5662,7 @@ function renderInvItems(){
         </tr></thead>
         <tbody>${_invItems.map(i=>`<tr style="border-top:1px solid var(--border)">
           <td style="padding:.5rem .75rem">
-            <div style="font-weight:600">${esc(i.name)}</div>
+            <div style="font-weight:600">${esc(i.name)}${i.variantLabel?` — <span style="color:var(--accent-gold)">${esc(i.variantLabel)}</span>`:''}</div>
             ${i.sku?`<div style="font-family:var(--font-mono);font-size:.68rem;color:var(--accent-gold)">${esc(i.sku)}</div>`:''}
           </td>
           <td style="padding:.5rem .75rem;text-align:center">${i.qty}</td>
@@ -5653,6 +5699,59 @@ function updateInvDiscount(subtotalOverride){
   document.getElementById('inv-discount-val').textContent='- '+formatPrice(discAmt)+' جنيه'+(dtype==='pct'&&dval>0?` (${dval}%)`:'');
   document.getElementById('inv-discount-row').style.display = discAmt>0 ? 'block':'none';
   document.getElementById('inv-grand-total').textContent=formatPrice(finalTotal)+' جنيه';
+}
+
+// ── تأثير الفاتورة على الجرد: شراء = زيادة، بيع = خصم (مع دعم اللون/التنويع) ──
+function invoiceInventoryEntries(type, items){
+  const sign = type==='purchase' ? 1 : (type==='sale' ? -1 : 0);
+  if(!sign) return [];
+  return (items||[]).map(it=>({
+    productId: it.productId || null,
+    variantId: it.variantId || null,
+    sku: it.sku || null,
+    name: it.name,
+    qty: sign * (Number(it.qty)||0)
+  }));
+}
+
+function mergeInventoryEntries(entries){
+  const map = new Map();
+  entries.forEach(e=>{
+    const key = (e.productId||e.sku||e.name)+'::'+(e.variantId||'');
+    if(!map.has(key)) map.set(key, {...e, qty:0});
+    map.get(key).qty += e.qty;
+  });
+  return [...map.values()];
+}
+
+async function applyInventoryEntries(entries){
+  const list = entries.filter(e=>e.qty);
+  if(!list.length) return false;
+  if(!_cachedProducts.length){ const ps=await getProductsSnap(); _cachedProducts=objToArr(ps.val()); }
+  const updates = {};
+  for(const e of list){
+    const prod = _cachedProducts.find(p=> (e.productId && p.id===e.productId) || (e.sku && p.sku===e.sku) || p.name===e.name);
+    if(!prod) continue;
+    const pSnap = await db.ref('products/'+prod.id).get();
+    if(!pSnap.exists()) continue;
+    const pData = pSnap.val();
+    const curQty = pData.qty!=null ? Number(pData.qty) : (pData.stock!=null ? Number(pData.stock) : null);
+    if(curQty!=null){
+      const newQty = Math.max(0, curQty + e.qty);
+      updates['products/'+prod.id+'/qty']   = newQty;
+      updates['products/'+prod.id+'/stock'] = newQty;
+    }
+    if(e.variantId && Array.isArray(pData.variants)){
+      const vIdx = pData.variants.findIndex(v=>v.id===e.variantId);
+      if(vIdx>=0 && pData.variants[vIdx].qty!=null){
+        const vCur = Number(pData.variants[vIdx].qty);
+        const vNew = Math.max(0, vCur + e.qty);
+        updates['products/'+prod.id+'/variants/'+vIdx+'/qty'] = vNew;
+      }
+    }
+  }
+  if(Object.keys(updates).length){ await db.ref().update(updates); return true; }
+  return false;
 }
 
 async function saveInvoice(){
@@ -5696,37 +5795,31 @@ async function saveInvoice(){
         await pushAccountEntry(accKeyEdit, type==='purchase'?'withdraw':'deposit', total, accNoteEdit, {source:'invoice', invoiceId:editId});
       }
       // ── تصحيح كميات الجرد بالفرق بين الفاتورة قبل وبعد التعديل ──
-      // (لو كانت شراء قبل التعديل و/أو بقت شراء بعد التعديل)
+      // (بيع = خصم، شراء = إضافة — بيتحسب الفرق الصافي فقط، ومع دعم الألوان/التنويعات)
       const oldType = _editingInvoiceOriginalType || type;
       const oldItems = _editingInvoiceOriginalItems || [];
-      if(type==='purchase' || oldType==='purchase'){
-        if(!_cachedProducts.length){ const ps=await getProductsSnap(); _cachedProducts=objToArr(ps.val()); }
-        const oldMap={}, newMap={};
-        if(oldType==='purchase') oldItems.forEach(it=>{ const k=it.sku||it.name; oldMap[k]=(oldMap[k]||0)+(Number(it.qty)||0); });
-        if(type==='purchase') _invItems.forEach(it=>{ const k=it.sku||it.name; newMap[k]=(newMap[k]||0)+(Number(it.qty)||0); });
-        const allKeys=new Set([...Object.keys(oldMap),...Object.keys(newMap)]);
-        const invUpdates={};
-        for(const k of allKeys){
-          const delta=(newMap[k]||0)-(oldMap[k]||0);
-          if(!delta) continue;
-          const prod=_cachedProducts.find(p=>p.sku===k||p.name===k);
-          if(!prod) continue;
-          const pSnap=await db.ref('products/'+prod.id).get();
-          if(!pSnap.exists()) continue;
-          const pData=pSnap.val();
-          const curQty=pData.qty!=null?Number(pData.qty):(pData.stock!=null?Number(pData.stock):0);
-          const newQty=Math.max(0, curQty+delta);
-          invUpdates['products/'+prod.id+'/qty']=newQty;
-          invUpdates['products/'+prod.id+'/stock']=newQty;
-        }
-        // تحديث سعر التكلفة لأحدث سعر في الفاتورة (لو لسه شراء)
-        if(type==='purchase'){
-          _invItems.forEach(it=>{
-            const prod=_cachedProducts.find(p=>p.sku===it.sku||p.name===it.name);
-            if(prod && it.price>0) invUpdates['products/'+prod.id+'/costPrice']=it.price;
-          });
-        }
-        if(Object.keys(invUpdates).length) await db.ref().update(invUpdates);
+      if(!_cachedProducts.length){ const ps=await getProductsSnap(); _cachedProducts=objToArr(ps.val()); }
+      const oldEntries = invoiceInventoryEntries(oldType, oldItems);
+      const newEntries = invoiceInventoryEntries(type, _invItems);
+      const netMap = new Map();
+      oldEntries.forEach(e=>{
+        const key=(e.productId||e.sku||e.name)+'::'+(e.variantId||'');
+        netMap.set(key, {...e, qty:-e.qty}); // إلغاء تأثير النسخة القديمة أولاً
+      });
+      newEntries.forEach(e=>{
+        const key=(e.productId||e.sku||e.name)+'::'+(e.variantId||'');
+        if(netMap.has(key)) netMap.get(key).qty += e.qty;
+        else netMap.set(key, {...e});
+      });
+      await applyInventoryEntries([...netMap.values()]);
+      // تحديث سعر التكلفة لأحدث سعر في الفاتورة (لو لسه شراء)
+      if(type==='purchase'){
+        const costUpdates = {};
+        _invItems.forEach(it=>{
+          const prod=_cachedProducts.find(p=>p.sku===it.sku||p.name===it.name);
+          if(prod && it.price>0) costUpdates['products/'+prod.id+'/costPrice']=it.price;
+        });
+        if(Object.keys(costUpdates).length) await db.ref().update(costUpdates);
       }
       showToast(`✅ تم تعديل الفاتورة ${ref} وتحديث الجرد حسب الفرق`,'success');
       _editingInvoiceId=null;
@@ -5743,29 +5836,21 @@ async function saveInvoice(){
         const accNote=`فاتورة ${type==='sale'?'بيع':'شراء'} ${ref} — ${party}`;
         await pushAccountEntry(accKey, type==='purchase'?'withdraw':'deposit', total, accNote, {source:'invoice', invoiceId:invRef.key});
       }
-      // ── If purchase invoice: add quantities to inventory ──
+      // ── تحديث الجرد: شراء = إضافة، بيع = خصم (مع دعم الألوان/التنويعات) ──
+      const entries = mergeInventoryEntries(invoiceInventoryEntries(type, _invItems));
+      const changed = await applyInventoryEntries(entries);
+      // تحديث سعر التكلفة لأحدث سعر في الفاتورة (لو شراء)
       if(type==='purchase'){
-        const invUpdates = {};
-        for(const item of _invItems){
-          if(!_cachedProducts.length){ const ps=await getProductsSnap(); _cachedProducts=objToArr(ps.val()); }
+        if(!_cachedProducts.length){ const ps=await getProductsSnap(); _cachedProducts=objToArr(ps.val()); }
+        const costUpdates = {};
+        _invItems.forEach(item=>{
           const prod = _cachedProducts.find(p=>p.name===item.name||(item.sku&&p.sku===item.sku));
-          if(!prod) continue;
-          const pSnap = await db.ref('products/'+prod.id).get();
-          if(!pSnap.exists()) continue;
-          const pData = pSnap.val();
-          const curQty = pData.qty!=null ? Number(pData.qty) : (pData.stock!=null ? Number(pData.stock) : 0);
-          const newQty = curQty + (Number(item.qty)||1);
-          invUpdates['products/'+prod.id+'/qty']   = newQty;
-          invUpdates['products/'+prod.id+'/stock'] = newQty;
-          // Update costPrice if provided
-          if(item.price && item.price>0) invUpdates['products/'+prod.id+'/costPrice'] = item.price;
-        }
-        if(Object.keys(invUpdates).length){
-          await db.ref().update(invUpdates);
-          showToast(`✅ تم حفظ الفاتورة ${ref} وتحديث الجرد تلقائياً`,'success');
-        } else {
-          showToast(`✅ تم حفظ الفاتورة ${ref}`,'success');
-        }
+          if(prod && item.price>0) costUpdates['products/'+prod.id+'/costPrice'] = item.price;
+        });
+        if(Object.keys(costUpdates).length) await db.ref().update(costUpdates);
+      }
+      if(changed){
+        showToast(`✅ تم حفظ الفاتورة ${ref} و${type==='purchase'?'تحديث':'خصم'} الجرد تلقائياً`,'success');
       } else {
         showToast(`✅ تم حفظ الفاتورة ${ref}`,'success');
       }
@@ -6456,10 +6541,16 @@ async function removeAccountEntriesForInvoice(invoiceId){
 }
 
 async function deleteInvoice(id){
-  if(!confirm('حذف هذه الفاتورة؟'))return;
+  if(!confirm('حذف هذه الفاتورة؟ هيترجع تأثيرها على الجرد (لو بيع هيرجع الكمية، لو شراء هتتخصم)'))return;
   try{
+    const inv = _allInvoices.find(i=>i.id===id);
     await removeAccountEntriesForInvoice(id);
     await db.ref('invoices/'+id).remove();
+    // عكس تأثير الفاتورة على الجرد
+    if(inv){
+      const reverseEntries = invoiceInventoryEntries(inv.type, inv.items||[]).map(e=>({...e, qty:-e.qty}));
+      await applyInventoryEntries(mergeInventoryEntries(reverseEntries));
+    }
     showToast('تم الحذف','info');
     await loadInvoicesPage();
   }
@@ -6476,7 +6567,7 @@ async function editInvoice(id){
   }
   _editingInvoiceId=id;
   _editingInvoiceOriginalType=inv.type||'purchase';
-  _editingInvoiceOriginalItems=(inv.items||[]).map(i=>({name:i.name||'',sku:i.sku||'',qty:Number(i.qty)||0,price:Number(i.price)||0}));
+  _editingInvoiceOriginalItems=(inv.items||[]).map(i=>({name:i.name||'',sku:i.sku||'',productId:i.productId||null,variantId:i.variantId||null,qty:Number(i.qty)||0,price:Number(i.price)||0}));
   _invItems=(inv.items||[]).map(i=>({...i, id: i.id||Date.now()+'_'+Math.random().toString(36).slice(2,6)}));
   document.getElementById('inv-type').value=inv.type||'purchase';
   document.getElementById('inv-ref').value=inv.ref||'';
@@ -6520,11 +6611,15 @@ async function editInvoice(id){
       priceField.value=invType==='purchase'?(prod.costPrice!=null&&prod.costPrice!==''?Number(prod.costPrice):Number(prod.price||0)):Number(prod.price||0);
       priceField.style.borderColor='var(--success)';
       setTimeout(()=>{priceField.style.borderColor='';},1200);
+      populateInvVariantSelect(prod);
+    } else {
+      populateInvVariantSelect(null);
     }
   }
   invItemNameInput.oninput=autoFillInvPrice;
   invItemNameInput.onchange=autoFillInvPrice;
   invItemNameInput.addEventListener('blur',autoFillInvPrice);
+  populateInvVariantSelect(null);
   populateMerchantsDatalist();
   document.getElementById('invoice-modal').style.display='flex';
   // update modal title to show edit mode
@@ -6940,7 +7035,7 @@ function printInvoice(inv){
     bcIds.push({id:bid,val:bval});
     return`<tr style="border-bottom:1px solid #eee">
       <td style="padding:.6rem .5rem">
-        <div style="font-weight:700;font-size:.9rem">${esc(item.name)}</div>
+        <div style="font-weight:700;font-size:.9rem">${esc(item.name)}${item.variantLabel?` — <span style="color:#888">${esc(item.variantLabel)}</span>`:''}</div>
         <svg id="${bid}" style="display:block;margin-top:.3rem"></svg>
         <div style="font-family:monospace;font-size:.6rem;color:#666;letter-spacing:.08em">${bval}</div>
       </td>
