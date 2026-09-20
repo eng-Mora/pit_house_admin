@@ -525,6 +525,7 @@
     <div class="page-header">
       <div class="page-header-title"><span class="label">إدارة</span><h1>الطلبات</h1></div>
       <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="openManualWaybillModal()">📦 بوليصة يدوية</button>
         <select id="order-status-filter" class="status-select" onchange="filterOrders()">
           <option value="">كل الطلبات</option>
           <option value="pending">⏳ قيد الانتظار</option>
@@ -815,6 +816,64 @@
     <div style="display:flex;gap:.75rem;justify-content:flex-end">
       <button class="btn btn-secondary" onclick="closeInvoiceModal()">إلغاء</button>
       <button class="btn btn-primary" id="inv-save-btn" onclick="saveInvoice()">💾 حفظ الفاتورة</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MANUAL WAYBILL MODAL ══ -->
+<div class="modal-backdrop" id="manual-waybill-modal" style="display:none" onclick="if(event.target===this)closeManualWaybillModal()">
+  <div class="modal-box" style="max-width:640px;max-height:90vh;overflow-y:auto">
+    <h2>📦 بوليصة يدوية</h2>
+    <div class="form-group">
+      <label class="form-label">اسم المستلم</label>
+      <input type="text" class="form-control" id="mw-name" placeholder="اسم العميل" autocomplete="off"/>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div class="form-group">
+        <label class="form-label">رقم الهاتف</label>
+        <input type="text" class="form-control" id="mw-phone" placeholder="01xxxxxxxxx" autocomplete="off"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">المدينة</label>
+        <input type="text" class="form-control" id="mw-city" placeholder="القاهرة..." autocomplete="off"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">العنوان</label>
+      <input type="text" class="form-control" id="mw-address" placeholder="تفاصيل العنوان..." autocomplete="off"/>
+    </div>
+    <div style="margin:1.25rem 0 .5rem;font-weight:700;color:var(--text-primary);font-size:.95rem">📦 المنتجات</div>
+    <div id="mw-items-list" style="margin-bottom:.75rem"></div>
+    <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem">
+      <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.6rem;font-weight:600">+ إضافة منتج للبوليصة</div>
+      <div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:.5rem;align-items:end">
+        <div>
+          <label class="form-label" style="font-size:.72rem">اسم المنتج</label>
+          <input type="text" class="form-control" id="mw-item-name" placeholder="اسم المنتج أو SKU..." list="mw-products-datalist" autocomplete="off"/>
+          <datalist id="mw-products-datalist"></datalist>
+        </div>
+        <div id="mw-item-variant-wrap" style="display:none">
+          <label class="form-label" style="font-size:.72rem">اللون / التنويع</label>
+          <select class="form-control" id="mw-item-variant" style="min-width:120px"></select>
+        </div>
+        <div>
+          <label class="form-label" style="font-size:.72rem">الكمية</label>
+          <input type="number" class="form-control" id="mw-item-qty" placeholder="1" min="1" value="1" style="width:70px"/>
+        </div>
+        <div>
+          <label class="form-label" style="font-size:.72rem">السعر / قطعة</label>
+          <input type="number" class="form-control" id="mw-item-price" placeholder="0" min="0" style="width:100px"/>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="addMwItem()" style="align-self:flex-end">+ إضافة</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">تكلفة الشحن (اختياري)</label>
+      <input type="number" class="form-control" id="mw-shipping" placeholder="0" min="0"/>
+    </div>
+    <div style="display:flex;gap:.75rem;justify-content:flex-end">
+      <button class="btn btn-secondary" onclick="closeManualWaybillModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="generateManualWaybill()">🚚 إنشاء وطباعة البوليصة</button>
     </div>
   </div>
 </div>
@@ -2369,12 +2428,17 @@ let _invoicesCache = [];  // كل الفواتير
 // ── حساب رصيد الكاشير من الـ cache (بدون أي Firebase call) ──
 function calcCashierBalance(){
   let liqDeposits=0, liqWithdraws=0;
+  const loggedOrderIds = new Set();
   Object.values(_liqCache).forEach(e=>{
     if(e.type==='deposit')  liqDeposits  += Number(e.amount)||0;
     else if(e.type==='withdraw') liqWithdraws += Number(e.amount)||0;
+    // أي أوردر اتحصّل عن طريق زرار "تحصيل" بيتسجل هنا في liquidityLog بالفعل
+    if(e.source==='order' && e.orderId) loggedOrderIds.add(e.orderId);
   });
   const liqBalance   = liqDeposits - liqWithdraws;
-  const collected    = (_globalOrders||[]).filter(o=>o.status==='collected').reduce((s,o)=>s+(Number(o.totalPrice)||0),0);
+  // أوردرات اتحصّلت من غير ما تعدي على زرار التحصيل (تغيير الحالة يدوي من القايمة)
+  // بس — عشان أي أوردر مسجل بالفعل في liquidityLog (جوه liqBalance فوق) متتحسبش مرتين
+  const collected    = (_globalOrders||[]).filter(o=>o.status==='collected' && !loggedOrderIds.has(o.id)).reduce((s,o)=>s+(Number(o.totalPrice)||0),0);
   // فواتير الآجل مالهاش تأثير على الكاشير غير بعد ما تتحصّل فعلياً (بترجع كإيداع في سجل السيولة وقتها)
   const invSale      = _invoicesCache.filter(i=>i.type==='sale' && i.paymentMethod!=='deferred').reduce((s,i)=>s+(Number(i.total)||0),0);
   const invPurchase  = _invoicesCache.filter(i=>i.type==='purchase' && i.paymentMethod!=='deferred').reduce((s,i)=>s+(Number(i.total)||0),0);
@@ -2804,6 +2868,93 @@ function renderInventoryList(products){
       <button class="btn btn-secondary btn-sm" onclick="openInventoryAdjustModal('${p.id}')">✏️ تعديل</button>
     </div>`;
   }).join('');
+}
+
+// ── طباعة تقرير الجرد A4 (نفس القايمة المفلترة/المبحوث عنها الظاهرة على الشاشة) ──
+function printInventoryReport(){
+  const q = (document.getElementById('inv-search')?.value||'').toLowerCase().trim();
+  let list = _invProducts;
+  if(_invFilter==='out')          list = list.filter(p=>{ const v=getInvQty(p); return v!=null&&v<=0; });
+  else if(_invFilter==='low')     list = list.filter(p=>{ const v=getInvQty(p); return v!=null&&v>0&&v<=INV_LOW_THRESHOLD; });
+  else if(_invFilter==='instock') list = list.filter(p=>{ const v=getInvQty(p); return v==null||v>INV_LOW_THRESHOLD; });
+  if(q) list = list.filter(p=>(p.name||'').toLowerCase().includes(q)||(p.sku||'').toLowerCase().includes(q)||(p.category||'').toLowerCase().includes(q));
+
+  if(!list.length){ showToast('مفيش منتجات تتطبع في الفلتر الحالي','error'); return; }
+
+  const filterLabel = {all:'كل المنتجات', instock:'المتاح فقط', low:'الكمية المنخفضة فقط', out:'اللي نفدت فقط'}[_invFilter] || 'كل المنتجات';
+  let grandQty=0, grandValue=0;
+  const rows = list.map(p=>{
+    const qty = getInvQty(p);
+    const cost = p.costPrice!=null&&p.costPrice!==''?Number(p.costPrice):Number(p.price||0);
+    const value = (qty!=null&&qty>0) ? qty*cost : 0;
+    if(qty!=null) grandQty += qty;
+    grandValue += value;
+    const isOut = qty!=null && qty<=0;
+    const isLow = qty!=null && qty>0 && qty<=INV_LOW_THRESHOLD;
+    const statusTxt = isOut?'❌ نفذ':(isLow?'⚠️ منخفض':'✅ متاح');
+    const statusColor = isOut?'#c00':(isLow?'#b8860b':'#0a0');
+    // تفصيل التنويعات (الألوان/المقاسات) تحت اسم المنتج لو موجودة
+    const variantsHtml = Array.isArray(p.variants)&&p.variants.length
+      ? `<div style="margin-top:.25rem;display:flex;flex-wrap:wrap;gap:.3rem">${p.variants.map(v=>`<span style="font-size:.65rem;background:#f2f2f2;border:1px solid #ddd;border-radius:3px;padding:.1rem .4rem">${esc(v.label)}: ${v.qty!=null?v.qty:'—'}</span>`).join('')}</div>`
+      : '';
+    return `<tr style="border-bottom:1px solid #eee">
+      <td style="padding:.45rem .5rem">
+        <div style="font-weight:700">${esc(p.name)}</div>
+        ${variantsHtml}
+      </td>
+      <td style="padding:.45rem .5rem;text-align:center;font-family:monospace;font-size:.75rem">${p.sku?esc(p.sku):'—'}</td>
+      <td style="padding:.45rem .5rem;text-align:center">${p.category?esc(p.category):'—'}</td>
+      <td style="padding:.45rem .5rem;text-align:center;font-weight:700">${qty!=null?qty:'—'}</td>
+      <td style="padding:.45rem .5rem;text-align:center">${formatPrice(cost)}</td>
+      <td style="padding:.45rem .5rem;text-align:center;font-weight:700">${value>0?formatPrice(value):'—'}</td>
+      <td style="padding:.45rem .5rem;text-align:center;color:${statusColor};font-weight:700;white-space:nowrap">${statusTxt}</td>
+    </tr>`;
+  }).join('');
+
+  const html=`<div dir="rtl" style="font-family:Arial,sans-serif;color:#111;padding:1rem">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #111;padding-bottom:1rem;margin-bottom:.75rem">
+      <div>
+        <div style="font-size:1.5rem;font-weight:900">${esc(_storeSettings.name||'PIT HOUSE')}</div>
+        <div style="font-size:.8rem;color:#555;margin-top:.1rem">تقرير الجرد — ${esc(filterLabel)}</div>
+      </div>
+      <div style="text-align:left;font-size:.78rem;color:#777">
+        <div>${new Date().toLocaleDateString('ar-EG')}</div>
+        <div>${list.length} صنف</div>
+      </div>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:1rem">
+      <thead><tr style="background:#f5f5f5;border-bottom:2px solid #111">
+        <th style="padding:.5rem;text-align:right">المنتج</th>
+        <th style="padding:.5rem;text-align:center">SKU</th>
+        <th style="padding:.5rem;text-align:center">الفئة</th>
+        <th style="padding:.5rem;text-align:center">الكمية</th>
+        <th style="padding:.5rem;text-align:center">التكلفة/قطعة</th>
+        <th style="padding:.5rem;text-align:center">قيمة المخزون</th>
+        <th style="padding:.5rem;text-align:center">الحالة</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="display:flex;justify-content:flex-end">
+      <div style="background:#f9f9f9;border:2px solid #111;border-radius:6px;padding:.6rem 1.5rem;display:flex;gap:2rem">
+        <div style="text-align:center">
+          <div style="font-size:.7rem;color:#777">إجمالي الكمية</div>
+          <div style="font-size:1.1rem;font-weight:900">${grandQty}</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:.7rem;color:#777">إجمالي قيمة المخزون</div>
+          <div style="font-size:1.1rem;font-weight:900">${formatPrice(grandValue)} ج.م</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:2rem;border-top:1px dashed #ccc;padding-top:.75rem;font-size:.7rem;color:#aaa;text-align:center">${esc(_storeSettings.name||'PIT HOUSE')} Admin System · ${new Date().toLocaleDateString('ar-EG')} ${new Date().toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}</div>
+  </div>`;
+  document.getElementById('shared-print-content').innerHTML=html;
+  document.getElementById('shared-print-overlay').style.display='block';
+  document.getElementById('btn-print-a4').style.display='inline-flex';
+  document.getElementById('btn-download-pdf').style.display='inline-flex';
+  document.getElementById('btn-print-label').style.display='none';
+  setPageSize('@page{ size:A4 portrait; margin:10mm 12mm; }');
+  document.getElementById('shared-print-inner').style.maxWidth='720px';
 }
 
 function openInventoryAdjustModal(productId){
@@ -5392,6 +5543,134 @@ function printWaybill(order){
   document.getElementById('btn-print-label').style.display='none';
 }
 
+// ══ MANUAL WAYBILL (بوليصة يدوية — بدون أوردر حقيقي) ══
+let _mwItems = [];
+
+async function openManualWaybillModal(){
+  _mwItems = [];
+  document.getElementById('mw-name').value='';
+  document.getElementById('mw-phone').value='';
+  document.getElementById('mw-city').value='';
+  document.getElementById('mw-address').value='';
+  document.getElementById('mw-shipping').value='';
+  renderMwItems();
+  if(!_cachedProducts.length){ const ps=await getProductsSnap(); _cachedProducts=objToArr(ps.val()); }
+  const dl=document.getElementById('mw-products-datalist');
+  dl.innerHTML=(_cachedProducts||[]).map(p=>`<option value="${esc(p.name)}"></option>`).join('');
+  populateMwVariantSelect(null);
+  const nameInput=document.getElementById('mw-item-name');
+  function autoFillMwPrice(){
+    const val=nameInput.value.trim();
+    const prod=findInvProduct(val);
+    if(prod){
+      document.getElementById('mw-item-price').value=Number(prod.price||0);
+      populateMwVariantSelect(prod);
+    } else {
+      populateMwVariantSelect(null);
+    }
+  }
+  nameInput.oninput=autoFillMwPrice;
+  nameInput.onchange=autoFillMwPrice;
+  nameInput.addEventListener('blur',autoFillMwPrice);
+  document.getElementById('manual-waybill-modal').style.display='flex';
+}
+function closeManualWaybillModal(){
+  document.getElementById('manual-waybill-modal').style.display='none';
+}
+
+function populateMwVariantSelect(prod){
+  const wrap=document.getElementById('mw-item-variant-wrap');
+  const sel=document.getElementById('mw-item-variant');
+  if(!wrap||!sel) return;
+  if(prod && Array.isArray(prod.variants) && prod.variants.length){
+    sel.innerHTML=prod.variants.map(v=>`<option value="${esc(v.id)}">${esc(v.label)}${v.qty!=null?' — متاح: '+v.qty:''}</option>`).join('');
+    sel.dataset.productId=prod.id||'';
+    wrap.style.display='block';
+  } else {
+    sel.innerHTML='';
+    sel.dataset.productId='';
+    wrap.style.display='none';
+  }
+}
+
+function addMwItem(){
+  const name=document.getElementById('mw-item-name').value.trim();
+  const qty=parseInt(document.getElementById('mw-item-qty').value)||1;
+  const price=parseFloat(document.getElementById('mw-item-price').value)||0;
+  if(!name){showToast('اكتب اسم المنتج','error');return;}
+  const prod=findInvProduct(name);
+  // نفس منطق التنويعات المستخدم في الفواتير — لازم يختار اللون لو المنتج فيه تنويعات
+  let variantId=null, variantLabel=null;
+  if(prod && Array.isArray(prod.variants) && prod.variants.length){
+    const vWrap=document.getElementById('mw-item-variant-wrap');
+    const vSel=document.getElementById('mw-item-variant');
+    if(!vWrap||!vSel||vWrap.style.display==='none'||vSel.dataset.productId!==(prod.id||'')){
+      populateMwVariantSelect(prod);
+      showToast('اختار اللون / التنويع الأول','error');
+      return;
+    }
+    variantId=vSel.value;
+    if(!variantId){showToast('اختار اللون / التنويع الأول','error');return;}
+    const v=prod.variants.find(x=>x.id===variantId);
+    variantLabel=v?v.label:null;
+  }
+  _mwItems.push({name,qty,price,variantId,variantLabel,id:Date.now()+'_'+Math.random().toString(36).slice(2,6)});
+  document.getElementById('mw-item-name').value='';
+  document.getElementById('mw-item-qty').value='1';
+  document.getElementById('mw-item-price').value='';
+  populateMwVariantSelect(null);
+  renderMwItems();
+}
+
+function removeMwItem(id){
+  _mwItems=_mwItems.filter(i=>i.id!==id);
+  renderMwItems();
+}
+
+function renderMwItems(){
+  const c=document.getElementById('mw-items-list');
+  if(!c) return;
+  if(!_mwItems.length){
+    c.innerHTML='<div style="color:var(--text-muted);font-size:.8rem;text-align:center;padding:.6rem">لسه مفيش منتجات مضافة</div>';
+    return;
+  }
+  c.innerHTML=_mwItems.map(i=>`<div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.5rem .75rem;margin-bottom:.35rem">
+    <div style="font-size:.85rem">${esc(i.name)}${i.variantLabel?` <span style="color:var(--accent-gold);font-size:.75rem">(${esc(i.variantLabel)})</span>`:''} × ${i.qty}</div>
+    <div style="display:flex;align-items:center;gap:.6rem">
+      <span style="font-family:var(--font-mono);font-size:.8rem">${formatPrice(i.price*i.qty)}</span>
+      <button class="btn btn-danger btn-sm" onclick="removeMwItem('${i.id}')">✕</button>
+    </div>
+  </div>`).join('');
+}
+
+// بيبني "أوردر وهمي" من نفس شكل بيانات الأوردر الحقيقي، عشان يستخدم دالة الطباعة
+// الموجودة أصلاً (printWaybill) من غير ما نحتاج نسجّل أي حاجة في قاعدة البيانات
+function generateManualWaybill(){
+  const name=document.getElementById('mw-name').value.trim();
+  const phone=document.getElementById('mw-phone').value.trim();
+  const city=document.getElementById('mw-city').value.trim();
+  const address=document.getElementById('mw-address').value.trim();
+  const shippingCost=parseFloat(document.getElementById('mw-shipping').value)||0;
+  if(!name){showToast('اكتب اسم المستلم','error');return;}
+  if(!_mwItems.length){showToast('أضف منتج واحد على الأقل','error');return;}
+  const productsTotal=_mwItems.reduce((s,i)=>s+i.qty*i.price,0);
+  const pseudoOrder={
+    id:'MW-'+Date.now().toString(36).toUpperCase(),
+    createdAt:Date.now(),
+    customerName:name,
+    phone,
+    city,
+    address,
+    items:_mwItems.map(i=>({name:i.variantLabel?`${i.name} — ${i.variantLabel}`:i.name, qty:i.qty, price:i.price})),
+    shippingCost,
+    codFee:0,
+    discount:0,
+    totalPrice: productsTotal+shippingCost
+  };
+  closeManualWaybillModal();
+  printWaybill(pseudoOrder);
+}
+
 // ══ RETURN INVOICE ══
 function printReturnInvoice(order){
   const ordId=String(order.id||'').toUpperCase().replace(/[^A-Z0-9\-]/g,'').slice(0,14)||'ORDER';
@@ -5537,7 +5816,7 @@ function openInvoiceModal(type='purchase', prefillParty=null){
   function autoFillInvPrice(){
     const val = invItemNameInput.value.trim();
     const invType = document.getElementById('inv-type')?.value || 'sale';
-    const prod = _cachedProducts.find(p=>p.name===val || p.sku===val);
+    const prod = findInvProduct(val);
     if(prod){
       const priceField = document.getElementById('inv-item-price');
       if(invType==='purchase'){
@@ -5591,6 +5870,20 @@ function populateStoreCustomersDatalist(){
   dl.innerHTML = _allStoreCustomers.map(c=>`<option value="${esc(c.name)}">${c.phone?'📞 '+esc(c.phone):''}</option>`).join('');
 }
 
+// ── إيجاد المنتج من الاسم/السكيو المكتوب في بند الفاتورة (تطابق تام، وإلا تطابق جزئي) ──
+// نفس المنطق ده لازم يستخدم في كل مكان بيدور على منتج في الفاتورة، عشان الدروب-داون
+// بتاع التنويعات ما يفضلش مختفي مع منتج معاه تنويعات فعلاً (وده كان سبب إن بعض
+// أصناف الفاتورة بتتضاف من غير ما تحدد تنويع، فالجرد بتاع اللون/المقاس ده يفضل زي ما هو)
+function findInvProduct(val){
+  if(!val) return null;
+  let prod = _cachedProducts.find(p=>p.name===val || p.sku===val);
+  if(!prod){
+    const lower = val.toLowerCase();
+    prod = _cachedProducts.find(p=>p.name && p.name.toLowerCase().includes(lower));
+  }
+  return prod || null;
+}
+
 // ── اللون / التنويع في بند الفاتورة ──
 function populateInvVariantSelect(prod){
   const wrap = document.getElementById('inv-item-variant-wrap');
@@ -5598,9 +5891,11 @@ function populateInvVariantSelect(prod){
   if(!wrap || !sel) return;
   if(prod && Array.isArray(prod.variants) && prod.variants.length){
     sel.innerHTML = prod.variants.map(v=>`<option value="${esc(v.id)}">${esc(v.label)}${v.qty!=null?' — متاح: '+v.qty:''}</option>`).join('');
+    sel.dataset.productId = prod.id || '';
     wrap.style.display='block';
   } else {
     sel.innerHTML='';
+    sel.dataset.productId='';
     wrap.style.display='none';
   }
 }
@@ -5612,7 +5907,7 @@ function addInvoiceItem(){
   if(!name){showToast('اكتب اسم المنتج','error');return;}
   // find product from cache
   const invType = document.getElementById('inv-type')?.value || 'sale';
-  const prod=_cachedProducts.find(p=>p.name===name||p.sku===name||p.name.toLowerCase().includes(name.toLowerCase()));
+  const prod=findInvProduct(name);
   const sku=prod?.sku||null;
   // if price still 0, auto-fill from product
   if(price===0 && prod){
@@ -5622,12 +5917,19 @@ function addInvoiceItem(){
       price = Number(prod.price||0);
     }
   }
-  // لو المنتج له ألوان/تنويعات — لازم يتم اختيار واحد قبل الإضافة عشان الخصم من الجرد يبقى صح
+  // لو المنتج له ألوان/تنويعات — لازم يتم اختيار واحد قبل الإضافة عشان الخصم من الجرد يبقى صح.
+  // بنتأكد إن قايمة التنويعات فعلاً متظبطة على نفس المنتج ده (مش قايمة قديمة من منتج تاني
+  // أو مختفية لأن حدث الكتابة ما اتسجلش)، وإلا بنظبطها ونوقف الإضافة لحد ما يختار.
   let variantId=null, variantLabel=null;
-  const variantWrap = document.getElementById('inv-item-variant-wrap');
-  if(prod && Array.isArray(prod.variants) && prod.variants.length && variantWrap && variantWrap.style.display!=='none'){
+  if(prod && Array.isArray(prod.variants) && prod.variants.length){
+    const vWrap = document.getElementById('inv-item-variant-wrap');
     const vSel = document.getElementById('inv-item-variant');
-    variantId = vSel ? vSel.value : null;
+    if(!vWrap || !vSel || vWrap.style.display==='none' || vSel.dataset.productId!==(prod.id||'')){
+      populateInvVariantSelect(prod);
+      showToast('اختار اللون / التنويع الأول','error');
+      return;
+    }
+    variantId = vSel.value;
     if(!variantId){ showToast('اختار اللون / التنويع الأول','error'); return; }
     const v = prod.variants.find(x=>x.id===variantId);
     variantLabel = v ? v.label : null;
@@ -6605,7 +6907,7 @@ async function editInvoice(id){
   function autoFillInvPrice(){
     const val=invItemNameInput.value.trim();
     const invType=document.getElementById('inv-type')?.value||'sale';
-    const prod=_cachedProducts.find(p=>p.name===val||p.sku===val);
+    const prod=findInvProduct(val);
     if(prod){
       const priceField=document.getElementById('inv-item-price');
       priceField.value=invType==='purchase'?(prod.costPrice!=null&&prod.costPrice!==''?Number(prod.costPrice):Number(prod.price||0)):Number(prod.price||0);
@@ -8806,7 +9108,10 @@ function printLedgerStatement(key){
         <span class="label">المخزون</span>
         <h1>📦 الجرد</h1>
       </div>
-      <button class="btn btn-primary" onclick="openInventoryAdjustModal()">+ تعديل كميات</button>
+      <div style="display:flex;gap:.6rem">
+        <button class="btn btn-secondary" onclick="printInventoryReport()">🖨️ طباعة A4</button>
+        <button class="btn btn-primary" onclick="openInventoryAdjustModal()">+ تعديل كميات</button>
+      </div>
     </div>
 
     <!-- Stats -->
