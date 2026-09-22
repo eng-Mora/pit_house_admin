@@ -878,6 +878,17 @@
   </div>
 </div>
 
+<!-- ══ STOCK SUMMARY MODAL (فاضل كام بعد الفاتورة) ══ -->
+<div class="modal-backdrop" id="stock-summary-modal" style="display:none" onclick="if(event.target===this)closeStockSummaryModal()">
+  <div class="modal-box" style="max-width:480px;max-height:85vh;overflow-y:auto">
+    <h2 id="stock-summary-title">📦 تحديث الجرد</h2>
+    <div id="stock-summary-list" style="margin:1rem 0"></div>
+    <div style="display:flex;justify-content:flex-end">
+      <button class="btn btn-primary" onclick="closeStockSummaryModal()">تمام 👍</button>
+    </div>
+  </div>
+</div>
+
 <!-- INVOICE PRINT VIEW -->
 <div id="invoice-print-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;overflow-y:auto;padding:2rem">
   <div style="max-width:700px;margin:0 auto">
@@ -2847,6 +2858,18 @@ function renderInventoryList(products){
       : isLow
         ? `<span class="status-badge" style="background:rgba(255,179,0,.12);color:var(--accent-gold);border:1px solid rgba(255,179,0,.25);white-space:nowrap">⚠️ منخفض</span>`
         : `<span class="status-badge s-confirmed" style="white-space:nowrap">✅ متاح</span>`;
+    // تقسيم الكمية على التنويعات (الألوان/المقاسات) — كل تنويع بكميته ولونه حسب حالة المخزون بتاعه
+    const variantsHtml = Array.isArray(p.variants) && p.variants.length
+      ? `<div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.5rem">${p.variants.map(v=>{
+          const vQty = v.qty!=null ? Number(v.qty) : null;
+          const vOut = vQty!=null && vQty<=0;
+          const vLow = vQty!=null && vQty>0 && vQty<=INV_LOW_THRESHOLD;
+          const vColor = vOut?'#ff4444':(vLow?'var(--accent-gold)':'var(--text-secondary)');
+          const vBg   = vOut?'rgba(255,60,60,.1)':(vLow?'rgba(255,179,0,.1)':'var(--bg-secondary)');
+          const vBorder = vOut?'rgba(255,60,60,.35)':(vLow?'rgba(255,179,0,.35)':'var(--border)');
+          return `<span style="font-size:.72rem;background:${vBg};border:1px solid ${vBorder};border-radius:99px;padding:.22rem .65rem;color:${vColor};font-weight:700;display:inline-flex;align-items:center;gap:.3rem">${esc(v.label)}<span style="opacity:.7">•</span>${vQty!=null?vQty:'—'}</span>`;
+        }).join('')}</div>`
+      : '';
     return `<div class="inv-row ${rowClass}">
       ${thumb}
       <div>
@@ -2858,6 +2881,7 @@ function renderInventoryList(products){
           ${cost!=null?`<span style="color:var(--text-muted)">تكلفة: ${formatPrice(cost)} ج.م</span>`:''}
           <span style="color:var(--accent-gold)">قيمة المخزون: ${totalVal}</span>
         </div>
+        ${variantsHtml}
       </div>
       <div class="inv-qty-wrap">
         <div class="inv-qty-badge ${qtyClass}">${hasQty?qty:'—'}</div>
@@ -5583,8 +5607,16 @@ function populateMwVariantSelect(prod){
   const sel=document.getElementById('mw-item-variant');
   if(!wrap||!sel) return;
   if(prod && Array.isArray(prod.variants) && prod.variants.length){
-    sel.innerHTML=prod.variants.map(v=>`<option value="${esc(v.id)}">${esc(v.label)}${v.qty!=null?' — متاح: '+v.qty:''}</option>`).join('');
+    sel.innerHTML=prod.variants.map(v=>`<option value="${esc(v.id)}" data-price="${v.price!=null?Number(v.price):''}">${esc(v.label)}${v.qty!=null?' — متاح: '+v.qty:''}</option>`).join('');
     sel.dataset.productId=prod.id||'';
+    sel.onchange=function(){
+      const opt=sel.options[sel.selectedIndex];
+      const priceEl=document.getElementById('mw-item-price');
+      if(opt && priceEl){
+        const vPriceRaw=opt.dataset.price;
+        priceEl.value = (vPriceRaw!=='' && vPriceRaw!=null) ? Number(vPriceRaw) : Number(prod.price||0);
+      }
+    };
     wrap.style.display='block';
   } else {
     sel.innerHTML='';
@@ -5885,18 +5917,43 @@ function findInvProduct(val){
 }
 
 // ── اللون / التنويع في بند الفاتورة ──
+// كل تنويع بيتسجل له data-price و data-cost عشان لما يتم اختياره نظبط سعر البند
+// تلقائيًا على السعر/التكلفة المحفوظة لنفس التنويع (مش سعر المنتج الأساسي)
 function populateInvVariantSelect(prod){
   const wrap = document.getElementById('inv-item-variant-wrap');
   const sel = document.getElementById('inv-item-variant');
   if(!wrap || !sel) return;
   if(prod && Array.isArray(prod.variants) && prod.variants.length){
-    sel.innerHTML = prod.variants.map(v=>`<option value="${esc(v.id)}">${esc(v.label)}${v.qty!=null?' — متاح: '+v.qty:''}</option>`).join('');
+    sel.innerHTML = prod.variants.map(v=>`<option value="${esc(v.id)}" data-price="${v.price!=null?Number(v.price):''}" data-cost="${v.costPrice!=null?Number(v.costPrice):''}">${esc(v.label)}${v.qty!=null?' — متاح: '+v.qty:''}</option>`).join('');
     sel.dataset.productId = prod.id || '';
+    sel.onchange = function(){ applyInvVariantPrice(prod); };
     wrap.style.display='block';
   } else {
     sel.innerHTML='';
     sel.dataset.productId='';
     wrap.style.display='none';
+  }
+}
+
+// لما تختار لون/تنويع من القايمة، نظبط سعر البند تلقائيًا على سعر التنويع نفسه
+// (سعر بيع لو فاتورة بيع، سعر تكلفة لو فاتورة شراء) — لو التنويع مالوش سعر خاص
+// بيرجع لسعر المنتج الأساسي زي ما كان
+function applyInvVariantPrice(prod){
+  const sel = document.getElementById('inv-item-variant');
+  const priceEl = document.getElementById('inv-item-price');
+  if(!sel || !priceEl || !prod) return;
+  const opt = sel.options[sel.selectedIndex];
+  if(!opt) return;
+  const invType = document.getElementById('inv-type')?.value || 'sale';
+  const vPriceRaw = opt.dataset.price;
+  const vCostRaw  = opt.dataset.cost;
+  if(invType==='purchase'){
+    if(vCostRaw!=='' && vCostRaw!=null) priceEl.value = Number(vCostRaw);
+    else if(prod.costPrice!=null && prod.costPrice!=='') priceEl.value = Number(prod.costPrice);
+    else priceEl.value = Number(prod.price||0);
+  } else {
+    if(vPriceRaw!=='' && vPriceRaw!=null) priceEl.value = Number(vPriceRaw);
+    else priceEl.value = Number(prod.price||0);
   }
 }
 
@@ -6028,9 +6085,10 @@ function mergeInventoryEntries(entries){
 
 async function applyInventoryEntries(entries){
   const list = entries.filter(e=>e.qty);
-  if(!list.length) return false;
+  if(!list.length) return {changed:false, summary:[]};
   if(!_cachedProducts.length){ const ps=await getProductsSnap(); _cachedProducts=objToArr(ps.val()); }
   const updates = {};
+  const summary = [];
   for(const e of list){
     const prod = _cachedProducts.find(p=> (e.productId && p.id===e.productId) || (e.sku && p.sku===e.sku) || p.name===e.name);
     if(!prod) continue;
@@ -6038,22 +6096,60 @@ async function applyInventoryEntries(entries){
     if(!pSnap.exists()) continue;
     const pData = pSnap.val();
     const curQty = pData.qty!=null ? Number(pData.qty) : (pData.stock!=null ? Number(pData.stock) : null);
+    let newQty = curQty;
     if(curQty!=null){
-      const newQty = Math.max(0, curQty + e.qty);
+      newQty = Math.max(0, curQty + e.qty);
       updates['products/'+prod.id+'/qty']   = newQty;
       updates['products/'+prod.id+'/stock'] = newQty;
     }
+    let variantLabel=null, newVariantQty=null;
     if(e.variantId && Array.isArray(pData.variants)){
       const vIdx = pData.variants.findIndex(v=>v.id===e.variantId);
-      if(vIdx>=0 && pData.variants[vIdx].qty!=null){
-        const vCur = Number(pData.variants[vIdx].qty);
-        const vNew = Math.max(0, vCur + e.qty);
-        updates['products/'+prod.id+'/variants/'+vIdx+'/qty'] = vNew;
+      if(vIdx>=0){
+        variantLabel = pData.variants[vIdx].label || null;
+        if(pData.variants[vIdx].qty!=null){
+          const vCur = Number(pData.variants[vIdx].qty);
+          newVariantQty = Math.max(0, vCur + e.qty);
+          updates['products/'+prod.id+'/variants/'+vIdx+'/qty'] = newVariantQty;
+        }
       }
     }
+    summary.push({productId:prod.id, name:pData.name||prod.name, variantLabel, newQty, newVariantQty});
   }
-  if(Object.keys(updates).length){ await db.ref().update(updates); return true; }
-  return false;
+  if(Object.keys(updates).length){ await db.ref().update(updates); return {changed:true, summary}; }
+  return {changed:false, summary:[]};
+}
+
+// ── عرض ملخص فاضل قد ايه في المنتجات/التنويعات بعد تحديث الفاتورة للجرد ──
+function showStockSummaryModal(summary, invType){
+  if(!summary || !summary.length) return;
+  // نجمع كل التنويعات بتاعة نفس المنتج مع بعض في سطر واحد
+  const byProduct = new Map();
+  summary.forEach(s=>{
+    if(!byProduct.has(s.productId)) byProduct.set(s.productId, {name:s.name, newQty:s.newQty, variants:[]});
+    if(s.variantLabel) byProduct.get(s.productId).variants.push({label:s.variantLabel, qty:s.newVariantQty});
+  });
+  const rowsHtml = [...byProduct.values()].map(p=>{
+    const variantsHtml = p.variants.length
+      ? `<div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.4rem">${p.variants.map(v=>`<span style="font-size:.72rem;background:var(--bg-secondary);border:1px solid var(--border);border-radius:4px;padding:.2rem .55rem">${esc(v.label)}: <strong>${v.qty!=null?v.qty:'—'}</strong></span>`).join('')}</div>`
+      : '';
+    return `<div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.65rem .85rem;margin-bottom:.5rem">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-weight:700">${esc(p.name)}</span>
+        <span style="font-family:var(--font-mono);color:var(--accent-gold);font-weight:700">فاضل: ${p.newQty!=null?p.newQty:'—'}</span>
+      </div>
+      ${variantsHtml}
+    </div>`;
+  }).join('');
+  const c = document.getElementById('stock-summary-list');
+  const title = document.getElementById('stock-summary-title');
+  if(!c || !title) return;
+  title.textContent = invType==='purchase' ? '📦 اتزودت الكميات — الرصيد بقى كام؟' : '📦 اتخصمت الكميات — فاضل كام؟';
+  c.innerHTML = rowsHtml;
+  document.getElementById('stock-summary-modal').style.display='flex';
+}
+function closeStockSummaryModal(){
+  document.getElementById('stock-summary-modal').style.display='none';
 }
 
 async function saveInvoice(){
@@ -6113,7 +6209,7 @@ async function saveInvoice(){
         if(netMap.has(key)) netMap.get(key).qty += e.qty;
         else netMap.set(key, {...e});
       });
-      await applyInventoryEntries([...netMap.values()]);
+      const invResult = await applyInventoryEntries([...netMap.values()]);
       // تحديث سعر التكلفة لأحدث سعر في الفاتورة (لو لسه شراء)
       if(type==='purchase'){
         const costUpdates = {};
@@ -6129,6 +6225,7 @@ async function saveInvoice(){
       _editingInvoiceOriginalType=null;
       closeInvoiceModal();
       await loadInvoicesPage();
+      if(invResult.changed) showStockSummaryModal(invResult.summary, type);
     } else {
       // New invoice
       const inv={ref,type,party,date,notes,paymentMethod:_invPaymentMethod||null,dueDate,items:_invItems,subtotal,total,...discountData,createdAt:Date.now()};
@@ -6140,7 +6237,8 @@ async function saveInvoice(){
       }
       // ── تحديث الجرد: شراء = إضافة، بيع = خصم (مع دعم الألوان/التنويعات) ──
       const entries = mergeInventoryEntries(invoiceInventoryEntries(type, _invItems));
-      const changed = await applyInventoryEntries(entries);
+      const invResult = await applyInventoryEntries(entries);
+      const changed = invResult.changed;
       // تحديث سعر التكلفة لأحدث سعر في الفاتورة (لو شراء)
       if(type==='purchase'){
         if(!_cachedProducts.length){ const ps=await getProductsSnap(); _cachedProducts=objToArr(ps.val()); }
@@ -6160,6 +6258,7 @@ async function saveInvoice(){
       await loadInvoicesPage();
       // show print
       printInvoice(inv);
+      if(changed) showStockSummaryModal(invResult.summary, type);
     }
   }catch(err){showToast('خطأ: '+err.message,'error')}
   finally{btn.disabled=false;btn.textContent='💾 '+(isEditing?'حفظ التعديلات':'حفظ الفاتورة');}
