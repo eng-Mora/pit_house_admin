@@ -9386,19 +9386,19 @@ function printLedgerStatement(key){
 function dFix(u){u=(u||'').trim();if(!u)return '';const m=u.match(/drive\.google\.com\/file\/d\/([^/?#]+)/)||u.match(/drive\.google\.com\/(?:open|uc)\?[^#]*id=([^&#]+)/);if(m)return 'https://drive.google.com/uc?export=view&id='+m[1];return u}
 function dPrev(inp){const im=document.getElementById(inp.id+'-p');if(!im)return;const u=dFix(inp.value);if(u){im.src=u;im.style.display='block'}else{im.removeAttribute('src');im.style.display='none'}}
 let _dCats=[],_dSlides=[];
-function dSync(){_dSlides=_dSlides.map((_,i)=>{const e=document.getElementById('d-s-'+i);return e?e.value:_dSlides[i]})}
+function dSync(){_dSlides=_dSlides.map((o,i)=>{const e=document.getElementById('d-s-'+i),f=document.getElementById('d-f-'+i);return {u:e?e.value:o.u,full:f?f.checked:o.full}})}
 function dRenderSlides(){
   const box=document.getElementById('d-slides');
-  box.innerHTML=_dSlides.length?_dSlides.map((u,i)=>`<div style="display:flex;gap:.5rem;align-items:center"><span style="width:22px;color:var(--text-muted);font-family:var(--font-mono)">${i+1}</span><input type="url" class="form-control" id="d-s-${i}" value="${esc(u)}" placeholder="https://..." oninput="dPrev(this)" style="flex:1"/><img id="d-s-${i}-p" src="${esc(dFix(u))}" alt="" style="width:96px;height:44px;object-fit:cover;border-radius:8px;border:1px solid var(--border);${u?'':'display:none'}"/><button class="btn btn-secondary btn-sm" onclick="dMove(${i},-1)" title="فوق">↑</button><button class="btn btn-secondary btn-sm" onclick="dMove(${i},1)" title="تحت">↓</button><button class="btn btn-danger btn-sm" onclick="dDel(${i})">🗑</button></div>`).join(''):'<div style="color:var(--text-muted);font-size:.85rem">مفيش صور — المتجر بيعرض الشرائح الافتراضية</div>';
+  box.innerHTML=_dSlides.length?_dSlides.map((o,i)=>`<div style="border:1px solid var(--border);border-radius:12px;padding:.7rem"><div style="display:flex;gap:.5rem;align-items:center"><span style="width:22px;color:var(--text-muted);font-family:var(--font-mono)">${i+1}</span><input type="url" class="form-control" id="d-s-${i}" value="${esc(o.u)}" placeholder="https://..." oninput="dPrev(this)" style="flex:1"/><img id="d-s-${i}-p" src="${esc(dFix(o.u))}" alt="" style="width:96px;height:44px;object-fit:cover;border-radius:8px;border:1px solid var(--border);${o.u?'':'display:none'}"/><button class="btn btn-secondary btn-sm" onclick="dMove(${i},-1)">↑</button><button class="btn btn-secondary btn-sm" onclick="dMove(${i},1)">↓</button><button class="btn btn-danger btn-sm" onclick="dDel(${i})">🗑</button></div><label style="display:flex;gap:.5rem;align-items:center;margin-top:.5rem;font-size:.78rem;color:var(--text-muted);cursor:pointer"><input type="checkbox" id="d-f-${i}" ${o.full?'checked':''}/> الصورة فيها اللوجو والنص (اعرضها لوحدها بدون كتابة فوقها)</label></div>`).join(''):'<div style="color:var(--text-muted);font-size:.85rem">مفيش صور — المتجر بيعرض الشرائح الافتراضية</div>';
 }
-function dAddSlide(){dSync();_dSlides.push('');dRenderSlides();const e=document.getElementById('d-s-'+(_dSlides.length-1));if(e)e.focus()}
+function dAddSlide(){dSync();_dSlides.push({u:'',full:true});dRenderSlides();const e=document.getElementById('d-s-'+(_dSlides.length-1));if(e)e.focus()}
 function dDel(i){dSync();_dSlides.splice(i,1);dRenderSlides()}
 function dMove(i,d){dSync();const j=i+d;if(j<0||j>=_dSlides.length)return;[_dSlides[i],_dSlides[j]]=[_dSlides[j],_dSlides[i]];dRenderSlides()}
 async function loadDesignPage(){
   try{
     const [dS,cS]=await Promise.all([db.ref('settings/design').get(),db.ref('categories').get()]);
     const d=dS.val()||{};
-    _dSlides=Array.isArray(d.slides)?d.slides.map(x=>x.image||''):Object.values(d.heroImages||{});
+    _dSlides=Array.isArray(d.slides)?d.slides.map(x=>({u:x.image||'',full:!!x.full})):Object.values(d.heroImages||{}).map(u=>({u,full:false}));
     dRenderSlides();
     const lg=document.getElementById('d-logo');lg.value=d.heroLogo||'';dPrev(lg);
     _dCats=objToArr(cS.val()).sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar'));
@@ -9410,7 +9410,7 @@ async function saveDesign(){
   const msg=document.getElementById('d-msg');msg.style.color='var(--text-muted)';msg.textContent='جاري الحفظ...';
   try{
     dSync();
-    const slides=_dSlides.map(dFix).filter(Boolean).map(image=>({image}));
+    const slides=_dSlides.map(o=>({image:dFix(o.u),full:!!o.full})).filter(o=>o.image);
     await db.ref('settings/design').set({slides,heroLogo:dFix(document.getElementById('d-logo').value),updatedAt:Date.now()});
     await Promise.all(_dCats.map((c,i)=>{const el=document.getElementById('d-cat-'+i);if(!el)return null;return db.ref('categories/'+c.id+'/image').set(dFix(el.value)||null)}));
     msg.style.color='var(--success)';msg.textContent='✓ اتحفظ';showToast('تم حفظ الديزاين','success');
