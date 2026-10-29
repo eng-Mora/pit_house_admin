@@ -8769,7 +8769,7 @@ function printLedgerStatement(key){
     <div class="page-header"><div class="page-header-title"><span class="label">إعدادات</span><h1>الديزاين</h1></div></div>
     <div style="max-width:760px">
       <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:2rem;margin-bottom:1.5rem"><div style="font-family:var(--font-display);font-size:1.3rem;letter-spacing:.06em;color:var(--text-secondary);margin-bottom:.5rem">🖼️ صور الهيرو (السلايدر)</div>
-        <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:1.25rem">الصق رابط صورة مباشر لكل شريحة. ضيف أو امسح أو رتّب الصور زي ما تحب. لو مسحت كلها بيرجع للشرائح الافتراضية. مقاس مناسب: 1920×800 بكسل (JPG/WebP أقل من 300KB)، وخلّي العربية في الجانب الأيسر والنص بيظهر على اليمين</div>
+        <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:1.25rem">الصق رابط صورة مباشر لكل شريحة. ضيف أو امسح أو رتّب الصور زي ما تحب. لو مسحت كلها بيرجع للشرائح الافتراضية. كمبيوتر: 1920×800 بكسل. موبايل: 1080×1350 بكسل (4:5) أو 1080×1080. JPG/WebP أقل من 300KB. لو خانة الموبايل فاضية بيستخدم صورة الكمبيوتر</div>
         <div id="d-slides" style="display:flex;flex-direction:column;gap:.8rem;margin-bottom:1rem"></div>
         <button class="btn btn-secondary btn-sm" onclick="dAddSlide()" style="margin-bottom:1.5rem">+ إضافة صورة</button>
         <div class="form-group"><label class="form-label">لوجو الهيرو (اختياري)</label><div style="display:flex;gap:.6rem;align-items:center"><input type="url" class="form-control" id="d-logo" placeholder="https://..." oninput="dPrev(this)" style="flex:1"/><img id="d-logo-p" alt="" style="width:56px;height:56px;object-fit:contain;display:none"/></div></div>
@@ -9386,19 +9386,20 @@ function printLedgerStatement(key){
 function dFix(u){u=(u||'').trim();if(!u)return '';const m=u.match(/drive\.google\.com\/file\/d\/([^/?#]+)/)||u.match(/drive\.google\.com\/(?:open|uc)\?[^#]*id=([^&#]+)/);if(m)return 'https://drive.google.com/uc?export=view&id='+m[1];return u}
 function dPrev(inp){const im=document.getElementById(inp.id+'-p');if(!im)return;const u=dFix(inp.value);if(u){im.src=u;im.style.display='block'}else{im.removeAttribute('src');im.style.display='none'}}
 let _dCats=[],_dSlides=[];
-function dSync(){_dSlides=_dSlides.map((o,i)=>{const e=document.getElementById('d-s-'+i),f=document.getElementById('d-f-'+i);return {u:e?e.value:o.u,full:f?f.checked:o.full}})}
+function dSync(){_dSlides=_dSlides.map((o,i)=>{const e=document.getElementById('d-s-'+i),m=document.getElementById('d-m-'+i),f=document.getElementById('d-f-'+i);return {u:e?e.value:o.u,m:m?m.value:o.m,full:f?f.checked:o.full}})}
 function dRenderSlides(){
   const box=document.getElementById('d-slides');
-  box.innerHTML=_dSlides.length?_dSlides.map((o,i)=>`<div style="border:1px solid var(--border);border-radius:12px;padding:.7rem"><div style="display:flex;gap:.5rem;align-items:center"><span style="width:22px;color:var(--text-muted);font-family:var(--font-mono)">${i+1}</span><input type="url" class="form-control" id="d-s-${i}" value="${esc(o.u)}" placeholder="https://..." oninput="dPrev(this)" style="flex:1"/><img id="d-s-${i}-p" src="${esc(dFix(o.u))}" alt="" style="width:96px;height:44px;object-fit:cover;border-radius:8px;border:1px solid var(--border);${o.u?'':'display:none'}"/><button class="btn btn-secondary btn-sm" onclick="dMove(${i},-1)">↑</button><button class="btn btn-secondary btn-sm" onclick="dMove(${i},1)">↓</button><button class="btn btn-danger btn-sm" onclick="dDel(${i})">🗑</button></div><label style="display:flex;gap:.5rem;align-items:center;margin-top:.5rem;font-size:.78rem;color:var(--text-muted);cursor:pointer"><input type="checkbox" id="d-f-${i}" ${o.full?'checked':''}/> الصورة فيها اللوجو والنص (اعرضها لوحدها بدون كتابة فوقها)</label></div>`).join(''):'<div style="color:var(--text-muted);font-size:.85rem">مفيش صور — المتجر بيعرض الشرائح الافتراضية</div>';
+  const row=(id,lab,v,w,h)=>`<div style="display:flex;gap:.5rem;align-items:center"><span style="width:62px;font-size:.74rem;color:var(--text-muted)">${lab}</span><input type="url" class="form-control" id="${id}" value="${esc(v)}" placeholder="https://..." oninput="dPrev(this)" style="flex:1"/><img id="${id}-p" src="${esc(dFix(v))}" alt="" style="width:${w}px;height:${h}px;object-fit:cover;border-radius:8px;border:1px solid var(--border);${v?'':'display:none'}"/></div>`;
+  box.innerHTML=_dSlides.length?_dSlides.map((o,i)=>`<div style="border:1px solid var(--border);border-radius:12px;padding:.8rem;display:flex;flex-direction:column;gap:.5rem"><div style="display:flex;justify-content:space-between;align-items:center"><b style="font-family:var(--font-mono)">#${i+1}</b><span style="display:flex;gap:.4rem"><button class="btn btn-secondary btn-sm" onclick="dMove(${i},-1)">↑</button><button class="btn btn-secondary btn-sm" onclick="dMove(${i},1)">↓</button><button class="btn btn-danger btn-sm" onclick="dDel(${i})">🗑</button></span></div>${row('d-s-'+i,'💻 كمبيوتر',o.u,96,44)}${row('d-m-'+i,'📱 موبايل',o.m,44,56)}<label style="display:flex;gap:.5rem;align-items:center;font-size:.78rem;color:var(--text-muted);cursor:pointer"><input type="checkbox" id="d-f-${i}" ${o.full?'checked':''}/> الصورة فيها اللوجو والنص (اعرضها لوحدها بدون كتابة فوقها)</label></div>`).join(''):'<div style="color:var(--text-muted);font-size:.85rem">مفيش صور — المتجر بيعرض الشرائح الافتراضية</div>';
 }
-function dAddSlide(){dSync();_dSlides.push({u:'',full:true});dRenderSlides();const e=document.getElementById('d-s-'+(_dSlides.length-1));if(e)e.focus()}
+function dAddSlide(){dSync();_dSlides.push({u:'',m:'',full:true});dRenderSlides();const e=document.getElementById('d-s-'+(_dSlides.length-1));if(e)e.focus()}
 function dDel(i){dSync();_dSlides.splice(i,1);dRenderSlides()}
 function dMove(i,d){dSync();const j=i+d;if(j<0||j>=_dSlides.length)return;[_dSlides[i],_dSlides[j]]=[_dSlides[j],_dSlides[i]];dRenderSlides()}
 async function loadDesignPage(){
   try{
     const [dS,cS]=await Promise.all([db.ref('settings/design').get(),db.ref('categories').get()]);
     const d=dS.val()||{};
-    _dSlides=Array.isArray(d.slides)?d.slides.map(x=>({u:x.image||'',full:!!x.full})):Object.values(d.heroImages||{}).map(u=>({u,full:false}));
+    _dSlides=Array.isArray(d.slides)?d.slides.map(x=>({u:x.image||'',m:x.mobile||'',full:!!x.full})):Object.values(d.heroImages||{}).map(u=>({u,m:'',full:false}));
     dRenderSlides();
     const lg=document.getElementById('d-logo');lg.value=d.heroLogo||'';dPrev(lg);
     _dCats=objToArr(cS.val()).sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar'));
@@ -9410,7 +9411,7 @@ async function saveDesign(){
   const msg=document.getElementById('d-msg');msg.style.color='var(--text-muted)';msg.textContent='جاري الحفظ...';
   try{
     dSync();
-    const slides=_dSlides.map(o=>({image:dFix(o.u),full:!!o.full})).filter(o=>o.image);
+    const slides=_dSlides.map(o=>({image:dFix(o.u),mobile:dFix(o.m),full:!!o.full})).filter(o=>o.image||o.mobile);
     await db.ref('settings/design').set({slides,heroLogo:dFix(document.getElementById('d-logo').value),updatedAt:Date.now()});
     await Promise.all(_dCats.map((c,i)=>{const el=document.getElementById('d-cat-'+i);if(!el)return null;return db.ref('categories/'+c.id+'/image').set(dFix(el.value)||null)}));
     msg.style.color='var(--success)';msg.textContent='✓ اتحفظ';showToast('تم حفظ الديزاين','success');
