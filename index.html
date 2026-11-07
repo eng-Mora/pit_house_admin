@@ -7913,7 +7913,7 @@ async function loadPrepOrdersPage(){
   try{
     if(!_cachedProducts.length){ const ps=await getProductsSnap(); _cachedProducts=objToArr(ps.val()); }
     const sn=await db.ref('settings/shipping').get(); const s=sn.val()||{};
-    _po.ship={rates:s.rates||{}, tenthRamadanFee:Number(s.tenthRamadanFee)||0, codFee:Number(s.codFee)||0, codFeeType:s.codFeeType||'fixed'};
+    _po.ship={rates:s.rates||{}, tenthRamadanFee:Number(s.tenthRamadanFee)||0, codFee:Number(s.codFee)||0, codFeeType:(s.codFeeType==='percent'||s.codFeeType==='pct')?'pct':'fixed'};
     if(!_govCities || !Object.keys(_govCities).length){ try{ const g=await db.ref('settings/govCities').get(); _govCities=g.val()||{}; }catch(e){} }
   }catch(e){ console.error(e); showToast('تعذّر تحميل إعدادات الشحن أو المنتجات','error'); }
   const govSel=document.getElementById('po-gov');
