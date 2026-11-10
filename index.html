@@ -2426,7 +2426,7 @@ function startGlobalListener(){
 
     // حدّث بادج المعلقة — كل اللي isHolding=true
     const holdingCount = _globalOrders.filter(o=>o.isHolding).length;
-    const holdingAmt = _globalOrders.filter(o=>o.isHolding).reduce((s,o)=>s+(o.totalPrice||0),0);
+    const holdingAmt = _globalOrders.filter(o=>o.isHolding).reduce((s,o)=>s+getOrderCollectInfo(o).amount,0);
     document.querySelectorAll('[id="holding-badge-sb"]').forEach(el=>{
       if(holdingCount > 0){
         el.innerHTML = holdingCount + (holdingAmt ? '<br><span style="font-size:.5rem;opacity:.85">'+formatPrice(holdingAmt)+'</span>' : '');
@@ -2509,7 +2509,7 @@ function calcCashierBalance(){
   const liqBalance   = liqDeposits - liqWithdraws;
   // أوردرات اتحصّلت من غير ما تعدي على زرار التحصيل (تغيير الحالة يدوي من القايمة)
   // بس — عشان أي أوردر مسجل بالفعل في liquidityLog (جوه liqBalance فوق) متتحسبش مرتين
-  const collected    = (_globalOrders||[]).filter(o=>o.status==='collected' && !loggedOrderIds.has(o.id)).reduce((s,o)=>s+(Number(o.totalPrice)||0),0);
+  const collected    = (_globalOrders||[]).filter(o=>o.status==='collected' && !loggedOrderIds.has(o.id)).reduce((s,o)=>s+getOrderCollectInfo(o).amount,0);
   // فواتير الآجل مالهاش تأثير على الكاشير غير بعد ما تتحصّل فعلياً (بترجع كإيداع في سجل السيولة وقتها)
   const invSale      = _invoicesCache.filter(i=>i.type==='sale' && i.paymentMethod!=='deferred').reduce((s,i)=>s+(Number(i.total)||0),0);
   const invPurchase  = _invoicesCache.filter(i=>i.type==='purchase' && i.paymentMethod!=='deferred').reduce((s,i)=>s+(Number(i.total)||0),0);
@@ -3645,19 +3645,14 @@ async function removeAccountEntriesForOrder(orderId){
     }catch(err){}
   }
 }
-// حساب المبلغ المُحصَّل من الأوردر حسب طريقة الدفع + ملاحظة توضيحية
-// - فودافون كاش / إنستا باي: المبلغ كامل شامل الشحن
-// - الدفع عند الاستلام: تمن المنتجات + رسوم الدفع عند الاستلام بس (من غير الشحن)
+// حساب المبلغ المُحصَّل من الأوردر + ملاحظة توضيحية
+// في أي تحصيل (فودافون كاش / إنستا باي / الدفع عند الاستلام): المبلغ = إجمالي الأوردر من غير مبلغ الشحن.
+// (في الدفع عند الاستلام رسوم الاستلام بتفضل جزء من المبلغ لأنها جوه إجمالي الأوردر)
 function getOrderCollectInfo(order, fallbackAmount){
-  const totalPrice = order?.totalPrice ?? fallbackAmount ?? 0;
-  const shippingCost = order?.shippingCost || 0;
-  const pm = order?.paymentMethod;
-  if(pm==='vodafone_cash'||pm==='vodafone'||pm==='instapay'){
-    return {amount: totalPrice, note: shippingCost>0 ? '(شامل الشحن)' : ''};
-  } else if(pm==='cash_on_delivery'){
-    return {amount: totalPrice - shippingCost, note: shippingCost>0 ? '(من غير الشحن)' : ''};
-  }
-  return {amount: fallbackAmount ?? totalPrice, note: ''};
+  if(!order) return {amount: Number(fallbackAmount)||0, note: ''};
+  const totalPrice = Number(order.totalPrice ?? fallbackAmount ?? 0) || 0;
+  const shippingCost = Number(order.shippingCost) || 0;
+  return {amount: Math.max(0, totalPrice - shippingCost), note: shippingCost>0 ? '(من غير الشحن)' : ''};
 }
 async function collectOrder(id, amount){
   const order = _globalOrders.find(o=>o.id===id);
@@ -7360,7 +7355,7 @@ async function loadTreasuryPage(silent){
     // أوردرات اتحصّلت بتغيير الحالة يدوي (من غير زرار التحصيل) — نفس منطق رصيد الكاشير
     (_globalOrders||[]).filter(o=>o.status==='collected' && !loggedOrderIds.has(o.id)).forEach(o=>{
       const ref={kind:'order',id:o.id};
-      rows.push({key:'ord:'+o.id, ts:o.collectedAt||o.createdAt||0, dir:'in', amount:Number(o.totalPrice)||0, cat:'order_collect', eff:true,
+      rows.push({key:'ord:'+o.id, ts:o.collectedAt||o.createdAt||0, dir:'in', amount:getOrderCollectInfo(o).amount, cat:'order_collect', eff:true,
         title:`تحصيل أوردر #${o.id}${o.customerName?' — '+o.customerName:''} (اتغيّرت الحالة يدوي)`, ref, acc:accFor(ref)});
     });
 
