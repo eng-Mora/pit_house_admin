@@ -7902,7 +7902,7 @@ let _accArchives = [];
 //  📝 تجهيز طلبات (واتساب) — إنشاء أوردر حقيقي لعميل طلب من الواتساب: منتجات + خصم + محافظة/مدينة (شحن تلقائي) + بوليصة
 //  الأوردر بيتسجل في orders بنفس شكل أوردرات المتجر (source:'whatsapp') فيظهر في الأوردرات والمعلقة والتقارير
 // ══════════════════════════════════════════════════════════
-let _po = {items:[], ship:{rates:{},tenthRamadanFee:0,codFee:0,codFeeType:'fixed'}, saving:false};
+let _po = {items:[], ship:{rates:{},tenthRamadanFee:0,codFee:0,codFeeType:'fixed'}, saving:false, editId:null, editOrig:null};
 
 async function loadPrepOrdersPage(){
   try{
@@ -8014,6 +8014,7 @@ function poAddItem(){
 }
 function poUpdateItem(uid, field, raw){
   const it=_po.items.find(i=>i.uid===uid); if(!it) return;
+  if(field==='name'){ const n=String(raw||'').trim(); if(!n){ poRenderItems(); return; } it.name=n; poRenderItems(); return; }
   const v=parseFloat(raw);
   if(isNaN(v)||v<0){ poRenderItems(); return; }
   if(field==='qty'){ const q=Math.floor(v); if(q<1){ poRenderItems(); return; } it.qty=q; } else it.price=v;
@@ -8030,7 +8031,7 @@ function poRenderItems(){
     <tbody>${_po.items.map(i=>{
       const av=poItemAvailable(i); const warn=av!=null && i.qty>av;
       return `<tr style="border-top:1px solid var(--border)">
-        <td style="padding:.45rem .6rem">${esc(i.name)}${warn?`<div style="font-size:.68rem;color:var(--danger)">⚠️ المتاح ${av} بس</div>`:''}</td>
+        <td style="padding:.3rem .6rem"><input class="form-control" value="${esc(i.name)}" style="padding:.3rem .45rem;min-width:170px;margin:0" onchange="poUpdateItem('${i.uid}','name',this.value)"/>${warn?`<div style="font-size:.68rem;color:var(--danger)">⚠️ المتاح ${av} بس</div>`:''}</td>
         <td style="padding:.3rem .4rem;text-align:center"><input type="number" class="form-control" min="1" step="1" value="${i.qty}" style="width:70px;padding:.3rem;text-align:center;margin:0 auto" onchange="poUpdateItem('${i.uid}','qty',this.value)"/></td>
         <td style="padding:.3rem .4rem;text-align:center"><input type="number" class="form-control" min="0" step="any" value="${i.price}" style="width:90px;padding:.3rem;text-align:center;margin:0 auto" onchange="poUpdateItem('${i.uid}','price',this.value)"/></td>
         <td style="padding:.3rem .4rem;text-align:center;font-weight:700;color:var(--accent-gold)">${formatPrice(i.qty*i.price)}</td>
@@ -8099,7 +8100,8 @@ function poCollect(forSave){
   const governorateName=(EGYPT_GOVS.find(g=>g.key===govKey)||{}).name||govKey;
   return {
     customerName:name, phone, altPhone, governorate:govKey, governorateName, city, address, notes,
-    items:_po.items.map(i=>({id:i.id, productId:i.productId, variantId:i.variantId, variantLabel:i.variantLabel, name:i.name, price:i.price, qty:i.qty})),
+    items:_po.items.map(i=>{ const {uid,...r}=i; return r; }),
+    poDiscType:document.getElementById('po-disc-type').value, poDiscVal:parseFloat(document.getElementById('po-disc-val').value)||0,
     originalPrice:c.subtotal, subtotal:c.after, discount:c.discount, shippingCost:c.shipping, codFee:c.codFee,
     codFeeType:_po.ship.codFeeType, totalPrice:c.total, promoCode:null, paymentMethod:c.pay
   };
@@ -8111,6 +8113,7 @@ function poWaybillOrder(o, id){
 
 async function poSave(print){
   if(_po.saving) return;
+  if(_po.editId) return poSaveEdit(print);
   const base=poCollect(true); if(!base) return;
   const status=document.getElementById('po-status').value;
   const deduct=document.getElementById('po-deduct').checked;
@@ -8138,6 +8141,91 @@ async function poSave(print){
     console.error(err); showToast('فشل حفظ الأوردر: '+err.message,'error');
   }finally{ _po.saving=false; b1.disabled=b2.disabled=false; }
 }
+
+// ══ ✏️ تعديل طلب محفوظ — بيفتح الأوردر في الفورم (عميل + منتجات + أسعار + خصم + شحن + حالة) ويحفظ على نفس الأوردر ══
+function poEditOrder(id){
+  const o=(_globalOrders||[]).find(x=>x.id===id); if(!o) { showToast('الطلب مش موجود','error'); return; }
+  if(_po.items.length && !_po.editId && !confirm('في طلب شغال في الفورم — يتمسح وتفتح الطلب للتعديل؟')) return;
+  poClearForm();
+  _po.editId=id; _po.editOrig=JSON.parse(JSON.stringify(o));
+  const set=(k,v)=>{ const e=document.getElementById(k); if(e) e.value=(v==null?'':v); };
+  set('po-phone',o.phone); set('po-name',o.customerName); set('po-alt-phone',o.altPhone); set('po-address',o.address); set('po-notes',o.notes);
+  set('po-gov',o.governorate); poOnGovChange(); set('po-city',o.city);
+  _po.items=(o.items||[]).map(i=>({...i, uid:Date.now()+'_'+Math.random().toString(36).slice(2,6), price:Number(i.price)||0, qty:Number(i.qty)||1}));
+  // الخصم
+  if(o.poDiscType && o.poDiscType!=='none'){ set('po-disc-type',o.poDiscType); set('po-disc-val',o.poDiscVal); }
+  else if(Number(o.discount)>0){ set('po-disc-type','fixed'); set('po-disc-val',o.discount); }
+  else set('po-disc-type','none');
+  // الدفع والشحن (بنثبّت القيم المحفوظة عشان الإجمالي يفضل زي ما هو لحد ما تغيّر)
+  const payEl=document.getElementById('po-pay');
+  if(![...payEl.options].some(op=>op.value===o.paymentMethod) && o.paymentMethod) payEl.add(new Option(o.paymentMethod,o.paymentMethod));
+  payEl.value=o.paymentMethod||'cash_on_delivery';
+  set('po-ship-override',o.shippingCost!=null?o.shippingCost:'');
+  set('po-cod-override',o.codFee!=null?o.codFee:'');
+  // الحالة (كل الحالات)
+  const st=document.getElementById('po-status');
+  st.innerHTML=[['pending','⏳ قيد الانتظار'],['confirmed','✅ مؤكد'],['shipped','🚚 تم الشحن'],['delivered','📦 تم التسليم'],['holding','🔒 معلقة'],['collected','💚 تم التحصيل'],['return_requested','↩️ طلب إرجاع'],['returned','🔄 تم الإرجاع'],['cancelled','❌ ملغي']]
+    .map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
+  if(o.status && ![...st.options].some(op=>op.value===o.status)) st.add(new Option(o.status,o.status));
+  st.value=o.status||'confirmed';
+  document.getElementById('po-deduct').checked=!!o.stockDeducted;
+  poSetEditUI(true);
+  poRenderItems(); poRecalc();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function poSetEditUI(on){
+  const saved=document.getElementById('po-saved');
+  const b1=document.getElementById('po-save'), b2=document.getElementById('po-save-print');
+  const lbl=document.querySelector('label[for="po-deduct"], #po-deduct')?.parentElement;
+  if(on){
+    saved.style.display='block';
+    saved.innerHTML=`<div style="background:rgba(255,179,0,.1);border:1px solid rgba(255,179,0,.45);border-radius:var(--radius-md);padding:.8rem 1rem;margin-bottom:1.1rem;display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap">
+      <div><b style="color:var(--accent-gold)">✏️ بتعدّل أوردر موجود</b> — ${esc(_po.editOrig.customerName||'')}<div style="font-size:.7rem;color:var(--text-muted);font-family:var(--font-mono)">#${esc(_po.editId)}</div></div>
+      <button class="btn btn-secondary btn-sm" onclick="poCancelEdit()">✖ إلغاء التعديل</button></div>`;
+    b1.textContent='💾 حفظ التعديلات'; b2.textContent='💾🚚 حفظ التعديلات وطباعة البوليصة';
+    if(lbl) lbl.lastChild.textContent=' الأوردر ده اتخصم من المخزون (لو غيّرت الكميات المخزون هيتظبط تلقائي)';
+  } else {
+    b1.textContent='💾 حفظ الأوردر'; b2.textContent='💾🚚 حفظ وطباعة البوليصة';
+    if(lbl) lbl.lastChild.textContent=' خصم المنتجات من المخزون عند الحفظ';
+  }
+}
+function poCancelEdit(){
+  _po.editId=null; _po.editOrig=null;
+  document.getElementById('po-saved').style.display='none';
+  poClearForm();
+}
+async function poSaveEdit(print){
+  const base=poCollect(true); if(!base) return;
+  const o=_po.editOrig, id=_po.editId;
+  const status=document.getElementById('po-status').value;
+  const deduct=document.getElementById('po-deduct').checked;
+  if(['collected','delivered'].includes(o.status) && !confirm('⚠️ الأوردر ده حالته "'+o.status+'" — لو اتحصّل قبل كده، المبلغ في الكاشير/الحسابات مش هيتعدّل تلقائي.\n\nتكمّل التعديل؟')) return;
+  _po.saving=true;
+  const b1=document.getElementById('po-save'), b2=document.getElementById('po-save-print');
+  b1.disabled=b2.disabled=true;
+  try{
+    const upd={...base, status, stockDeducted:!!deduct, updatedAt:Date.now(),
+      updatedBy:(typeof _currentAdminEmail!=='undefined'&&_currentAdminEmail)||''};
+    await db.ref('orders/'+id).update(upd);
+    // ضبط المخزون: نرجّع القديم (لو كان متخصم) ونخصم الجديد (لو متعلّم)
+    try{
+      if(o.stockDeducted && (o.items||[]).length) await _adjustInventoryForOrder(o.items,'add');
+      if(deduct) await _adjustInventoryForOrder(base.items,'deduct');
+    }catch(e){ console.error(e); showToast('الأوردر اتعدّل بس ضبط المخزون فشل: '+e.message,'error'); }
+    const saved={...o, ...upd, id};
+    _po.lastSaved=saved;
+    _cachedProducts=[]; getProductsSnap().then(ps=>{ _cachedProducts=objToArr(ps.val()); }).catch(()=>{});
+    showToast('✅ تم حفظ التعديلات','success');
+    if(print) printWaybill(poWaybillOrder(saved,id));
+    _po.editId=null; _po.editOrig=null;
+    poClearForm();
+    poShowSaved(id, saved);
+    poRenderRecent();
+  }catch(err){
+    console.error(err); showToast('فشل حفظ التعديل: '+err.message,'error');
+  }finally{ _po.saving=false; b1.disabled=b2.disabled=false; }
+}
+
 function poPrintOnly(){
   const base=poCollect(false); if(!base) return;
   printWaybill(poWaybillOrder({...base, createdAt:Date.now()}, 'WA-'+Date.now().toString(36).toUpperCase()));
@@ -8154,10 +8242,14 @@ function poClearForm(){
   ['po-phone','po-name','po-alt-phone','po-city','po-address','po-notes','po-item-name','po-item-price','po-disc-val','po-ship-override','po-cod-override'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
   document.getElementById('po-gov').value=''; document.getElementById('po-cities-list').innerHTML='';
   document.getElementById('po-disc-type').value='none'; document.getElementById('po-pay').value='cash_on_delivery'; document.getElementById('po-item-qty').value='1';
-  _po.items=[]; poOnProductInput(); poRenderItems(); poRecalc();
+  _po.items=[]; _po.editId=null; _po.editOrig=null;
+  const st=document.getElementById('po-status');
+  if(st && st.options.length>2){ st.innerHTML='<option value="confirmed">✅ مؤكد (جاهز للشحن)</option><option value="shipped">🚚 تم الشحن</option>'; }
+  document.getElementById('po-deduct').checked=true; poSetEditUI(false);
+  poOnProductInput(); poRenderItems(); poRecalc();
 }
 function poReset(){
-  if(_po.items.length && !confirm('مسح الطلب الحالي والبدء من جديد؟')) return;
+  if((_po.items.length||_po.editId) && !confirm('مسح الطلب الحالي والبدء من جديد؟')) return;
   document.getElementById('po-saved').style.display='none';
   poClearForm();
 }
@@ -8169,6 +8261,7 @@ function poRenderRecent(){
     <div style="font-size:.82rem"><b>${esc(o.customerName||'—')}</b> · ${esc(o.governorateName||'')} ${esc(o.city||'')}
       <div style="font-size:.7rem;color:var(--text-muted)">${new Date(o.createdAt||0).toLocaleString('ar-EG',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})} · ${(o.items||[]).length} صنف · ${esc(o.status||'')}</div></div>
     <div style="display:flex;align-items:center;gap:.6rem"><b style="color:var(--accent-gold)">${formatPrice(o.totalPrice||0)}</b>
+      <button class="btn btn-primary btn-sm" onclick="poEditOrder('${esc(o.id)}')">✏️ تعديل</button>
       <button class="btn btn-secondary btn-sm" onclick="poPrintRecent('${esc(o.id)}')">🚚 بوليصة</button></div></div>`).join('');
 }
 function poPrintRecent(id){
