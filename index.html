@@ -3571,7 +3571,7 @@ function renderOrders(orders){
   if(!orders.length){c.innerHTML=`<div class="empty-state"><div class="empty-icon">📦</div><h3>لا توجد طلبات</h3></div>`;return;}
   c.innerHTML=`<div class="table-wrapper"><table class="data-table"><thead><tr><th>رقم الطلب</th><th>العميل</th><th>التليفون</th><th>المنطقة</th><th>المنتجات</th><th>الإجمالي</th><th>الكود</th><th>الحالة</th><th>التاريخ</th><th>إجراءات</th></tr></thead><tbody>${orders.map(o=>{
     const collectBtn = (o.status==='holding') ? `<button class="btn btn-collect btn-sm" onclick="collectOrder('${o.id}',${o.totalPrice||0})">💚 Collect</button>` : '';
-    return`<tr><td class="td-mono" style="cursor:pointer" onclick='openOrderDrawer(${JSON.stringify(o)})'>${esc(o.id)}</td><td class="td-name">${esc(o.customerName||'—')}</td><td style="white-space:nowrap;font-family:var(--font-mono);font-size:.8rem">${esc(o.phone||'—')}</td><td style="font-size:.78rem;max-width:140px;color:var(--text-muted)">${esc(o.address||o.city||'—')}${o.location&&o.location.lat?` <a href="https://www.google.com/maps?q=${o.location.lat},${o.location.lng}" target="_blank" title="فتح على الخريطة" onclick="event.stopPropagation()">📍</a>`:''}</td><td style="font-size:.78rem;max-width:160px">${(o.items||[]).map(i=>`<div>${esc(i.name)} × ${i.qty}${i.carType?`<br/><span style="color:#A78BFA;font-size:.7rem">🚗 ${esc(i.carType)}</span>`:''}</div>`).join('')}</td><td class="td-price">${formatPrice(o.totalPrice)}</td><td style="font-family:var(--font-mono);font-size:.75rem;color:var(--accent-gold)">${o.promoCode?esc(o.promoCode):'—'}</td><td><select class="status-select" data-id="${o.id}" onchange="updateOrderStatus(this)"><option value="pending" ${o.status==='pending'?'selected':''}>⏳ قيد الانتظار</option><option value="confirmed" ${o.status==='confirmed'?'selected':''}>✅ مؤكد</option><option value="shipped" ${o.status==='shipped'?'selected':''}>🚚 تم الشحن</option><option value="delivered" ${o.status==='delivered'?'selected':''}>📦 تم التسليم</option><option value="holding" ${o.status==='holding'?'selected':''}>🔒 معلقة</option><option value="collected" ${o.status==='collected'?'selected':''}>💚 تم التحصيل</option><option value="return_requested" ${o.status==='return_requested'?'selected':''}>↩️ طلب إيرجاع</option><option value="returned" ${o.status==='returned'?'selected':''}>🔄 تم الإيرجاع</option></select></td><td style="white-space:nowrap;font-size:.75rem">${formatDate(o.createdAt)}</td><td style="display:flex;gap:.4rem;flex-wrap:wrap">${collectBtn}<button class="btn btn-secondary btn-sm" onclick='printWaybill(${JSON.stringify(o)})' title="بوليصة شحن">🚚 بوليصة</button>${o.status==='returned'?`<button class="btn btn-secondary btn-sm" onclick='printReturnInvoice(${JSON.stringify(o)})' title="فاتورة إرجاع">🧾 إرجاع</button>`:''}<button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.id}')">حذف</button></td></tr>`;
+    return`<tr><td class="td-mono" style="cursor:pointer" onclick='openOrderDrawer(${JSON.stringify(o)})'>${esc(o.id)}</td><td class="td-name">${esc(o.customerName||'—')}</td><td style="white-space:nowrap;font-family:var(--font-mono);font-size:.8rem">${esc(o.phone||'—')}</td><td style="font-size:.78rem;max-width:140px;color:var(--text-muted)">${esc(o.address||o.city||'—')}${o.location&&o.location.lat?` <a href="https://www.google.com/maps?q=${o.location.lat},${o.location.lng}" target="_blank" title="فتح على الخريطة" onclick="event.stopPropagation()">📍</a>`:''}</td><td style="font-size:.78rem;max-width:160px">${(o.items||[]).map(i=>`<div>${esc(i.name)} × ${i.qty}${i.carType?`<br/><span style="color:#A78BFA;font-size:.7rem">🚗 ${esc(i.carType)}</span>`:''}</div>`).join('')}</td><td class="td-price">${formatPrice(o.totalPrice)}</td><td style="font-family:var(--font-mono);font-size:.75rem;color:var(--accent-gold)">${o.promoCode?esc(o.promoCode):'—'}</td><td><select class="status-select" data-id="${o.id}" onchange="updateOrderStatus(this)"><option value="pending" ${o.status==='pending'?'selected':''}>⏳ قيد الانتظار</option><option value="confirmed" ${o.status==='confirmed'?'selected':''}>✅ مؤكد</option><option value="shipped" ${o.status==='shipped'?'selected':''}>🚚 تم الشحن</option><option value="delivered" ${o.status==='delivered'?'selected':''}>📦 تم التسليم</option><option value="holding" ${o.status==='holding'?'selected':''}>🔒 معلقة</option><option value="collected" ${o.status==='collected'?'selected':''}>💚 تم التحصيل</option><option value="return_requested" ${o.status==='return_requested'?'selected':''}>↩️ طلب إيرجاع</option><option value="returned" ${o.status==='returned'?'selected':''}>🔄 تم الإيرجاع</option></select><div style="margin-top:.35rem"><button class="btn btn-secondary btn-sm" style="font-size:.68rem;padding:.2rem .5rem;font-family:var(--font-mono)" onclick="setTrackingNumber('${o.id}')">📮 ${o.trackingNumber?esc(o.trackingNumber):'رقم الشحنة +'}</button></div></td><td style="white-space:nowrap;font-size:.75rem">${formatDate(o.createdAt)}</td><td style="display:flex;gap:.4rem;flex-wrap:wrap">${collectBtn}<button class="btn btn-secondary btn-sm" onclick='printWaybill(${JSON.stringify(o)})' title="بوليصة شحن">🚚 بوليصة</button>${o.status==='returned'?`<button class="btn btn-secondary btn-sm" onclick='printReturnInvoice(${JSON.stringify(o)})' title="فاتورة إرجاع">🧾 إرجاع</button>`:''}<button class="btn btn-primary btn-sm" onclick="editOrderFromAnywhere('${o.id}')">✏️ تعديل</button><button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.id}')">حذف</button></td></tr>`;
   }).join('')}</tbody></table></div>`;
 }
 async function updateOrderStatus(sel){
@@ -3762,6 +3762,8 @@ function openOrderDrawer(order){
       ${order.status==='returned'?`<div style="margin-top:.6rem;font-size:.8rem;color:#FFB74D;font-family:var(--font-mono)">🔄 تم قبول الإيرجاع في ${order.returnedAt?formatDate(order.returnedAt):'—'}</div>`:''}
     </div>
     <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.5rem">
+      <button class="btn btn-secondary btn-full" onclick="setTrackingNumber('${order.id}')">📮 رقم الشحنة: ${order.trackingNumber?esc(order.trackingNumber):'مش مسجّل — اضغط للإضافة'}</button>
+      <button class="btn btn-primary btn-full" onclick="editOrderFromAnywhere('${order.id}')">✏️ تعديل الطلب (منتجات / أسعار / بيانات العميل)</button>
       <button class="btn btn-secondary btn-full" onclick='printWaybill(${JSON.stringify(order)})'>🚚 طباعة بوليصة الشحن</button>
       ${order.status==='returned'?`<button class="btn btn-secondary btn-full" onclick='printReturnInvoice(${JSON.stringify(order)})'>🧾 طباعة فاتورة الإرجاع</button>`:''}
       <button class="btn btn-danger btn-full" onclick="deleteOrder('${order.id}');closeOrderDrawer()">🗑 حذف الطلب</button>
@@ -8092,18 +8094,22 @@ function poCollect(forSave){
   const notes=document.getElementById('po-notes').value.trim();
   if(!phone || phone.replace(/\D/g,'').length<10){ showToast('اكتب رقم موبايل صحيح','error'); document.getElementById('po-phone').focus(); return null; }
   if(!name){ showToast('اكتب اسم العميل','error'); document.getElementById('po-name').focus(); return null; }
-  if(!govKey){ showToast('اختار المحافظة','error'); document.getElementById('po-gov').focus(); return null; }
-  if(!city){ showToast('اكتب أو اختار المدينة','error'); document.getElementById('po-city').focus(); return null; }
+  const _eo=_po.editId?_po.editOrig:null;
+  if(!govKey && !(_eo && (_eo.governorate||_eo.gov||_eo.governorateName))){ showToast('اختار المحافظة','error'); document.getElementById('po-gov').focus(); return null; }
+  if(!city && !(_eo && _eo.city)){ showToast('اكتب أو اختار المدينة','error'); document.getElementById('po-city').focus(); return null; }
   if(!address){ showToast('اكتب العنوان','error'); document.getElementById('po-address').focus(); return null; }
   if(!_po.items.length){ showToast('ضيف منتج واحد على الأقل','error'); return null; }
   const c=poCalc();
-  const governorateName=(EGYPT_GOVS.find(g=>g.key===govKey)||{}).name||govKey;
+  let governorateName=(EGYPT_GOVS.find(g=>g.key===govKey)||{}).name||govKey;
+  let govOut=govKey;
+  if(!govKey && _eo){ govOut=_eo.governorate||_eo.gov||''; governorateName=_eo.governorateName||govOut; }
   return {
-    customerName:name, phone, altPhone, governorate:govKey, governorateName, city, address, notes,
+    customerName:name, phone, altPhone, governorate:govOut, governorateName, city:(city||(_eo&&_eo.city)||''), address, notes,
     items:_po.items.map(i=>{ const {uid,...r}=i; return r; }),
     poDiscType:document.getElementById('po-disc-type').value, poDiscVal:parseFloat(document.getElementById('po-disc-val').value)||0,
     originalPrice:c.subtotal, subtotal:c.after, discount:c.discount, shippingCost:c.shipping, codFee:c.codFee,
-    codFeeType:_po.ship.codFeeType, totalPrice:c.total, promoCode:null, paymentMethod:c.pay
+    codFeeType:_po.ship.codFeeType, totalPrice:c.total, promoCode:null, paymentMethod:c.pay,
+    trackingNumber:(document.getElementById('po-tracking').value||'').trim()||null
   };
 }
 function poWaybillOrder(o, id){
@@ -8143,6 +8149,25 @@ async function poSave(print){
 }
 
 // ══ ✏️ تعديل طلب محفوظ — بيفتح الأوردر في الفورم (عميل + منتجات + أسعار + خصم + شحن + حالة) ويحفظ على نفس الأوردر ══
+async function setTrackingNumber(id){
+  const o=(_globalOrders||[]).find(x=>x.id===id)||{};
+  const v=prompt('📮 رقم الشحنة (هيظهر للعميل في طلباته)\nسيبه فاضي لو عايز تمسحه:', o.trackingNumber||'');
+  if(v===null) return;
+  const tn=v.trim();
+  try{
+    await db.ref('orders/'+id).update({trackingNumber:tn||null, trackingUpdatedAt:Date.now()});
+    showToast(tn?'✅ تم حفظ رقم الشحنة':'تم مسح رقم الشحنة','success');
+    try{ closeOrderDrawer(); }catch(e){}
+    setTimeout(()=>{ if(document.getElementById('page-orders')?.classList.contains('active')){ _allOrders=_globalOrders; filterOrders(); } },400);
+  }catch(err){ showToast('فشل الحفظ: '+err.message,'error'); }
+}
+async function editOrderFromAnywhere(id){
+  if(!hasPerm('prep-orders')){ showToast('معندكش صلاحية تعديل الطلبات (تجهيز طلبات)','error'); return; }
+  try{ closeOrderDrawer(); }catch(e){}
+  navigate('prep-orders');
+  try{ await loadPrepOrdersPage(); }catch(e){}
+  poEditOrder(id);
+}
 function poEditOrder(id){
   const o=(_globalOrders||[]).find(x=>x.id===id); if(!o) { showToast('الطلب مش موجود','error'); return; }
   if(_po.items.length && !_po.editId && !confirm('في طلب شغال في الفورم — يتمسح وتفتح الطلب للتعديل؟')) return;
@@ -8150,7 +8175,8 @@ function poEditOrder(id){
   _po.editId=id; _po.editOrig=JSON.parse(JSON.stringify(o));
   const set=(k,v)=>{ const e=document.getElementById(k); if(e) e.value=(v==null?'':v); };
   set('po-phone',o.phone); set('po-name',o.customerName); set('po-alt-phone',o.altPhone); set('po-address',o.address); set('po-notes',o.notes);
-  set('po-gov',o.governorate); poOnGovChange(); set('po-city',o.city);
+  const gv=EGYPT_GOVS.find(g=>g.key===o.governorate||g.name===o.governorate||g.key===o.gov||g.name===o.gov);
+  set('po-gov',gv?gv.key:''); poOnGovChange(); set('po-city',o.city);
   _po.items=(o.items||[]).map(i=>({...i, uid:Date.now()+'_'+Math.random().toString(36).slice(2,6), price:Number(i.price)||0, qty:Number(i.qty)||1}));
   // الخصم
   if(o.poDiscType && o.poDiscType!=='none'){ set('po-disc-type',o.poDiscType); set('po-disc-val',o.poDiscVal); }
@@ -8162,13 +8188,15 @@ function poEditOrder(id){
   payEl.value=o.paymentMethod||'cash_on_delivery';
   set('po-ship-override',o.shippingCost!=null?o.shippingCost:'');
   set('po-cod-override',o.codFee!=null?o.codFee:'');
+  set('po-tracking',o.trackingNumber);
   // الحالة (كل الحالات)
   const st=document.getElementById('po-status');
   st.innerHTML=[['pending','⏳ قيد الانتظار'],['confirmed','✅ مؤكد'],['shipped','🚚 تم الشحن'],['delivered','📦 تم التسليم'],['holding','🔒 معلقة'],['collected','💚 تم التحصيل'],['return_requested','↩️ طلب إرجاع'],['returned','🔄 تم الإرجاع'],['cancelled','❌ ملغي']]
     .map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
   if(o.status && ![...st.options].some(op=>op.value===o.status)) st.add(new Option(o.status,o.status));
   st.value=o.status||'confirmed';
-  document.getElementById('po-deduct').checked=!!o.stockDeducted;
+  _po.editOrig._wasDeducted = (o.stockDeducted!==undefined) ? !!o.stockDeducted : ['confirmed','shipped','delivered','collected'].includes(o.status);
+  document.getElementById('po-deduct').checked=_po.editOrig._wasDeducted;
   poSetEditUI(true);
   poRenderItems(); poRecalc();
   window.scrollTo({top:0,behavior:'smooth'});
@@ -8183,7 +8211,7 @@ function poSetEditUI(on){
       <div><b style="color:var(--accent-gold)">✏️ بتعدّل أوردر موجود</b> — ${esc(_po.editOrig.customerName||'')}<div style="font-size:.7rem;color:var(--text-muted);font-family:var(--font-mono)">#${esc(_po.editId)}</div></div>
       <button class="btn btn-secondary btn-sm" onclick="poCancelEdit()">✖ إلغاء التعديل</button></div>`;
     b1.textContent='💾 حفظ التعديلات'; b2.textContent='💾🚚 حفظ التعديلات وطباعة البوليصة';
-    if(lbl) lbl.lastChild.textContent=' الأوردر ده اتخصم من المخزون (لو غيّرت الكميات المخزون هيتظبط تلقائي)';
+    if(lbl) lbl.lastChild.textContent=' الأوردر ده متخصم من المخزون (لو غيّرت الكميات الفرق بيتظبط تلقائي — شيل العلامة لو مش عايز تلمس المخزون)';
   } else {
     b1.textContent='💾 حفظ الأوردر'; b2.textContent='💾🚚 حفظ وطباعة البوليصة';
     if(lbl) lbl.lastChild.textContent=' خصم المنتجات من المخزون عند الحفظ';
@@ -8206,10 +8234,12 @@ async function poSaveEdit(print){
   try{
     const upd={...base, status, stockDeducted:!!deduct, updatedAt:Date.now(),
       updatedBy:(typeof _currentAdminEmail!=='undefined'&&_currentAdminEmail)||''};
+    delete upd.promoCode; // كود الخصم الأصلي من الموقع يفضل زي ما هو
+    if(upd.trackingNumber!==o.trackingNumber) upd.trackingUpdatedAt=Date.now();
     await db.ref('orders/'+id).update(upd);
     // ضبط المخزون: نرجّع القديم (لو كان متخصم) ونخصم الجديد (لو متعلّم)
     try{
-      if(o.stockDeducted && (o.items||[]).length) await _adjustInventoryForOrder(o.items,'add');
+      if(o._wasDeducted && (o.items||[]).length) await _adjustInventoryForOrder(o.items,'add');
       if(deduct) await _adjustInventoryForOrder(base.items,'deduct');
     }catch(e){ console.error(e); showToast('الأوردر اتعدّل بس ضبط المخزون فشل: '+e.message,'error'); }
     const saved={...o, ...upd, id};
@@ -8239,7 +8269,7 @@ function poShowSaved(id, o){
 }
 function poPrintSaved(){ if(_po.lastSaved) printWaybill(poWaybillOrder(_po.lastSaved,_po.lastSaved.id)); }
 function poClearForm(){
-  ['po-phone','po-name','po-alt-phone','po-city','po-address','po-notes','po-item-name','po-item-price','po-disc-val','po-ship-override','po-cod-override'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
+  ['po-phone','po-name','po-alt-phone','po-city','po-address','po-notes','po-item-name','po-item-price','po-disc-val','po-ship-override','po-cod-override','po-tracking'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
   document.getElementById('po-gov').value=''; document.getElementById('po-cities-list').innerHTML='';
   document.getElementById('po-disc-type').value='none'; document.getElementById('po-pay').value='cash_on_delivery'; document.getElementById('po-item-qty').value='1';
   _po.items=[]; _po.editId=null; _po.editOrig=null;
@@ -10743,6 +10773,8 @@ function printLedgerStatement(key){
               <input type="number" class="form-control" id="po-ship-override" min="0" step="any" placeholder="تلقائي من المحافظة" oninput="poRecalc()"/></div>
             <div class="form-group" style="margin:0"><label class="form-label">رسوم الاستلام <span id="po-cod-auto" style="color:var(--text-muted);font-weight:400"></span></label>
               <input type="number" class="form-control" id="po-cod-override" min="0" step="any" placeholder="تلقائي" oninput="poRecalc()"/></div>
+            <div class="form-group" style="margin:0"><label class="form-label">📮 رقم الشحنة <span style="color:var(--text-muted);font-weight:400">(بيظهر للعميل)</span></label>
+              <input class="form-control" id="po-tracking" dir="ltr" placeholder="اكتب رقم الشحنة"/></div>
             <div class="form-group" style="margin:0"><label class="form-label">حالة الأوردر</label>
               <select class="form-control" id="po-status">
                 <option value="confirmed">✅ مؤكد (جاهز للشحن)</option>
